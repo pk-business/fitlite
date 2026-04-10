@@ -1,19 +1,43 @@
 .rest-timer-container {
-  position: fixed;
-  bottom: 80px; // Above bottom navigation
-  right: 16px;
-  z-index: 9999; // Higher z-index for iOS
+  // Use viewport positioning for iOS Safari
+  position: fixed !important;
+  bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+  right: calc(16px + env(safe-area-inset-right, 0px)) !important;
+  z-index: 2147483647 !important; // Maximum z-index value
   transition: all 0.3s ease;
 
-  // iOS Safari specific fixes
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  will-change: transform;
+  // iOS Safari specific fixes - NO transforms allowed
+  -webkit-backface-visibility: hidden !important;
+  backface-visibility: hidden !important;
+  -webkit-transform: none !important;
+  transform: none !important;
+  -webkit-perspective: none !important;
+  perspective: none !important;
+  will-change: auto !important;
+
+  // Additional iOS Safari fixes
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  contain: none !important;
+
+  // Force viewport-relative positioning
+  position: fixed !important;
+
+  // Fallback positioning using viewport units
+  bottom: calc(80px + 34px) !important; // Standard iOS safe area fallback
+  right: 16px !important;
 
   &.expanded {
-    right: 16px;
-    left: 16px;
-    bottom: 80px;
+    right: calc(16px + env(safe-area-inset-right, 0px));
+    left: calc(16px + env(safe-area-inset-left, 0px));
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+
+    // Fallback for expanded state
+    @supports not (bottom: env(safe-area-inset-bottom)) {
+      bottom: 100px;
+      right: 16px;
+      left: 16px;
+    }
   }
 
   &.complete {

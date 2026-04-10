@@ -68,3 +68,12 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# iOS
+ios/App/App.xcarchive/
+ios/App/archive.plist
+*.xcarchive
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+ios/App/Podfile.lock
+ios/App/Pods/
