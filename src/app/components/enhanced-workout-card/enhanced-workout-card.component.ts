@@ -229,6 +229,9 @@ export class EnhancedWorkoutCardComponent implements OnInit, OnDestroy {
   async saveWorkout(): Promise<void> {
     if (this.sessionData.completedSets.length === 0) return;
 
+    // Stop any active rest timer when workout is complete
+    this.restTimerService.stopTimer();
+
     const exerciseLog = {
       exerciseName: this.exercise.name,
       date: new Date().toISOString().split('T')[0],

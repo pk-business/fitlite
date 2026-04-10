@@ -1,53 +1,101 @@
-# Dual-Theme System Documentation
+# FitLite Theme System
 
-## Overview
+## How Themes Work
 
-FitLite now features a complete dual-theme color system with two carefully crafted palettes:
+FitLite uses a centralized theme system with CSS custom properties (variables) for consistent theming across light and dark modes.
 
-- **Blue Steel** (Default/Masculine) - Cool, professional tones
-- **Violet Pulse** (Feminine) - Warm, elegant tones
+### Architecture
 
-## Color Palettes
+1. **ThemeService** (`src/app/services/theme.service.ts`)
+   - Manages theme switching via `body.dark` class
+   - Saves user preference to local storage
+   - Falls back to system preference (`prefers-color-scheme`)
 
-### SET A — Blue Steel (Default Theme)
+2. **Centralized Theme Config** (`src/theme/theme-config.scss`)
+   - Single source of truth for all theme colors
+   - Defines both light and dark theme variables
+   - Imported in `src/global.scss` and `angular.json`
+
+3. **Theme Variables**
+   - `--theme-*` variables for semantic colors (recommended)
+   - `--ion-color-*` variables for Ionic component colors
+
+### Color Categories
+
+- **Semantic Colors**: `--theme-text-primary`, `--theme-text-secondary`, `--theme-card`, etc.
+- **Ionic Colors**: `--ion-color-primary`, `--ion-color-medium`, `--ion-color-dark`, etc.
+- **Status Colors**: `--theme-success`, `--theme-warning`, `--theme-danger`
+
+### Usage in Components
+
 ```scss
-Primary: #3A7AFE
-Primary Dark: #1E4FCC
-Primary Light: #E7F0FF
-Success: #4ADE80
-Warning: #FACC15
-Danger: #F87171
-Background: #F7F9FC
-Card: #FFFFFF
-Border: #E5E7EB
-Text Primary: #1F2937
-Text Secondary: #6B7280
+// ✅ Recommended: Use semantic theme variables
+.my-component {
+  color: var(--theme-text-primary);
+  background: var(--theme-card);
+  border: 1px solid var(--theme-border);
+}
+
+// ✅ For Ionic components: Use ionic color variables
+ion-button {
+  --color: var(--ion-color-primary);
+}
+
+// ❌ Avoid: Hard-coded colors
+.my-component {
+  color: #000000; // Don't do this
+}
 ```
 
-### SET B — Violet Pulse (Feminine Theme)
-```scss
-Primary: #A855F7
-Primary Dark: #7C2CCB
-Primary Light: #F3E8FF
-Success: #4ADE80
-Warning: #FACC15
-Danger: #F87171
-Background: #FAF7FF
-Card: #FFFFFF
-Border: #E9D5FF
-Text Primary: #2D1B3D
-Text Secondary: #7E5A9B
+### Maintenance
+
+**To change theme colors:**
+1. Edit `src/theme/theme-config.scss`
+2. Update both light (`:root, body`) and dark (`body.dark`) sections
+3. Ensure contrast ratios meet WCAG guidelines (4.5:1 minimum)
+4. Test in both light and dark modes
+
+**Current Contrast Ratios:**
+- Light mode secondary text: ~6.1:1 (good)
+- Dark mode secondary text: ~7.4:1 (good)
+- Primary text: >15:1 (excellent)
+
+### Theme Switching
+
+Themes are toggled via the ThemeService:
+```typescript
+// In components
+constructor(private themeService: ThemeService) {}
+
+toggleTheme() {
+  this.themeService.toggleTheme();
+}
+
+get currentTheme() {
+  return this.themeService.getCurrentTheme(); // 'light' | 'dark'
+}
 ```
 
-## Implementation
+### Files Structure
 
-### CSS Custom Properties
+```
+src/
+├── global.scss                    # Imports theme config
+├── theme/
+│   ├── theme-config.scss          # 🎯 CENTRAL THEME FILE
+│   ├── themes.scss                # Legacy (being phased out)
+│   └── variables.scss             # Legacy (being phased out)
+└── app/
+    └── services/
+        └── theme.service.ts       # Theme switching logic
+```
 
-All theme colors are exposed as CSS variables:
+### Migration Notes
 
-```scss
---theme-primary
---theme-primary-dark
+- **Old system**: Colors defined in `variables.scss` and `themes.scss`
+- **New system**: All colors centralized in `theme-config.scss`
+- Components using `--ion-color-medium`/`--ion-color-dark` now have proper dark mode variants
+- All theme variables are now properly defined for both light and dark modes
 --theme-primary-light
 --theme-success
 --theme-warning

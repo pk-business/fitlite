@@ -58,13 +58,12 @@ ion-list {
   }
 }
 
-// Theme selector action sheet styling
-ion-action-sheet {
-  .action-sheet-selected {
-    font-weight: 600;
-    
-    ion-icon {
-      color: var(--theme-primary) !important;
+ion-header {
+  ion-toolbar {
+    ion-buttons {
+      ion-back-button {
+        --color: var(--theme-text-primary);
+      }
     }
   }
 }

@@ -1,9 +1,81 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+/**
+ * CENTRALIZED THEME CONFIGURATION
+ * ===============================
+ *
+ * This file defines all theme colors and variables for easy maintenance.
+ * The theme system uses CSS custom properties (variables) for consistent theming.
+ *
+ * HOW THE THEME SYSTEM WORKS:
+ * ===========================
+ *
+ * 1. ThemeService (src/app/services/theme.service.ts)
+ *    - Manages theme switching via body.dark class
+ *    - Saves user preference to storage
+ *    - Falls back to system preference (prefers-color-scheme)
+ *
+ * 2. Theme Variables (this file)
+ *    - Defines --theme-* variables for semantic colors
+ *    - Defines --ion-color-* variables for Ionic components
+ *    - Light mode: :root, body
+ *    - Dark mode: body.dark
+ *
+ * 3. Component Usage
+ *    - Use --theme-* variables for semantic colors (recommended)
+ *    - Use --ion-color-* variables for Ionic component colors
+ *    - Avoid hard-coded colors in components
+ *
+ * COLOR NAMING CONVENTION:
+ * ========================
+ * --theme-text-primary: Main text color (high contrast)
+ * --theme-text-secondary: Secondary text (medium contrast)
+ * --theme-card: Card background
+ * --theme-background: Page background
+ * --theme-border: Border colors
+ * --theme-primary: Primary brand color
+ * --theme-success/warning/danger: Status colors
+ *
+ * MAINTENANCE:
+ * ============
+ * - Change colors here to update the entire app
+ * - Test contrast ratios (aim for 4.5:1 minimum for text)
+ * - Use the contrast calculator: https://webaim.org/resources/contrastchecker/
+ */
 
-/** Ionic CSS Variables **/
-:root {
-  /** Default Ionic Color Palette **/
+// ============================================
+// LIGHT THEME (Default)
+// ============================================
+:root,
+body {
+  // SEMANTIC THEME COLORS
+  --theme-primary: #3880ff;
+  --theme-primary-dark: #3171e0;
+  --theme-primary-light: #4c8dff;
+  --theme-primary-rgb: 56, 128, 255;
+
+  --theme-success: #2dd36f;
+  --theme-warning: #ffc409;
+  --theme-danger: #eb445a;
+
+  --theme-background: #f4f5f8;
+  --theme-card: #ffffff;
+  --theme-border: #d7d8da;
+
+  --theme-text-primary: #000000;
+  --theme-text-secondary: #5b6270; // Darker for better contrast
+
+  --theme-primary-contrast: #ffffff;
+  --theme-hover: rgba(56, 128, 255, 0.1);
+  --theme-active: rgba(56, 128, 255, 0.2);
+  --theme-shadow: rgba(0, 0, 0, 0.1);
+
+  // Component-specific
+  --theme-input-bg: #ffffff;
+  --theme-input-border: #d7d8da;
+  --theme-input-focus: var(--theme-primary);
+  --theme-timer-bg: #ffffff;
+  --theme-progress-ring: var(--theme-primary);
+
+  // IONIC COLOR OVERRIDES (for components using --ion-color-*)
   --ion-color-primary: #3880ff;
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #ffffff;
@@ -46,7 +118,14 @@
   --ion-color-danger-shade: #cf3c4f;
   --ion-color-danger-tint: #ed576b;
 
-  --ion-color-medium: #5b6270;
+  --ion-color-dark: #222428;
+  --ion-color-dark-rgb: 34, 36, 40;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #1e2023;
+  --ion-color-dark-tint: #383a3e;
+
+  --ion-color-medium: #5b6270; // Darker for better contrast
   --ion-color-medium-rgb: 91, 98, 112;
   --ion-color-medium-contrast: #ffffff;
   --ion-color-medium-contrast-rgb: 255, 255, 255;
@@ -61,8 +140,40 @@
   --ion-color-light-tint: #f5f6f9;
 }
 
-/** Dark mode - applied via body.dark class by ThemeService **/
+// ============================================
+// DARK THEME
+// ============================================
 body.dark {
+  // SEMANTIC THEME COLORS
+  --theme-primary: #4c8dff;
+  --theme-primary-dark: #3880ff;
+  --theme-primary-light: #5a98ff;
+  --theme-primary-rgb: 76, 141, 255;
+
+  --theme-success: #2fdf75;
+  --theme-warning: #ffd534;
+  --theme-danger: #ff4961;
+
+  --theme-background: #121212;
+  --theme-card: #1e1e1e;
+  --theme-border: #2a2a2a;
+
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #9ca3af; // Lighter for dark backgrounds
+
+  --theme-primary-contrast: #ffffff;
+  --theme-hover: rgba(76, 141, 255, 0.15);
+  --theme-active: rgba(76, 141, 255, 0.25);
+  --theme-shadow: rgba(0, 0, 0, 0.3);
+
+  // Component-specific
+  --theme-input-bg: #2a2a2a;
+  --theme-input-border: #3a3a3a;
+  --theme-input-focus: var(--theme-primary);
+  --theme-timer-bg: #1e1e1e;
+  --theme-progress-ring: var(--theme-primary);
+
+  // IONIC COLOR OVERRIDES (lighter versions for dark backgrounds)
   --ion-color-primary: #4c8dff;
   --ion-color-primary-rgb: 76, 141, 255;
   --ion-color-primary-contrast: #ffffff;
@@ -105,30 +216,30 @@ body.dark {
   --ion-color-danger-shade: #e03e54;
   --ion-color-danger-tint: #ff5b71;
 
-  --ion-color-dark: #f4f5f8;
+  --ion-color-dark: #f4f5f8; // Light color for dark backgrounds
   --ion-color-dark-rgb: 244, 245, 248;
   --ion-color-dark-contrast: #000000;
   --ion-color-dark-contrast-rgb: 0, 0, 0;
   --ion-color-dark-shade: #d7d8da;
   --ion-color-dark-tint: #f5f6f9;
 
-  --ion-color-medium: #9ca3af;
+  --ion-color-medium: #9ca3af; // Light gray for dark backgrounds
   --ion-color-medium-rgb: 156, 163, 175;
   --ion-color-medium-contrast: #ffffff;
   --ion-color-medium-contrast-rgb: 255, 255, 255;
   --ion-color-medium-shade: #888f9b;
   --ion-color-medium-tint: #a6abb7;
 
-  --ion-color-light: #2a2a2a;
+  --ion-color-light: #2a2a2a; // Dark color for dark backgrounds
   --ion-color-light-rgb: 42, 42, 42;
   --ion-color-light-contrast: #ffffff;
   --ion-color-light-contrast-rgb: 255, 255, 255;
   --ion-color-light-shade: #252525;
   --ion-color-light-tint: #404040;
 
+  // Ionic system colors
   --ion-background-color: #121212;
   --ion-background-color-rgb: 18, 18, 18;
-
   --ion-text-color: #ffffff;
   --ion-text-color-rgb: 255, 255, 255;
 
@@ -154,4 +265,18 @@ body.dark {
 
   --ion-item-background: #1e1e1e;
   --ion-card-background: #1e1e1e;
+}
+
+// ============================================
+// THEME TRANSITIONS
+// ============================================
+* {
+  transition: background-color 0.2s ease,
+              border-color 0.2s ease,
+              color 0.2s ease;
+}
+
+// Disable transitions for initial load
+.no-transition * {
+  transition: none !important;
 }

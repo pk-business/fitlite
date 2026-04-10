@@ -7,12 +7,13 @@ import { RestTimerState } from '../models';
  * Provides observable state for UI components to react to
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RestTimerService {
   private timerSubject = new BehaviorSubject<RestTimerState | null>(null);
-  public timer$: Observable<RestTimerState | null> = this.timerSubject.asObservable();
-  
+  public timer$: Observable<RestTimerState | null> =
+    this.timerSubject.asObservable();
+
   private timerSubscription?: Subscription;
   private audioContext?: AudioContext;
 
@@ -24,7 +25,11 @@ export class RestTimerService {
    * @param setNumber Set number that was just completed
    * @param durationSeconds Rest duration in seconds
    */
-  startTimer(exerciseName: string, setNumber: number, durationSeconds: number): void {
+  startTimer(
+    exerciseName: string,
+    setNumber: number,
+    durationSeconds: number,
+  ): void {
     // Stop any existing timer
     this.stopTimer();
 
@@ -34,7 +39,7 @@ export class RestTimerService {
       durationSeconds,
       remainingSeconds: durationSeconds,
       isActive: true,
-      isPaused: false
+      isPaused: false,
     };
 
     this.timerSubject.next(timerState);
@@ -51,7 +56,7 @@ export class RestTimerService {
       } else {
         this.timerSubject.next({
           ...current,
-          remainingSeconds: remaining
+          remainingSeconds: remaining,
         });
       }
     });
@@ -65,7 +70,7 @@ export class RestTimerService {
     if (current && current.isActive) {
       this.timerSubject.next({
         ...current,
-        isPaused: true
+        isPaused: true,
       });
     }
   }
@@ -78,7 +83,7 @@ export class RestTimerService {
     if (current && current.isActive && current.isPaused) {
       this.timerSubject.next({
         ...current,
-        isPaused: false
+        isPaused: false,
       });
     }
   }
@@ -105,7 +110,7 @@ export class RestTimerService {
       this.timerSubject.next({
         ...current,
         remainingSeconds: newRemaining,
-        durationSeconds: current.durationSeconds + seconds
+        durationSeconds: current.durationSeconds + seconds,
       });
 
       if (newRemaining === 0) {
@@ -144,7 +149,7 @@ export class RestTimerService {
   getProgress(): number {
     const timer = this.timerSubject.value;
     if (!timer) return 0;
-    
+
     const elapsed = timer.durationSeconds - timer.remainingSeconds;
     return (elapsed / timer.durationSeconds) * 100;
   }
@@ -160,8 +165,11 @@ export class RestTimerService {
     this.timerSubject.next({
       ...current,
       remainingSeconds: 0,
-      isActive: false
+      isActive: false,
     });
+
+    // Vibrate device (if supported)
+    this.vibrateOnComplete();
 
     // Play completion sound (soft beep)
     this.playCompletionSound();
@@ -178,7 +186,9 @@ export class RestTimerService {
   private playCompletionSound(): void {
     try {
       if (!this.audioContext) {
-        this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        this.audioContext = new (
+          window.AudioContext || (window as any).webkitAudioContext
+        )();
       }
 
       const oscillator = this.audioContext.createOscillator();
@@ -190,12 +200,30 @@ export class RestTimerService {
       // Soft, pleasant beep
       oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
       gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.01,
+        this.audioContext.currentTime + 0.3,
+      );
 
       oscillator.start(this.audioContext.currentTime);
       oscillator.stop(this.audioContext.currentTime + 0.3);
     } catch (error) {
       console.warn('Could not play completion sound:', error);
+    }
+  }
+
+  /**
+   * Vibrate device on timer completion
+   */
+  private vibrateOnComplete(): void {
+    try {
+      // Check if vibration is supported
+      if ('vibrate' in navigator) {
+        // Vibrate with pattern: short-long-short
+        navigator.vibrate([100, 100, 200, 100, 100]);
+      }
+    } catch (error) {
+      console.warn('Could not vibrate device:', error);
     }
   }
 

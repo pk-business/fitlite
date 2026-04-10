@@ -1,8 +1,15 @@
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 60vh;
+ion-header {
+  ion-toolbar {
+    ion-buttons {
+      ion-button {
+        --color: var(--theme-text-primary);
+        
+        ion-icon {
+          color: var(--theme-text-primary);
+        }
+      }
+    }
+  }
 }
 
 .empty-state {
