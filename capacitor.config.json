@@ -1,0 +1,13 @@
+{
+  "appId": "com.fitlite.app",
+  "appName": "FitLite",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true
+    }
+  }
+}
