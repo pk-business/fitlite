@@ -2,7 +2,7 @@
 
 A simple, lightweight iPhone workout app built with **Angular**, **Ionic**, and **Capacitor**. FitLite provides personalized workout and diet plans based on your fitness goals, with local storage and daily reminders.
 
-## 🎯 Features
+## 🎯 App Features
 
 - **User Profile Management**: Collect and store user physical info (age, height, weight, gender, goal, activity level)
 - **Rule-Based Workout Plans**: Generate personalized workout plans based on activity level and goals
