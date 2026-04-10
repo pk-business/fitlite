@@ -1,0 +1,130 @@
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}
+
+.schedule-container {
+  padding: 10px;
+  margin: 0 auto;
+}
+
+.permission-card {
+  background: var(--ion-color-light);
+  margin-bottom: 24px;
+
+  .permission-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .permission-info {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex: 1;
+
+      ion-icon {
+        font-size: 32px;
+      }
+
+      h3 {
+        margin: 0 0 4px 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--ion-color-dark);
+      }
+
+      p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--ion-color-medium);
+      }
+    }
+  }
+}
+
+ion-list {
+  margin-bottom: 24px;
+
+  ion-list-header {
+    padding: 0 4px 8px 4px;
+
+    ion-label {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ion-color-medium);
+    }
+  }
+
+  ion-item {
+    --padding-start: 16px;
+
+    ion-icon[slot="start"] {
+      font-size: 24px;
+      margin-right: 16px;
+    }
+
+    ion-label {
+      h2 {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 4px;
+        color: var(--ion-color-dark);
+      }
+
+      p {
+        font-size: 14px;
+        color: var(--ion-color-medium);
+      }
+    }
+  }
+}
+
+.meal-times {
+  background: var(--ion-color-light);
+  border-radius: 8px;
+  padding: 8px 16px;
+  margin: -8px 16px 16px 16px;
+
+  ion-item {
+    --background: transparent;
+    --padding-start: 0;
+    --inner-padding-end: 0;
+
+    .meal-time-label p {
+      font-size: 13px;
+      color: var(--ion-color-dark);
+      margin: 4px 0;
+    }
+  }
+}
+
+.info-card {
+  background: var(--ion-color-light);
+  margin-top: 24px;
+
+  ion-card-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+
+    ion-icon {
+      font-size: 24px;
+      color: var(--ion-color-primary);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--ion-color-medium);
+      line-height: 1.5;
+    }
+  }
+}

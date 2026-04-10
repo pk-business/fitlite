@@ -1,0 +1,243 @@
+.log-container {
+  padding: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.info-card {
+  margin-bottom: 1rem;
+
+  .exercise-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2 {
+      margin: 0 0 0.25rem 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+
+    p {
+      margin: 0 0 0.5rem 0;
+      font-size: 0.9rem;
+      color: var(--ion-color-medium);
+    }
+
+    .previous-workout {
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background: var(--ion-color-light);
+      border-radius: 6px;
+
+      ion-label {
+        display: block;
+        font-size: 0.85rem;
+        
+        ion-icon {
+          vertical-align: middle;
+          margin-right: 0.25rem;
+        }
+      }
+
+      .previous-details {
+        margin-top: 0.25rem;
+        font-weight: 500;
+
+        .set-info {
+          white-space: nowrap;
+        }
+
+        .separator {
+          margin: 0 0.5rem;
+          color: var(--ion-color-medium);
+        }
+      }
+    }
+  }
+}
+
+.progress-section {
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--ion-color-medium);
+
+    .percentage {
+      font-weight: 600;
+      color: var(--ion-color-success);
+    }
+  }
+}
+
+.sets-section {
+  margin-bottom: 1.5rem;
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+
+    h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+  }
+}
+
+.set-card {
+  margin-bottom: 0.75rem;
+  transition: all 0.3s ease;
+
+  &.completed {
+    background: var(--ion-color-success-tint);
+  }
+
+  ion-card-content {
+    padding: 1rem;
+  }
+
+  .set-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    .set-number {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      span {
+        font-weight: 600;
+        color: var(--ion-color-dark);
+      }
+    }
+  }
+
+  .set-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    .input-group {
+      ion-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+        color: var(--ion-color-medium);
+        font-weight: 500;
+      }
+
+      .input-wrapper {
+        position: relative;
+
+        ion-input {
+          --padding-end: 2.5rem;
+        }
+
+        .unit {
+          position: absolute;
+          right: 0.75rem;
+          top: 50%;
+          transform: translateY(-50%);
+          color: var(--ion-color-medium);
+          font-size: 0.85rem;
+          pointer-events: none;
+        }
+      }
+
+      ion-input {
+        --background: var(--ion-color-light);
+        --padding-start: 0.75rem;
+        --padding-end: 0.75rem;
+        border-radius: 8px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .set-volume {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--ion-color-light);
+    font-size: 0.85rem;
+    color: var(--ion-color-medium);
+    text-align: right;
+  }
+}
+
+.notes-section {
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
+
+  h3 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+
+  ion-textarea {
+    --background: var(--ion-color-light);
+    --padding-start: 0.75rem;
+    --padding-top: 0.75rem;
+    border-radius: 8px;
+  }
+}
+
+.summary-card {
+  background: var(--ion-color-light);
+
+  .summary-stats {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.5rem;
+
+      ion-icon {
+        font-size: 1.5rem;
+        color: var(--ion-color-primary);
+      }
+
+      div {
+        display: flex;
+        flex-direction: column;
+
+        strong {
+          font-size: 1.2rem;
+          color: var(--ion-color-dark);
+        }
+
+        span {
+          font-size: 0.75rem;
+          color: var(--ion-color-medium);
+        }
+      }
+    }
+  }
+}
+
+ion-footer {
+  ion-toolbar {
+    --background: var(--ion-color-light);
+    padding: 0.5rem;
+  }
+}

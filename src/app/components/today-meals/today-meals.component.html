@@ -1,0 +1,59 @@
+<div class="today-meals-container">
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading">
+      <ion-spinner name="dots"></ion-spinner>
+    </div>
+  }
+
+  <!-- Meals Content -->
+  @if (!isLoading && todaysMeals) {
+    <div class="meals-content">
+      <!-- Daily Summary Card -->
+      <ion-card class="summary-card">
+        <ion-card-content>
+          <div class="daily-summary">
+            <div class="summary-title">
+              <h2>Daily Nutrition</h2>
+              <span class="total-calories">{{ totalCalories }} cal</span>
+            </div>
+            <div class="macro-summary">
+              <div class="macro-item">
+                <span class="macro-value">{{ totalProtein }}g</span>
+                <span class="macro-label">Protein</span>
+              </div>
+              <div class="macro-item">
+                <span class="macro-value">{{ totalCarbs }}g</span>
+                <span class="macro-label">Carbs</span>
+              </div>
+              <div class="macro-item">
+                <span class="macro-value">{{ totalFat }}g</span>
+                <span class="macro-label">Fat</span>
+              </div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+      <!-- Individual Meals -->
+      <div class="meals-list">
+        @for (meal of todaysMeals.meals; track meal) {
+          <app-meal-card
+            [meal]="meal"
+            [showIcon]="true"
+            [compact]="false">
+          </app-meal-card>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- No Meals State -->
+  @if (!isLoading && !todaysMeals) {
+    <ion-card class="empty-card">
+      <ion-card-content>
+        <ion-icon name="restaurant-outline" class="empty-icon"></ion-icon>
+        <p>No meal plan available</p>
+      </ion-card-content>
+    </ion-card>
+  }
+</div>

@@ -1,0 +1,109 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditMode ? 'Edit Profile' : 'Create Profile' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="profile-container">
+    <div class="intro-section">
+      <ion-icon name="person-circle-outline" class="profile-icon"></ion-icon>
+      <h2>Tell us about yourself</h2>
+      <p>We'll create a personalized workout and diet plan just for you</p>
+    </div>
+
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      <!-- Name -->
+      <ion-item>
+        <ion-label position="stacked">Name (Optional)</ion-label>
+        <ion-input 
+          type="text" 
+          formControlName="name"
+          placeholder="Enter your name">
+        </ion-input>
+      </ion-item>
+
+      <!-- Age -->
+      <ion-item>
+        <ion-label position="stacked">Age</ion-label>
+        <ion-input 
+          type="number" 
+          formControlName="age"
+          placeholder="Enter your age">
+        </ion-input>
+      </ion-item>
+
+      <!-- Height -->
+      <ion-item>
+        <ion-label position="stacked">Height (cm)</ion-label>
+        <ion-input 
+          type="number" 
+          formControlName="heightCm"
+          placeholder="Enter your height">
+        </ion-input>
+      </ion-item>
+
+      <!-- Weight -->
+      <ion-item>
+        <ion-label position="stacked">Weight (kg)</ion-label>
+        <ion-input 
+          type="number" 
+          formControlName="weightKg"
+          placeholder="Enter your weight">
+        </ion-input>
+      </ion-item>
+
+      <!-- BMI Preview -->
+      <ion-item lines="none" class="bmi-preview">
+        <ion-label>
+          <h3>Your BMI: <strong>{{ bmiPreview }}</strong></h3>
+        </ion-label>
+      </ion-item>
+
+      <!-- Gender -->
+      <ion-item>
+        <ion-label position="stacked">Gender</ion-label>
+        <ion-select formControlName="gender" interface="action-sheet">
+          <ion-select-option value="male">Male</ion-select-option>
+          <ion-select-option value="female">Female</ion-select-option>
+          <ion-select-option value="other">Other</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Goal -->
+      <ion-item>
+        <ion-label position="stacked">Fitness Goal</ion-label>
+        <ion-select formControlName="goal" interface="action-sheet">
+          <ion-select-option value="lose">Lose Weight</ion-select-option>
+          <ion-select-option value="maintain">Maintain Weight</ion-select-option>
+          <ion-select-option value="gain">Gain Muscle</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Activity Level -->
+      <ion-item>
+        <ion-label position="stacked">Activity Level</ion-label>
+        <ion-select formControlName="activityLevel" interface="action-sheet">
+          <ion-select-option value="low">Low (3 days/week)</ion-select-option>
+          <ion-select-option value="medium">Medium (4 days/week)</ion-select-option>
+          <ion-select-option value="high">High (5-6 days/week)</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Submit Button -->
+      <div class="button-container">
+        <ion-button 
+          expand="block" 
+          type="submit"
+          [disabled]="profileForm.invalid">
+          {{ isEditMode ? 'Update Profile' : 'Generate My Plan' }}
+        </ion-button>
+      </div>
+    </form>
+  </div>
+</ion-content>

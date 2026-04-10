@@ -1,0 +1,95 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Select Exercise</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  
+  <!-- Search Bar -->
+  <ion-toolbar>
+    <ion-searchbar
+      [(ngModel)]="searchTerm"
+      (ionInput)="onSearchChange()"
+      placeholder="Search exercises..."
+      animated
+    ></ion-searchbar>
+  </ion-toolbar>
+
+  <!-- Tabs -->
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="selectedTab" (ionChange)="filterExercises()">
+      <ion-segment-button value="custom">
+        <ion-label>
+          My Exercises
+          <ion-badge color="primary">{{ filteredCustomExercises.length }}</ion-badge>
+        </ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="default">
+        <ion-label>
+          Templates
+          <ion-badge color="secondary">{{ filteredDefaultExercises.length }}</ion-badge>
+        </ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Custom Exercises Tab -->
+  @if (selectedTab === 'custom') {
+    <div class="exercises-list">
+      @if (filteredCustomExercises.length === 0) {
+        <div class="empty-state">
+          <ion-icon name="barbell-outline" class="empty-icon"></ion-icon>
+          <p>No custom exercises found</p>
+          <p class="hint">Go to Exercise Library to create custom exercises</p>
+        </div>
+      }
+
+      @for (exercise of filteredCustomExercises; track exercise.id) {
+        <ion-item button (click)="selectExercise(exercise)" detail>
+          <ion-icon slot="start" name="barbell-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h3>{{ exercise.name }}</h3>
+            <p>{{ exercise.sets }} × {{ exercise.reps }} • {{ exercise.restSeconds }}s rest</p>
+          </ion-label>
+          <ion-badge slot="end" color="primary">Custom</ion-badge>
+        </ion-item>
+      }
+    </div>
+  }
+
+  <!-- Default Exercises Tab -->
+  @if (selectedTab === 'default') {
+    <div class="exercises-list">
+      @if (filteredDefaultExercises.length === 0) {
+        <div class="empty-state">
+          <ion-icon name="search-outline" class="empty-icon"></ion-icon>
+          <p>No exercises found</p>
+        </div>
+      }
+
+      @for (exercise of filteredDefaultExercises; track exercise.name) {
+        <ion-item button (click)="selectExercise(exercise)" detail>
+          <ion-icon slot="start" name="fitness-outline" color="secondary"></ion-icon>
+          <ion-label>
+            <h3>{{ exercise.name }}</h3>
+            <p>{{ exercise.sets }} × {{ exercise.reps }} • {{ exercise.restSeconds }}s rest</p>
+          </ion-label>
+        </ion-item>
+      }
+    </div>
+  }
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="block" fill="outline" (click)="createQuickExercise()">
+      <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+      Create New Exercise
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

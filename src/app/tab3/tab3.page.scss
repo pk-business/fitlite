@@ -1,0 +1,191 @@
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  min-height: 60vh;
+
+  .empty-icon {
+    font-size: 80px;
+    color: var(--ion-color-medium);
+    margin-bottom: 24px;
+  }
+
+  h2 {
+    margin: 0 0 12px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+
+  p {
+    margin: 0 0 32px 0;
+    font-size: 16px;
+    color: var(--ion-color-medium);
+    max-width: 320px;
+  }
+
+  ion-button {
+    width: 200px;
+  }
+}
+
+.diet-plan-container {
+  padding: 10px;
+  margin: 0 auto;
+}
+
+.intro-section {
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 10px;
+
+  h2 {
+    margin: 0 0 8px 0;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+    color: var(--ion-color-medium);
+  }
+}
+
+.diet-day-card {
+  margin-bottom: 20px;
+
+  &.today {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    ion-card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    ion-card-subtitle {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ion-color-secondary);
+    }
+
+    ion-chip {
+      height: 28px;
+      font-weight: 600;
+    }
+  }
+
+  .macros-row {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--ion-color-light);
+
+    .macro-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+
+      .macro-label {
+        font-size: 11px;
+        color: var(--ion-color-medium);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+      }
+
+      .macro-value {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--ion-color-secondary);
+      }
+    }
+  }
+
+  .meals-list {
+    padding: 0;
+  }
+
+  .meal-item {
+    padding: 12px 0;
+    --padding-start: 0;
+    --inner-padding-end: 0;
+
+    ion-icon {
+      color: var(--ion-color-secondary);
+      font-size: 24px;
+      margin-right: 12px;
+    }
+
+    ion-label h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: var(--ion-color-dark);
+    }
+
+    ion-label p {
+      font-size: 13px;
+      color: var(--ion-color-medium);
+      line-height: 1.4;
+    }
+  }
+}
+
+.tips-card {
+  background: var(--ion-color-light);
+  margin-top: 24px;
+
+  ion-card-header {
+    ion-card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+
+      ion-icon {
+        color: var(--ion-color-warning);
+        font-size: 24px;
+      }
+    }
+  }
+
+  ion-card-content {
+    ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--ion-color-medium);
+
+      li {
+        margin-bottom: 8px;
+        font-size: 14px;
+        line-height: 1.5;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}

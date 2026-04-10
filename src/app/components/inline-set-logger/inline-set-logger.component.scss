@@ -1,0 +1,225 @@
+.set-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--theme-background);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  position: relative;
+  transition: transform 0.2s ease-out, background 0.2s ease-out, opacity 0.2s ease-out;
+  min-height: 60px;
+  touch-action: pan-y; // Allow vertical scrolling but handle horizontal swipes
+
+  &.complete {
+    background: rgba(16, 185, 129, 0.1);
+    
+    .set-number {
+      background: var(--ion-color-success);
+      color: white;
+    }
+
+    .input-group ion-input {
+      color: var(--ion-color-medium);
+    }
+  }
+
+  &.swiping {
+    transition: none; // Disable transition during swipe for immediate feedback
+  }
+
+  // Swipe indicator icons
+  .swipe-icon {
+    position: absolute;
+    font-size: 32px;
+    opacity: 0.8;
+    z-index: 0;
+
+    &.swipe-icon-left {
+      left: 16px;
+      color: var(--theme-success);
+    }
+
+    &.swipe-icon-right {
+      right: 16px;
+      color: var(--theme-danger);
+    }
+  }
+
+  // Set number badge
+  .set-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--theme-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    flex-shrink: 0;
+    z-index: 1;
+    transition: background 0.2s ease;
+  }
+
+  // Previous set indicator
+  .previous-indicator {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--theme-primary);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    z-index: 2;
+    opacity: 0.9;
+
+    .previous-text {
+      display: block;
+    }
+  }
+
+  // Input groups
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1.2;
+    z-index: 1;
+
+    ion-input {
+      --background: transparent;
+      --padding-start: 2px;
+      --padding-end: 2px;
+      --color: var(--theme-text-primary);
+      font-size: 20px;
+      font-weight: 600;
+      text-align: center;
+      border-radius: 8px;
+      height: 32px;
+      min-height: 32px;
+      border: 2px solid var(--theme-input-border);
+      transition: border-color 0.2s ease;
+
+      &:focus-within {
+        border-color: var(--theme-input-focus);
+      }
+
+      &::part(native) {
+        text-align: center;
+      }
+    }
+
+    .input-label {
+      font-size: 13px;
+      color: var(--theme-text-secondary);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  // Multiply symbol
+  .multiply-symbol {
+    font-size: 20px;
+    color: var(--theme-text-secondary);
+    font-weight: 600;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  // Action buttons
+  .action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    z-index: 1;
+    transition: opacity 0.2s ease;
+
+    &.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    ion-button {
+      margin: 0;
+      height: 44px;
+      width: 44px;
+      --padding-start: 0;
+      --padding-end: 0;
+
+      ion-icon {
+        font-size: 28px;
+      }
+    }
+
+    .complete-btn {
+      --ripple-color: var(--theme-success);
+      
+      &:active {
+        animation: bounce 0.3s ease;
+      }
+    }
+
+    .delete-btn {
+      --ripple-color: var(--theme-danger);
+    }
+
+    .completed-icon {
+      font-size: 32px;
+      animation: bounceIn 0.5s ease;
+    }
+  }
+}
+
+// Animations
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 360px) {
+  .set-row {
+    gap: 8px;
+    padding: 2px 12px;
+
+    .input-group ion-input {
+      font-size: 16px;
+    }
+
+    .set-number {
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+    }
+  }
+}

@@ -1,0 +1,157 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Settings</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="settings-container">
+    <!-- Profile Section -->
+    @if (userProfile) {
+      <ion-list>
+        <ion-list-header>
+          <ion-label>Profile</ion-label>
+        </ion-list-header>
+        <ion-item>
+          <ion-icon name="person-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h2>{{ userProfile.age }} years old, {{ userProfile.gender }}</h2>
+            <p>{{ userProfile.heightCm }} cm, {{ userProfile.weightKg }} kg • BMI: {{ userBMI }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="flag-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h2>Goal: {{ userProfile.goal | titlecase }} Weight</h2>
+            <p>Activity Level: {{ userProfile.activityLevel | titlecase }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="flame-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h2>Target Calories</h2>
+            <p>{{ targetCalories }} cal/day</p>
+          </ion-label>
+        </ion-item>
+        <ion-item button (click)="editProfile()">
+          <ion-icon name="create-outline" slot="start" color="secondary"></ion-icon>
+          <ion-label>Edit Profile</ion-label>
+          <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+        </ion-item>
+      </ion-list>
+    }
+
+    <!-- Reminders Section -->
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Reminders</ion-label>
+      </ion-list-header>
+
+      <ion-item button (click)="manageReminders()">
+        <ion-icon name="notifications-outline" slot="start" color="secondary"></ion-icon>
+        <ion-label>
+          <h2>Manage Reminders</h2>
+          <p>Set workout and meal reminders</p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+      </ion-item>
+    </ion-list>
+
+    <!-- Exercise Library Section -->
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Workouts</ion-label>
+      </ion-list-header>
+
+      <ion-item button routerLink="/exercises">
+        <ion-icon name="barbell-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>
+          <h2>Exercise Library</h2>
+          <p>Create and manage custom exercises</p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+      </ion-item>
+    </ion-list>
+
+    <!-- Preferences Section -->
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Preferences</ion-label>
+      </ion-list-header>
+
+      <!-- Theme Selection -->
+      <ion-item>
+        <ion-icon name="color-palette-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>
+          <h2>App Theme</h2>
+          <p>{{ currentThemeName }}</p>
+        </ion-label>
+        <ion-button fill="clear" slot="end" (click)="openThemeSelector()">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon name="scale-outline" slot="start" color="tertiary"></ion-icon>
+        <ion-label>
+          <h2>Metric Units</h2>
+          <p>Use kg and cm (default: lbs and inches)</p>
+        </ion-label>
+        <ion-toggle
+          slot="end"
+          [checked]="settings?.useMetricUnits === true"
+          (ionChange)="toggleUnits($event)">
+        </ion-toggle>
+      </ion-item>
+    </ion-list>
+
+    <!-- Data Section -->
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Data</ion-label>
+      </ion-list-header>
+
+      <ion-item button (click)="exportData()">
+        <ion-icon name="download-outline" slot="start" color="success"></ion-icon>
+        <ion-label>
+          <h2>Export Data</h2>
+          <p>Backup your data</p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+      </ion-item>
+
+      <ion-item button (click)="resetAllData()">
+        <ion-icon name="trash-outline" slot="start" color="danger"></ion-icon>
+        <ion-label>
+          <h2>Reset All Data</h2>
+          <p>Delete all your data and start over</p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+      </ion-item>
+    </ion-list>
+
+    <!-- About Section -->
+    <ion-list>
+      <ion-list-header>
+        <ion-label>About</ion-label>
+      </ion-list-header>
+
+      <ion-item button (click)="showAbout()">
+        <ion-icon name="information-circle-outline" slot="start" color="medium"></ion-icon>
+        <ion-label>
+          <h2>About FitLite</h2>
+          <p>Version {{ appVersion }}</p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+      </ion-item>
+    </ion-list>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Made with 💪 for your fitness journey</p>
+    </div>
+  </div>
+</ion-content>

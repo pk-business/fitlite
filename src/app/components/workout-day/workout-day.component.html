@@ -1,0 +1,54 @@
+<ion-card class="workout-day-card" [class.today]="isToday">
+  <ion-card-header>
+    <div class="day-header">
+      <div class="day-info">
+        <ion-badge [color]="focusColor">
+          <ion-icon [name]="focusIcon"></ion-icon>
+        </ion-badge>
+        <div>
+          @if (showDayName) {
+            <ion-card-title>{{ displayDayName }}</ion-card-title>
+          }
+          <ion-card-subtitle>{{ workoutDay.focus | titlecase }} Workout</ion-card-subtitle>
+        </div>
+      </div>
+      @if (isToday) {
+        <ion-chip color="success">
+          <ion-label>Today</ion-label>
+        </ion-chip>
+      }
+    </div>
+  </ion-card-header>
+
+  <ion-card-content>
+    <ion-list lines="none">
+      @for (exercise of workoutDay.exercises; track exercise; let i = $index) {
+        <ion-item class="exercise-item">
+          <div class="exercise-number" slot="start">{{ i + 1 }}</div>
+          <ion-label>
+            <h3>{{ exercise.name }}</h3>
+            <p>{{ exercise.sets }} sets × {{ exercise.reps }} reps • {{ exercise.restSeconds }}s rest</p>
+            @if (getPreviousLog(exercise.name)) {
+              <p class="previous-log">
+                <ion-icon name="time-outline"></ion-icon>
+                {{ getPreviousLog(exercise.name) }}
+              </p>
+            }
+          </ion-label>
+          <ion-button 
+            slot="end" 
+            fill="clear" 
+            size="small" 
+            (click)="openLogModal(exercise)"
+            [color]="isExerciseLogged(exercise.name) ? 'success' : 'medium'"
+          >
+            <ion-icon 
+              slot="icon-only" 
+              [name]="isExerciseLogged(exercise.name) ? 'create' : 'create-outline'"
+            ></ion-icon>
+          </ion-button>
+        </ion-item>
+      }
+    </ion-list>
+  </ion-card-content>
+</ion-card>

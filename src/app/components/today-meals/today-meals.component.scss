@@ -1,0 +1,92 @@
+.today-meals-container {
+  width: 100%;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.meals-content {
+  width: 100%;
+}
+
+.summary-card {
+  background: linear-gradient(135deg, var(--ion-color-secondary) 0%, var(--ion-color-secondary-shade) 100%);
+  color: white;
+  margin-bottom: 16px;
+
+  .daily-summary {
+    .summary-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+
+      h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      .total-calories {
+        font-size: 24px;
+        font-weight: 700;
+      }
+    }
+
+    .macro-summary {
+      display: flex;
+      gap: 24px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+
+      .macro-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .macro-value {
+          font-size: 20px;
+          font-weight: 700;
+        }
+
+        .macro-label {
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-top: 4px;
+          opacity: 0.9;
+        }
+      }
+    }
+  }
+}
+
+.meals-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.empty-card {
+  text-align: center;
+  background: var(--ion-color-light);
+
+  ion-card-content {
+    padding: 32px 16px;
+
+    .empty-icon {
+      font-size: 64px;
+      color: var(--ion-color-medium);
+      margin-bottom: 12px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--ion-color-medium);
+    }
+  }
+}

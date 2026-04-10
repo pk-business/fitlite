@@ -1,0 +1,167 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/schedule"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Edit {{ dayName }} Workout</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="deleteWorkout()">
+        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  }
+
+  @if (!isLoading && workoutDay) {
+    <div class="builder-container">
+      <!-- Focus Selection -->
+      <ion-card class="focus-card">
+        <ion-card-header>
+          <ion-card-subtitle>Workout Type</ion-card-subtitle>
+          <ion-card-title>
+            <ion-icon [name]="getFocusIcon(workoutDay.focus)"></ion-icon>
+            {{ getFocusLabel(workoutDay.focus) }}
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="focus-buttons">
+            @for (option of focusOptions; track option.value) {
+              <ion-button
+                [fill]="workoutDay.focus === option.value ? 'solid' : 'outline'"
+                size="small"
+                (click)="changeFocus(option.value)"
+              >
+                <ion-icon slot="start" [name]="option.icon"></ion-icon>
+                {{ option.label }}
+              </ion-button>
+            }
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Exercises List -->
+      <div class="exercises-section">
+        <div class="section-header">
+          <h2>
+            <ion-icon name="list-outline"></ion-icon>
+            Exercises
+            <ion-badge color="primary">{{ workoutDay.exercises.length }}</ion-badge>
+          </h2>
+          <ion-button size="small" (click)="addExercise()">
+            <ion-icon slot="start" name="add"></ion-icon>
+            Add Exercise
+          </ion-button>
+        </div>
+
+        @if (workoutDay.exercises.length === 0) {
+          <div class="empty-state">
+            <ion-icon name="barbell-outline" class="empty-icon"></ion-icon>
+            <p>No exercises yet</p>
+            <ion-button (click)="addExercise()">
+              <ion-icon slot="start" name="add"></ion-icon>
+              Add Your First Exercise
+            </ion-button>
+          </div>
+        }
+
+        @for (exercise of workoutDay.exercises; track $index; let i = $index) {
+          <ion-card class="exercise-card">
+            <ion-card-content>
+              <div class="exercise-header">
+                <div class="exercise-order">
+                  <span class="order-number">{{ i + 1 }}</span>
+                </div>
+                <div class="exercise-info">
+                  <h3>{{ exercise.name }}</h3>
+                  <div class="exercise-details">
+                    <span class="detail-badge">
+                      <ion-icon name="repeat-outline"></ion-icon>
+                      {{ exercise.sets }} × {{ exercise.reps }}
+                    </span>
+                    <span class="detail-badge">
+                      <ion-icon name="timer-outline"></ion-icon>
+                      {{ exercise.restSeconds }}s
+                    </span>
+                  </div>
+                  @if (getPreviousLog(exercise.name)) {
+                    <div class="previous-log">
+                      <ion-icon name="time-outline"></ion-icon>
+                      {{ getPreviousLog(exercise.name) }}
+                    </div>
+                  }
+                </div>
+                <div class="exercise-actions">
+                  <!-- Move buttons -->
+                  <div class="move-buttons">
+                    <ion-button 
+                      fill="clear" 
+                      size="small" 
+                      (click)="moveUp(i)"
+                      [disabled]="i === 0"
+                    >
+                      <ion-icon slot="icon-only" name="chevron-up-outline"></ion-icon>
+                    </ion-button>
+                    <ion-button 
+                      fill="clear" 
+                      size="small" 
+                      (click)="moveDown(i)"
+                      [disabled]="i === workoutDay.exercises.length - 1"
+                    >
+                      <ion-icon slot="icon-only" name="chevron-down-outline"></ion-icon>
+                    </ion-button>
+                  </div>
+                  <!-- Action buttons -->
+                  <ion-button 
+                    fill="clear" 
+                    size="small" 
+                    (click)="openLogModal(exercise)"
+                    [color]="isExerciseLogged(exercise.name) ? 'success' : 'medium'"
+                  >
+                    <ion-icon 
+                      slot="icon-only" 
+                      [name]="isExerciseLogged(exercise.name) ? 'create' : 'create-outline'"
+                    ></ion-icon>
+                  </ion-button>
+                  <ion-button fill="clear" size="small" (click)="editExercise(i)">
+                    <ion-icon slot="icon-only" name="pencil-outline"></ion-icon>
+                  </ion-button>
+                  <ion-button fill="clear" size="small" color="danger" (click)="removeExercise(i)">
+                    <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                  </ion-button>
+                </div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        }
+      </div>
+
+      <!-- Summary -->
+      @if (workoutDay.exercises.length > 0) {
+        <ion-card class="summary-card">
+          <ion-card-content>
+            <div class="summary-item">
+              <ion-icon name="barbell-outline"></ion-icon>
+              <span><strong>{{ workoutDay.exercises.length }}</strong> exercises</span>
+            </div>
+            <div class="summary-item">
+              <ion-icon name="repeat-outline"></ion-icon>
+              <span><strong>{{ getTotalSets() }}</strong> total sets</span>
+            </div>
+            <div class="summary-item">
+              <ion-icon name="timer-outline"></ion-icon>
+              <span><strong>~{{ getEstimatedTime() }}</strong> minutes</span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      }
+    </div>
+  }
+</ion-content>

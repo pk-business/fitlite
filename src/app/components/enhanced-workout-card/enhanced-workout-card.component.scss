@@ -1,0 +1,267 @@
+.enhanced-workout-card {
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+  overflow: visible; // Allow timer to float outside
+  background: var(--theme-card);
+  color: var(--theme-text-primary);
+
+  // Ensure all text elements use proper theme colors
+  h1, h2, h3, h4, h5, h6, p, span, ion-label, ion-text {
+    color: var(--theme-text-primary);
+  }
+
+  ion-badge {
+    color: #ffffff;
+  }
+
+  ion-chip {
+    ion-label {
+      color: var(--theme-text-primary);
+    }
+  }
+
+  // Secondary text
+  .sets-info, .rest-info {
+    color: var(--theme-text-secondary) !important;
+  }
+
+  &.in-progress {
+    box-shadow: 0 2px 8px var(--theme-shadow);
+  }
+
+  &.complete {
+    box-shadow: 0 4px 12px rgba(74, 222, 128, 0.2);
+    
+    .card-header {
+      background: rgba(74, 222, 128, 0.05);
+    }
+  }
+
+  &.expanded {
+    box-shadow: 0 6px 20px var(--theme-shadow);
+  }
+
+  // Card Header (Clickable)
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s ease;
+
+    &:active {
+      background: var(--theme-hover);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0; // Allow text truncation
+
+      .exercise-badge {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+
+        ion-badge {
+          font-weight: 700;
+          font-size: 16px;
+          padding: 6px 10px;
+          border-radius: 8px;
+        }
+
+        .muscle-icon {
+          font-size: 24px;
+          color: var(--ion-color-medium);
+        }
+      }
+
+      .exercise-info {
+        flex: 1;
+        min-width: 0;
+
+        h3 {
+          margin: 0 0 4px 0;
+          font-size: 19px;
+          font-weight: 600;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .sets-info {
+          margin: 0;
+          font-size: 15px;
+          color: var(--theme-text-secondary);
+          font-weight: 500;
+
+          .rest-info {
+            color: var(--theme-text-secondary);
+          }
+        }
+
+        .last-performance {
+          margin: 4px 0 0 0;
+          font-size: 14px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+
+          ion-icon {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+
+      .progress-ring-mini {
+        width: 36px;
+        height: 36px;
+
+        svg {
+          width: 100%;
+          height: 100%;
+          transform: rotate(-90deg);
+        }
+      }
+
+      .expand-icon {
+        font-size: 24px;
+        color: var(--ion-color-medium);
+        transition: transform 0.3s ease;
+      }
+    }
+  }
+
+  // Mini Graph (Collapsed State)
+  .mini-graph-container {
+    padding: 0 16px 12px;
+  }
+
+  // Expanded Content
+  .expanded-content {
+    overflow: hidden;
+
+    ion-card-content {
+      padding: 16px;
+      padding-top: 0;
+    }
+
+    .graph-container {
+      margin-bottom: 20px;
+    }
+
+    .sets-container {
+      .sets-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+
+        h4 {
+          margin: 0;
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--theme-text-primary);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        ion-chip {
+          height: 24px;
+          font-size: 12px;
+          font-weight: 600;
+        }
+      }
+
+      .add-set-btn {
+        margin-top: 12px;
+        --border-color: var(--theme-primary);
+        --color: var(--theme-primary);
+        font-weight: 600;
+
+        &:hover {
+          --background: var(--theme-hover);
+        }
+      }
+    }
+
+    .quick-actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 12px;
+
+      ion-button {
+        flex: 1;
+        margin: 0;
+        font-weight: 600;
+        --padding-top: 12px;
+        --padding-bottom: 12px;
+      }
+    }
+  }
+}
+
+// Animations when complete
+.enhanced-workout-card.complete {
+  animation: completeGlow 2s ease-in-out;
+}
+
+@keyframes completeGlow {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 360px) {
+  .enhanced-workout-card {
+    .card-header {
+      padding: 12px;
+
+      .header-left {
+        gap: 10px;
+
+        .exercise-info h3 {
+          font-size: 16px;
+        }
+
+        .exercise-info .sets-info {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+
+// Accessibility - larger tap targets
+@media (pointer: coarse) {
+  .enhanced-workout-card .card-header {
+    min-height: 80px;
+  }
+}
+
+// Dark mode specific styles
+body.dark {
+  .enhanced-workout-card {
+    ion-card-content {
+      background: rgba(0, 0, 0, 0.2); // Darker background in dark mode
+    }
+  }
+}

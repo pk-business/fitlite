@@ -1,0 +1,110 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Reminders</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/exercises">
+        <ion-icon slot="icon-only" name="barbell-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  }
+
+  @if (!isLoading) {
+    <div class="schedule-container">
+      <!-- Notifications Permission -->
+      <ion-card class="permission-card">
+        <ion-card-content>
+          <div class="permission-content">
+            <div class="permission-info">
+              <ion-icon [name]="notificationsEnabled ? 'notifications' : 'notifications-off'"
+              [color]="notificationsEnabled ? 'success' : 'danger'"></ion-icon>
+              <div>
+                <h3>Notifications {{ notificationsEnabled ? 'Enabled' : 'Disabled' }}</h3>
+                <p>{{ notificationsEnabled ? 'You will receive reminders' : 'Enable to receive reminders' }}</p>
+              </div>
+            </div>
+            @if (!notificationsEnabled) {
+              <ion-button
+                size="small"
+                (click)="requestPermissions()">
+                Enable
+              </ion-button>
+            }
+          </div>
+        </ion-card-content>
+      </ion-card>
+      <!-- Workout Reminder -->
+      <ion-list>
+        <ion-list-header>
+          <ion-label>Workout Reminders</ion-label>
+        </ion-list-header>
+        <ion-item button (click)="setWorkoutReminder()" [disabled]="!notificationsEnabled">
+          <ion-icon name="barbell-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h2>Daily Workout Reminder</h2>
+            <p>{{ workoutReminderText }}</p>
+          </ion-label>
+          @if (settings?.workoutReminderTime) {
+            <ion-button
+              fill="clear"
+              slot="end"
+              (click)="disableWorkoutReminder(); $event.stopPropagation()">
+              <ion-icon name="trash-outline" color="danger"></ion-icon>
+            </ion-button>
+          }
+        </ion-item>
+      </ion-list>
+      <!-- Meal Reminders -->
+      <ion-list>
+        <ion-list-header>
+          <ion-label>Meal Reminders</ion-label>
+        </ion-list-header>
+        <ion-item button (click)="setMealReminders()" [disabled]="!notificationsEnabled">
+          <ion-icon name="restaurant-outline" slot="start" color="secondary"></ion-icon>
+          <ion-label>
+            <h2>Daily Meal Reminders</h2>
+            <p>{{ mealRemindersText }}</p>
+          </ion-label>
+          @if (settings && settings.mealReminderTimes && settings.mealReminderTimes.length > 0) {
+            <ion-button
+              fill="clear"
+              slot="end"
+              (click)="disableMealReminders(); $event.stopPropagation()">
+              <ion-icon name="trash-outline" color="danger"></ion-icon>
+            </ion-button>
+          }
+        </ion-item>
+        <!-- Display individual meal times if set -->
+        @if (settings && settings.mealReminderTimes && settings.mealReminderTimes.length > 0) {
+          <div class="meal-times">
+            @for (time of settings.mealReminderTimes; track time; let i = $index) {
+              <ion-item lines="none">
+                <ion-label class="meal-time-label">
+                  <p>{{ i === 0 ? 'Breakfast' : i === 1 ? 'Lunch' : 'Dinner' }}: {{ formatTime(time.hour, time.minute) }}</p>
+                </ion-label>
+              </ion-item>
+            }
+          </div>
+        }
+      </ion-list>
+      <!-- Info Card -->
+      <ion-card class="info-card">
+        <ion-card-content>
+          <ion-icon name="information-circle-outline"></ion-icon>
+          <p>Reminders help you stay consistent with your workout and nutrition goals. You can change or disable them anytime.</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  }
+</ion-content>

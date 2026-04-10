@@ -1,0 +1,102 @@
+<div 
+  class="set-row"
+  [class.complete]="set.isComplete"
+  [class.swiping]="isSwiping"
+  [style.transform]="'translateX(' + swipeTranslateX + 'px)'"
+  [style.background]="getSwipeBackgroundColor()"
+  (touchstart)="onTouchStart($event)"
+  (touchmove)="onTouchMove($event)"
+  (touchend)="onTouchEnd($event)"
+  [@slideIn]
+  [@setComplete]="set.isComplete ? 'complete' : 'incomplete'"
+  #setRow
+>
+  <!-- Swipe Indicator Icons -->
+  @if (getSwipeIconPosition() === 'left') {
+    <ion-icon 
+      [name]="getSwipeIcon()" 
+      class="swipe-icon swipe-icon-left"
+    ></ion-icon>
+  }
+  @if (getSwipeIconPosition() === 'right') {
+    <ion-icon 
+      [name]="getSwipeIcon()" 
+      class="swipe-icon swipe-icon-right"
+    ></ion-icon>
+  }
+
+  <!-- Set Number Badge -->
+  <div class="set-number">
+    <span>{{ set.setNumber }}</span>
+  </div>
+
+  <!-- Previous Set Indicator (if available) -->
+  @if (previousWeight && previousReps && !set.isComplete) {
+    <div class="previous-indicator">
+      <span class="previous-text">{{ previousWeight }}{{ useMetric ? 'kg' : 'lbs' }} × {{ previousReps }}</span>
+    </div>
+  }
+
+  <!-- Weight Input -->
+  <div class="input-group">
+    <ion-input
+      #weightInput
+      type="number"
+      inputmode="decimal"
+      [(ngModel)]="set.weight"
+      (ionChange)="onWeightChange()"
+      placeholder="0"
+      [disabled]="set.isComplete"
+      class="weight-input"
+    ></ion-input>
+    <span class="input-label">{{ useMetric ? 'kg' : 'lbs' }}</span>
+  </div>
+
+  <!-- Multiply Symbol -->
+  <div class="multiply-symbol">×</div>
+
+  <!-- Reps Input -->
+  <div class="input-group">
+    <ion-input
+      #repsInput
+      type="number"
+      inputmode="numeric"
+      [(ngModel)]="set.reps"
+      (ionChange)="onRepsChange()"
+      placeholder="0"
+      [disabled]="set.isComplete"
+      class="reps-input"
+    ></ion-input>
+    <span class="input-label">reps</span>
+  </div>
+
+  <!-- Complete/Delete Buttons (visible when not swiping) -->
+  <div class="action-buttons" [class.hidden]="isSwiping">
+    @if (!set.isComplete) {
+      <ion-button
+        fill="clear"
+        size="small"
+        color="success"
+        (click)="completeSet()"
+        [disabled]="set.weight === 0 || set.reps === 0"
+        class="complete-btn"
+      >
+        <ion-icon slot="icon-only" name="checkmark-circle"></ion-icon>
+      </ion-button>
+    } @else {
+      <ion-icon name="checkmark-done" color="success" class="completed-icon"></ion-icon>
+    }
+
+    @if (!set.isComplete) {
+      <ion-button
+        fill="clear"
+        size="small"
+        color="danger"
+        (click)="deleteSet()"
+        class="delete-btn"
+      >
+        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+      </ion-button>
+    }
+  </div>
+</div>

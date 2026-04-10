@@ -1,17 +1,61 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
+    <ion-title>Today</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/settings">
+        <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  }
+
+  <!-- No Profile State -->
+  @if (!isLoading && !hasProfile) {
+    <div class="empty-state">
+      <ion-icon name="clipboard-outline" class="empty-icon"></ion-icon>
+      <h2>Welcome to FitLite!</h2>
+      <p>Create your profile to get started with your personalized workout and diet plan</p>
+      <ion-button expand="block" (click)="goToProfile()">
+        Create Profile
+      </ion-button>
+    </div>
+  }
+
+  <!-- Main Content -->
+  @if (!isLoading && hasProfile) {
+    <div class="home-container">
+      <!-- Greeting Card -->
+      <ion-card class="greeting-card">
+        <ion-card-content>
+          <h1>{{ greeting }}!</h1>
+          <p class="date">{{ todayName }}, {{ currentDate | date:'MMM d, y' }}</p>
+        </ion-card-content>
+      </ion-card>
+      <!-- Today's Workout Section -->
+      <!-- <div class="section-header">
+        <ion-icon name="barbell-outline"></ion-icon>
+        <h2>Today's Workout</h2>
+      </div> -->
+      <app-today-workout></app-today-workout>
+      <!-- Today's Meals Section -->
+      <div class="section-header">
+        <ion-icon name="restaurant-outline"></ion-icon>
+        <h2>Today's Meals</h2>
+      </div>
+      <app-today-meals></app-today-meals>
+    </div>
+  }
 </ion-content>
+

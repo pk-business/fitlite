@@ -1,17 +1,107 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 2
-    </ion-title>
+    <ion-title>Workout Plan</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  }
+
+  <!-- No Profile State -->
+  @if (!isLoading && !hasProfile) {
+    <div class="empty-state">
+      <ion-icon name="barbell-outline" class="empty-icon"></ion-icon>
+      <h2>No Workout Plan</h2>
+      <p>Create your profile to generate a personalized workout plan</p>
+      <ion-button expand="block" (click)="goToProfile()">
+        Create Profile
+      </ion-button>
+    </div>
+  }
+
+  <!-- Main Content -->
+  @if (!isLoading && hasProfile && workoutPlan) {
+    <div class="workout-plan-container">
+      <div class="intro-section">
+        <h2>Your Weekly Workout Plan</h2>
+        <p>{{ workoutPlan.weeklyPlan.length }} workout days per week</p>
+      </div>
+      <!-- Workout Days -->
+      @for (day of workoutPlan.weeklyPlan; track day) {
+        <ion-card class="workout-day-card" [class.today]="isToday(day.dayOfWeek)">
+          <ion-card-header>
+            <div class="day-header">
+              <div class="day-info">
+                <ion-badge [color]="getFocusColor(day.focus)">
+                  <ion-icon [name]="getFocusIcon(day.focus)"></ion-icon>
+                </ion-badge>
+                <div>
+                  <ion-card-title>{{ getDayName(day.dayOfWeek) }}</ion-card-title>
+                  <ion-card-subtitle>{{ day.focus | titlecase }} Workout</ion-card-subtitle>
+                </div>
+              </div>
+              <div class="day-actions">
+                @if (isToday(day.dayOfWeek)) {
+                  <ion-chip color="success">
+                    <ion-label>Today</ion-label>
+                  </ion-chip>
+                }
+                <ion-button fill="clear" size="small" (click)="editWorkout(day.dayOfWeek)">
+                  <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+                </ion-button>
+              </div>
+            </div>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list lines="none">
+              @for (exercise of day.exercises; track exercise; let i = $index) {
+                <ion-item class="exercise-item">
+                  <div class="exercise-number" slot="start">{{ i + 1 }}</div>
+                  <ion-label>
+                    <h3>{{ exercise.name }}</h3>
+                    <p>{{ exercise.sets }} sets × {{ exercise.reps }} reps • {{ exercise.restSeconds }}s rest</p>
+                    @if (getPreviousLog(exercise.name)) {
+                      <p class="previous-log">
+                        <ion-icon name="time-outline"></ion-icon>
+                        {{ getPreviousLog(exercise.name) }}
+                      </p>
+                    }
+                  </ion-label>
+                  <ion-button 
+                    slot="end" 
+                    fill="clear" 
+                    size="small" 
+                    (click)="openLogModal(exercise)"
+                    [color]="isExerciseLogged(exercise.name) ? 'success' : 'medium'"
+                  >
+                    <ion-icon 
+                      slot="icon-only" 
+                      [name]="isExerciseLogged(exercise.name) ? 'create' : 'create-outline'"
+                    ></ion-icon>
+                  </ion-button>
+                </ion-item>
+              }
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      }
+      <!-- Rest Days Info -->
+      <ion-card class="rest-info-card">
+        <ion-card-content>
+          <ion-icon name="information-circle-outline"></ion-icon>
+          <p>Rest days are important for recovery. Stay hydrated and get proper sleep!</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  }
 </ion-content>
+

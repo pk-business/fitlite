@@ -1,0 +1,185 @@
+.progress-graph-container {
+  position: relative;
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  background: var(--theme-background);
+  transition: all 0.2s ease;
+
+  &.clickable {
+    cursor: pointer;
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  // Mode-specific sizing
+  &.mini {
+    height: 60px;
+    padding: 4px 8px;
+  }
+
+  &.normal {
+    height: 120px;
+    padding: 12px;
+  }
+
+  &.full {
+    height: 200px;
+    padding: 16px;
+  }
+
+  // Insight Badge
+  .insight-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    
+    ion-icon {
+      font-size: 16px;
+    }
+
+    span {
+      font-weight: 600;
+    }
+  }
+
+  // SVG Sparkline
+  .sparkline {
+    width: 100%;
+    height: calc(100% - 24px);
+    display: block;
+
+    .sparkline-path {
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+      transition: stroke 0.3s ease;
+    }
+
+    .data-point {
+      transition: r 0.2s ease;
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+
+      &:hover {
+        r: 5;
+      }
+    }
+  }
+
+  // Personal Record Badge
+  .pr-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: rgba(250, 204, 21, 0.15);
+    border: 1px solid var(--theme-warning);
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--theme-warning);
+
+    ion-icon {
+      font-size: 14px;
+    }
+  }
+
+  // Expand Hint
+  .expand-hint {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+
+    ion-icon {
+      font-size: 16px;
+      color: var(--theme-text-secondary);
+    }
+  }
+
+  &:hover .expand-hint {
+    opacity: 0.8;
+  }
+
+  // No Data State
+  .no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 8px;
+    color: var(--theme-text-secondary);
+
+    ion-icon {
+      font-size: 32px;
+    }
+
+    span {
+      font-size: 13px;
+      font-weight: 500;
+    }
+  }
+}
+
+// Full mode specific styles
+.progress-graph-container.full {
+  .insight-badge {
+    font-size: 14px;
+    margin-bottom: 8px;
+
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+
+  .sparkline {
+    height: calc(100% - 60px); // More space for badges
+  }
+}
+
+// Mini mode specific styles
+.progress-graph-container.mini {
+  .insight-badge {
+    font-size: 10px;
+
+    ion-icon {
+      font-size: 12px;
+    }
+
+    span {
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  .sparkline {
+    height: calc(100% - 20px);
+  }
+}
+
+// Responsive
+@media (max-width: 360px) {
+  .progress-graph-container {
+    &.mini {
+      height: 50px;
+    }
+
+    &.normal {
+      height: 100px;
+    }
+
+    .insight-badge {
+      font-size: 11px;
+    }
+  }
+}

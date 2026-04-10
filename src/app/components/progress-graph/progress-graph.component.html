@@ -1,0 +1,88 @@
+<div 
+  class="progress-graph-container" 
+  [class.mini]="mode === 'mini'"
+  [class.normal]="mode === 'normal'"
+  [class.full]="mode === 'full'"
+  [class.clickable]="mode !== 'full'"
+  (click)="mode !== 'full' && onGraphClick()"
+>
+  @if (hasData && progress) {
+    <!-- Insight Badge -->
+    <div class="insight-badge" [@fadeIn]>
+      <ion-icon [name]="getTrendIcon()" [color]="getTrendColor()"></ion-icon>
+      <span [style.color]="'var(--ion-color-' + getTrendColor() + ')'">
+        {{ insightText }}
+      </span>
+    </div>
+
+    <!-- SVG Sparkline -->
+    <svg 
+      class="sparkline" 
+      [attr.viewBox]="viewBox" 
+      preserveAspectRatio="none"
+      [@fadeIn]
+    >
+      <!-- Gradient for fill area (optional) -->
+      <defs>
+        <linearGradient id="sparklineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" [attr.stop-color]="getStrokeColor()" stop-opacity="0.3"/>
+          <stop offset="100%" [attr.stop-color]="getStrokeColor()" stop-opacity="0.05"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Fill area under the line -->
+      @if (mode !== 'mini' && svgPath) {
+        <path
+          [attr.d]="svgPath + ' L ' + viewBox.split(' ')[2] + ',' + viewBox.split(' ')[3] + ' L 0,' + viewBox.split(' ')[3] + ' Z'"
+          fill="url(#sparklineGradient)"
+          opacity="0.5"
+        />
+      }
+
+      <!-- Main line -->
+      <path
+        [attr.d]="svgPath"
+        fill="none"
+        [attr.stroke]="getStrokeColor()"
+        [attr.stroke-width]="getStrokeWidth()"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="sparkline-path"
+      />
+
+      <!-- Data points (only in normal and full mode) -->
+      @if (mode !== 'mini' && progress.dataPoints.length > 0) {
+        @for (point of progress.dataPoints; track $index) {
+          <circle
+            [attr.cx]="($index / (progress.dataPoints.length - 1 || 1)) * parseFloat(viewBox.split(' ')[2])"
+            [attr.cy]="parseFloat(viewBox.split(' ')[3]) - ((point.totalVolume - minValue) / (maxValue - minValue || 1)) * (parseFloat(viewBox.split(' ')[3]) - 10) - 5"
+            [attr.r]="mode === 'full' ? 4 : 3"
+            [attr.fill]="getStrokeColor()"
+            class="data-point"
+          />
+        }
+      }
+    </svg>
+
+    <!-- Personal Record Badge (full mode only) -->
+    @if (mode === 'full' && progress.personalRecord) {
+      <div class="pr-badge" [@fadeIn]>
+        <ion-icon name="trophy" color="warning"></ion-icon>
+        <span>{{ prText }}</span>
+      </div>
+    }
+
+    <!-- Expand Hint (mini and normal modes) -->
+    @if (mode !== 'full') {
+      <div class="expand-hint">
+        <ion-icon name="expand-outline"></ion-icon>
+      </div>
+    }
+  } @else {
+    <!-- No Data State -->
+    <div class="no-data" [@fadeIn]>
+      <ion-icon name="bar-chart-outline" color="medium"></ion-icon>
+      <span>No progress data</span>
+    </div>
+  }
+</div>

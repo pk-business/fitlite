@@ -1,0 +1,165 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/schedule"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Exercise Library</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleAddForm()">
+        <ion-icon slot="icon-only" [name]="showAddForm ? 'close' : 'add'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Add/Edit Form -->
+  @if (showAddForm) {
+    <ion-card class="form-card">
+      <ion-card-header>
+        <ion-card-title>{{ editingExerciseId ? 'Edit Exercise' : 'Add New Exercise' }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="exerciseForm" (ngSubmit)="saveExercise()">
+          <ion-item>
+            <ion-input
+              label="Exercise Name"
+              labelPlacement="stacked"
+              formControlName="name"
+              placeholder="e.g., Dumbbell Press"
+              type="text"
+            ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-select
+              label="Category"
+              labelPlacement="stacked"
+              formControlName="category"
+            >
+              @for (cat of categories; track cat.value) {
+                <ion-select-option [value]="cat.value">{{ cat.label }}</ion-select-option>
+              }
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-input
+              label="Sets"
+              labelPlacement="stacked"
+              formControlName="sets"
+              type="number"
+              min="1"
+              max="10"
+            ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-input
+              label="Reps"
+              labelPlacement="stacked"
+              formControlName="reps"
+              type="number"
+              min="1"
+              max="100"
+            ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-input
+              label="Rest (seconds)"
+              labelPlacement="stacked"
+              formControlName="restSeconds"
+              type="number"
+              min="10"
+              max="300"
+            ></ion-input>
+          </ion-item>
+
+          <div class="form-buttons">
+            <ion-button expand="block" type="submit" [disabled]="exerciseForm.invalid">
+              <ion-icon slot="start" name="checkmark"></ion-icon>
+              {{ editingExerciseId ? 'Update' : 'Add' }} Exercise
+            </ion-button>
+            @if (editingExerciseId) {
+              <ion-button expand="block" fill="outline" (click)="cancelEdit()">
+                Cancel
+              </ion-button>
+            }
+          </div>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  }
+
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!isLoading && exercises.length === 0 && !showAddForm) {
+    <div class="empty-state">
+      <ion-icon name="barbell-outline" class="empty-icon"></ion-icon>
+      <h2>No Custom Exercises</h2>
+      <p>Create your own exercises to build personalized workout plans</p>
+      <ion-button (click)="toggleAddForm()">
+        <ion-icon slot="start" name="add"></ion-icon>
+        Add Your First Exercise
+      </ion-button>
+    </div>
+  }
+
+  <!-- Exercise List -->
+  @if (!isLoading && exercises.length > 0) {
+    <div class="exercises-container">
+      @for (category of categories; track category.value) {
+        @if (getExercisesByCategory(category.value).length > 0) {
+          <div class="category-section">
+            <div class="category-header">
+              <ion-icon 
+                [name]="category.value === 'upper' ? 'fitness-outline' : 
+                        category.value === 'lower' ? 'walk-outline' : 
+                        category.value === 'cardio' ? 'heart-outline' : 
+                        'barbell-outline'"
+              ></ion-icon>
+              <h3>{{ category.label }}</h3>
+              <ion-badge color="primary">{{ getExercisesByCategory(category.value).length }}</ion-badge>
+            </div>
+
+            @for (exercise of getExercisesByCategory(category.value); track exercise.id) {
+              <ion-card class="exercise-card">
+                <ion-card-content>
+                  <div class="exercise-header">
+                    <h3>{{ exercise.name }}</h3>
+                    <div class="exercise-actions">
+                      <ion-button fill="clear" size="small" (click)="editExercise(exercise)">
+                        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+                      </ion-button>
+                      <ion-button fill="clear" size="small" color="danger" (click)="deleteExercise(exercise)">
+                        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                      </ion-button>
+                    </div>
+                  </div>
+
+                  <div class="exercise-details">
+                    <div class="detail-item">
+                      <ion-icon name="repeat-outline"></ion-icon>
+                      <span>{{ exercise.sets }} × {{ exercise.reps }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <ion-icon name="timer-outline"></ion-icon>
+                      <span>{{ exercise.restSeconds }}s rest</span>
+                    </div>
+                  </div>
+                </ion-card-content>
+              </ion-card>
+            }
+          </div>
+        }
+      }
+    </div>
+  }
+</ion-content>

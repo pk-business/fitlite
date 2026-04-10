@@ -1,0 +1,61 @@
+<div class="today-workout-container">
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading">
+      <ion-spinner name="dots"></ion-spinner>
+    </div>
+  }
+
+  <!-- Workout Content -->
+  @if (!isLoading && !isRestDay && todaysWorkout) {
+    <div>
+      <!-- Header -->
+      <div class="workout-header">
+        <div class="header-content">
+          <h2>{{ dayName }}'s Workout</h2>
+          <p>{{ focusDisplayName }} Day</p>
+        </div>
+        <ion-button 
+          fill="outline" 
+          size="small"
+          (click)="editWorkout()"
+        >
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+      </div>
+
+      <!-- Enhanced Workout Cards -->
+      @for (exercise of todaysWorkout.exercises; track exercise.name; let i = $index) {
+        <app-enhanced-workout-card
+          [exercise]="exercise"
+          [exerciseIndex]="i"
+          [useMetric]="useMetric"
+        ></app-enhanced-workout-card>
+      }
+    </div>
+  }
+
+  <!-- Rest Day -->
+  @if (!isLoading && isRestDay) {
+    <ion-card class="rest-card">
+      <ion-card-content>
+        <ion-icon name="bed-outline" class="rest-icon"></ion-icon>
+        <h3>Rest Day</h3>
+        <p>Take it easy today and let your body recover!</p>
+        
+        <ion-button 
+          expand="block" 
+          fill="outline" 
+          size="small"
+          (click)="editWorkout()"
+        >
+          <ion-icon slot="start" name="add-outline"></ion-icon>
+          Add Workout Today
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  }
+
+  <!-- Floating Rest Timer -->
+  <app-rest-timer></app-rest-timer>
+</div>

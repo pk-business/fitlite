@@ -1,0 +1,39 @@
+<ion-card class="meal-card" [class.compact]="compact">
+  <ion-card-content>
+    <div class="meal-header">
+      <div class="meal-title">
+        @if (showIcon) {
+          <ion-icon [name]="mealIcon" [color]="mealColor"></ion-icon>
+        }
+        <h3>{{ meal.name }}</h3>
+      </div>
+      <div class="calories">
+        <span class="calories-value">{{ meal.calories }}</span>
+        <span class="calories-label">cal</span>
+      </div>
+    </div>
+
+    @if (!compact) {
+      <div class="macros">
+        <div class="macro-item">
+          <span class="macro-label">Protein</span>
+          <span class="macro-value">{{ meal.protein }}g</span>
+        </div>
+        <div class="macro-item">
+          <span class="macro-label">Carbs</span>
+          <span class="macro-value">{{ meal.carbs }}g</span>
+        </div>
+        <div class="macro-item">
+          <span class="macro-label">Fat</span>
+          <span class="macro-value">{{ meal.fat }}g</span>
+        </div>
+      </div>
+    }
+
+    @if (compact) {
+      <div class="macros-inline">
+        <p>P: {{ meal.protein }}g • C: {{ meal.carbs }}g • F: {{ meal.fat }}g</p>
+      </div>
+    }
+  </ion-card-content>
+</ion-card>

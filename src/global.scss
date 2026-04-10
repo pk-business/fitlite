@@ -12,6 +12,9 @@
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 
+/* Import Theme System */
+@import "./theme/themes.scss";
+
 /* Basic CSS for apps built with Ionic */
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
@@ -35,3 +38,68 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+/**
+ * Global Button and Color Fixes
+ * -----------------------------------------------------
+ * Ensure proper contrast for primary colored elements in both light and dark themes
+ */
+
+// Ensure all solid buttons have proper contrast
+ion-button {
+  // Solid buttons (default fill)
+  &:not([fill="outline"]):not([fill="clear"]) {
+    --color: #ffffff !important;
+    
+    &[color="primary"] {
+      --color: #ffffff !important;
+    }
+  }
+}
+
+/**
+ * Global Card Styles
+ * -----------------------------------------------------
+ * Apply theme colors to all cards for consistent theming
+ */
+ion-card {
+  --background: var(--theme-card);
+  --color: var(--theme-text-primary);
+  background: var(--theme-card);
+  color: var(--theme-text-primary);
+}
+
+ion-card-content {
+  --background: var(--theme-card);
+  --color: var(--theme-text-primary);
+  background: var(--theme-card);
+  color: var(--theme-text-primary);
+}
+
+// Ensure all text in cards uses theme colors
+ion-card, ion-card-content {
+  h1, h2, h3, h4, h5, h6, p, span, ion-label {
+    color: var(--theme-text-primary);
+  }
+}
+
+// Dark mode specific fixes
+body.dark {
+  ion-button {
+    // In dark mode, solid buttons should still have white text on colored backgrounds
+    &:not([fill="outline"]):not([fill="clear"]) {
+      --color: #ffffff !important;
+    }
+    
+    // Outline and clear buttons should use bright primary color for visibility
+    &[fill="outline"],
+    &[fill="clear"] {
+      --color: var(--theme-primary) !important;
+    }
+  }
+  
+  // Make card content slightly darker in dark mode for better visual separation
+  ion-card-content {
+    background: rgba(0, 0, 0, 0.2);
+  }
+}

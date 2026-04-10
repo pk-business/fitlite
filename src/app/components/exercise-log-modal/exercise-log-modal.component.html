@@ -1,0 +1,180 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Log {{ exercise.name }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="log-container">
+    <!-- Exercise Info -->
+    <ion-card class="info-card">
+      <ion-card-content>
+        <div class="exercise-info">
+          <div>
+            <h2>{{ exercise.name }}</h2>
+            <p>Planned: {{ exercise.sets }} × {{ exercise.reps }}</p>
+            @if (previousLog) {
+              <div class="previous-workout">
+                <ion-label color="medium">
+                  <ion-icon name="time-outline"></ion-icon>
+                  Previous ({{ previousLog.date }}):
+                </ion-label>
+                <ion-label color="primary" class="previous-details">
+                  @for (set of previousLog.sets; track $index; let i = $index) {
+                    <span class="set-info">
+                      {{ set.weight }}{{ useMetric ? 'kg' : 'lbs' }} × {{ set.reps }}
+                      @if (i < previousLog.sets.length - 1) {
+                        <span class="separator">|</span>
+                      }
+                    </span>
+                  }
+                </ion-label>
+              </div>
+            }
+          </div>
+          <ion-button fill="outline" size="small" (click)="copyPreviousWorkout()">
+            <ion-icon slot="start" name="copy-outline"></ion-icon>
+            Copy Last
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Progress Bar -->
+    <div class="progress-section">
+      <div class="progress-header">
+        <span>Progress</span>
+        <span class="percentage">{{ completionPercentage }}%</span>
+      </div>
+      <ion-progress-bar [value]="completionPercentage / 100" color="success"></ion-progress-bar>
+    </div>
+
+    <!-- Sets List -->
+    <div class="sets-section">
+      <div class="section-header">
+        <h3>Sets</h3>
+        <ion-button size="small" fill="outline" (click)="addSet()">
+          <ion-icon slot="start" name="add"></ion-icon>
+          Add Set
+        </ion-button>
+      </div>
+
+      @for (set of sets; track $index; let i = $index) {
+        <ion-card class="set-card" [class.completed]="set.completed">
+          <ion-card-content>
+            <div class="set-header">
+              <div class="set-number">
+                <ion-checkbox
+                  [(ngModel)]="set.completed"
+                  (ionChange)="toggleSetCompletion(i)"
+                ></ion-checkbox>
+                <span>Set {{ set.setNumber }}</span>
+              </div>
+              <ion-button 
+                fill="clear" 
+                size="small" 
+                color="danger" 
+                (click)="removeSet(i)"
+                [disabled]="sets.length === 1"
+              >
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </div>
+
+            <div class="set-inputs">
+              <div class="input-group">
+                <ion-label>Weight</ion-label>
+                <div class="input-wrapper">
+                  <ion-input
+                    type="number"
+                    [(ngModel)]="set.weight"
+                    placeholder="0"
+                    min="0"
+                    step="2.5"
+                  ></ion-input>
+                  <span class="unit">{{ useMetric ? 'kg' : 'lbs' }}</span>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <ion-label>Reps</ion-label>
+                <ion-input
+                  type="number"
+                  [(ngModel)]="set.reps"
+                  placeholder="0"
+                  min="1"
+                ></ion-input>
+              </div>
+            </div>
+
+            @if (set.weight && set.reps) {
+              <div class="set-volume">
+                Volume: {{ (set.weight || 0) * set.reps }} {{ useMetric ? 'kg' : 'lbs' }}
+              </div>
+            }
+          </ion-card-content>
+        </ion-card>
+      }
+    </div>
+
+    <!-- Notes Section -->
+    <div class="notes-section">
+      <h3>Notes</h3>
+      <ion-textarea
+        [(ngModel)]="notes"
+        placeholder="How did it feel? Any observations?"
+        rows="4"
+        [autoGrow]="true"
+      ></ion-textarea>
+    </div>
+
+    <!-- Summary -->
+    @if (sets.length > 0) {
+      <ion-card class="summary-card">
+        <ion-card-content>
+          <div class="summary-stats">
+            <div class="stat">
+              <ion-icon name="barbell-outline"></ion-icon>
+              <div>
+                <strong>{{ sets.length }}</strong>
+                <span>Sets</span>
+              </div>
+            </div>
+            <div class="stat">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+              <div>
+                <strong>{{ completedSetsCount }}</strong>
+                <span>Completed</span>
+              </div>
+            </div>
+            <div class="stat">
+              <ion-icon name="analytics-outline"></ion-icon>
+              <div>
+                <strong>{{ totalVolume }}</strong>
+                <span>Total Volume</span>
+              </div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button 
+      expand="block" 
+      (click)="saveLog()"
+      [disabled]="isLoading || sets.length === 0"
+    >
+      <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+      {{ existingLog ? 'Update Log' : 'Save Log' }}
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

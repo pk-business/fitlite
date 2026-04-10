@@ -1,0 +1,288 @@
+/**
+ * Simple Light and Dark Theme System
+ * CSS variables for consistent theming across the app
+ */
+
+// ============================================
+// Light Theme (Default)
+// ============================================
+:root,
+body {
+  // Primary Colors
+  --theme-primary: #3880ff;
+  --theme-primary-dark: #3171e0;
+  --theme-primary-light: #4c8dff;
+  --theme-primary-rgb: 56, 128, 255;
+  
+  // Accent Colors
+  --theme-success: #2dd36f;
+  --theme-warning: #ffc409;
+  --theme-danger: #eb445a;
+  
+  // Backgrounds
+  --theme-background: #f4f5f8;
+  --theme-card: #ffffff;
+  --theme-border: #d7d8da;
+  
+  // Text Colors
+  --theme-text-primary: #000000;
+  --theme-text-secondary: #6b7280;
+  
+  // Derived Colors (for consistent UI)
+  --theme-primary-contrast: #ffffff;
+  --theme-hover: rgba(56, 128, 255, 0.1);
+  --theme-active: rgba(56, 128, 255, 0.2);
+  --theme-shadow: rgba(0, 0, 0, 0.1);
+  
+  // Chart/Graph Colors
+  --theme-graph-improving: var(--theme-success);
+  --theme-graph-maintaining: var(--theme-warning);
+  --theme-graph-declining: var(--theme-danger);
+  
+  // Component-specific
+  --theme-input-bg: #ffffff;
+  --theme-input-border: #d7d8da;
+  --theme-input-focus: var(--theme-primary);
+  --theme-timer-bg: #ffffff;
+  --theme-progress-ring: var(--theme-primary);
+}
+
+// ============================================
+// Dark Theme
+// ============================================
+body.dark {
+  // Primary Colors (same as light for consistency)
+  --theme-primary: #4c8dff;
+  --theme-primary-dark: #3880ff;
+  --theme-primary-light: #5a98ff;
+  --theme-primary-rgb: 76, 141, 255;
+  
+  // Accent Colors (slightly adjusted for dark backgrounds)
+  --theme-success: #2fdf75;
+  --theme-warning: #ffd534;
+  --theme-danger: #ff4961;
+  
+  // Backgrounds
+  --theme-background: #121212;
+  --theme-card: #1e1e1e;
+  --theme-border: #2a2a2a;
+  
+  // Text Colors
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #9ca3af;
+  
+  // Derived Colors
+  --theme-primary-contrast: #ffffff;
+  --theme-hover: rgba(76, 141, 255, 0.15);
+  --theme-active: rgba(76, 141, 255, 0.25);
+  --theme-shadow: rgba(0, 0, 0, 0.3);
+  
+  // Chart/Graph Colors (same)
+  --theme-graph-improving: var(--theme-success);
+  --theme-graph-maintaining: var(--theme-warning);
+  --theme-graph-declining: var(--theme-danger);
+  
+  // Component-specific
+  --theme-input-bg: #2a2a2a;
+  --theme-input-border: #3a3a3a;
+  --theme-input-focus: var(--theme-primary);
+  --theme-timer-bg: #1e1e1e;
+  --theme-progress-ring: var(--theme-primary);
+  
+  // Ionic component overrides for dark theme
+  --ion-background-color: #121212;
+  --ion-text-color: #ffffff;
+  --ion-card-background: #1e1e1e;
+  --ion-item-background: #1e1e1e;
+}
+
+// ============================================
+// Theme Transition Animation
+// ============================================
+* {
+  transition: background-color 0.2s ease, 
+              border-color 0.2s ease, 
+              color 0.2s ease;
+}
+
+// Disable transitions for initial load
+.no-transition * {
+  transition: none !important;
+}
+
+// ============================================
+// Global Themed Styles
+// ============================================
+
+// Body background
+body {
+  background-color: var(--theme-background);
+  color: var(--theme-text-primary);
+}
+
+// Ionic overrides to use theme colors
+ion-content {
+  --background: var(--theme-background);
+  --color: var(--theme-text-primary);
+}
+
+ion-card {
+  --background: var(--theme-card);
+  --color: var(--theme-text-primary);
+  border: 1px solid var(--theme-border);
+  margin-left: 0;
+  margin-right: 0;
+}
+
+ion-button {
+  --background: var(--theme-primary);
+  --background-hover: var(--theme-primary-dark);
+  --background-activated: var(--theme-primary-dark);
+  --color: var(--theme-primary-contrast);
+  
+  &[fill="outline"] {
+    --border-color: var(--theme-primary);
+    --color: var(--theme-primary);
+    --background: transparent;
+    
+    &:hover {
+      --background: var(--theme-hover);
+    }
+  }
+  
+  &[fill="clear"] {
+    --color: var(--theme-primary);
+    --background: transparent;
+    
+    &:hover {
+      --background: var(--theme-hover);
+    }
+  }
+}
+
+// Dark mode button overrides for better visibility
+body.dark {
+  ion-button {
+    // Solid buttons remain the same - white text on colored background
+    --background: var(--theme-primary);
+    --background-hover: var(--theme-primary-dark);
+    --background-activated: var(--theme-primary-dark);
+    --color: #ffffff;
+    
+    &[fill="outline"] {
+      --border-color: var(--theme-primary);
+      --color: var(--theme-primary);
+      --background: transparent;
+    }
+    
+    &[fill="clear"] {
+      --color: var(--theme-primary);
+      --background: transparent;
+    }
+  }
+}
+
+ion-input {
+  --background: var(--theme-input-bg);
+  --border-color: var(--theme-input-border);
+  --color: var(--theme-text-primary);
+  --placeholder-color: var(--theme-text-secondary);
+  
+  &:focus-within {
+    --border-color: var(--theme-input-focus);
+  }
+}
+
+ion-label {
+  --color: var(--theme-text-primary);
+}
+
+ion-text {
+  color: var(--theme-text-primary);
+  
+  &[color="secondary"] {
+    color: var(--theme-text-secondary);
+  }
+}
+
+// Badge colors
+ion-badge {
+  &[color="primary"] {
+    --background: var(--theme-primary);
+    --color: var(--theme-primary-contrast);
+  }
+  
+  &[color="success"] {
+    --background: var(--theme-success);
+  }
+  
+  &[color="warning"] {
+    --background: var(--theme-warning);
+  }
+  
+  &[color="danger"] {
+    --background: var(--theme-danger);
+  }
+}
+
+// Chip colors
+ion-chip {
+  &[color="primary"] {
+    --background: var(--theme-primary-light);
+    --color: var(--theme-primary);
+  }
+  
+  &[color="success"] {
+    --background: rgba(74, 222, 128, 0.2);
+    --color: var(--theme-success);
+  }
+}
+
+// Progress bar
+ion-progress-bar {
+  &[color="primary"] {
+    --progress-background: var(--theme-primary);
+  }
+  
+  &[color="success"] {
+    --progress-background: var(--theme-success);
+  }
+  
+  &[color="warning"] {
+    --progress-background: var(--theme-warning);
+  }
+  
+  &[color="danger"] {
+    --progress-background: var(--theme-danger);
+  }
+}
+
+// Spinner
+ion-spinner {
+  color: var(--theme-primary);
+}
+
+// Modal
+ion-modal {
+  --background: var(--theme-card);
+  --color: var(--theme-text-primary);
+}
+
+// Toolbar
+ion-toolbar {
+  --background: var(--theme-card);
+  --color: var(--theme-text-primary);
+  --border-color: var(--theme-border);
+}
+
+// Tab bar
+ion-tab-bar {
+  --background: var(--theme-card);
+  --color: var(--theme-text-secondary);
+  border-top: 1px solid var(--theme-border);
+}
+
+ion-tab-button {
+  --color: var(--theme-text-secondary);
+  --color-selected: var(--theme-primary);
+}

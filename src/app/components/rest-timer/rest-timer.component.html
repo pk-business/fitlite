@@ -1,0 +1,109 @@
+@if (timerState) {
+  <div 
+    class="rest-timer-container"
+    [class.expanded]="isExpanded"
+    [class.complete]="isComplete()"
+    [@fadeIn]
+  >
+    <!-- Collapsed View (Floating Bubble) -->
+    @if (!isExpanded) {
+      <div class="timer-bubble" (click)="toggleExpanded()">
+        <!-- Circular Progress Ring -->
+        <svg class="progress-ring" viewBox="0 0 80 80">
+          <circle
+            class="progress-ring-circle-bg"
+            cx="40"
+            cy="40"
+            r="34"
+          ></circle>
+          <circle
+            class="progress-ring-circle"
+            [attr.stroke]="'var(--ion-color-' + getProgressColor() + ')'"
+            cx="40"
+            cy="40"
+            r="34"
+            [style.strokeDashoffset]="213.6 - (213.6 * progress / 100)"
+          ></circle>
+        </svg>
+
+        <!-- Timer Text -->
+        <div class="timer-text">
+          <span class="time-display">{{ getFormattedTime() }}</span>
+        </div>
+
+        <!-- Pause Icon Overlay -->
+        @if (timerState.isPaused) {
+          <div class="pause-overlay">
+            <ion-icon name="pause"></ion-icon>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Expanded View (Full Timer) -->
+    @if (isExpanded) {
+      <div class="timer-expanded" (click)="toggleExpanded()">
+        <div class="timer-header">
+          <div class="timer-info">
+            <ion-text color="medium">
+              <small>Rest after Set {{ timerState.setNumber }}</small>
+            </ion-text>
+            <h3>{{ timerState.exerciseName }}</h3>
+          </div>
+          <ion-button fill="clear" size="small" (click)="stopTimer(); $event.stopPropagation()">
+            <ion-icon slot="icon-only" name="close"></ion-icon>
+          </ion-button>
+        </div>
+
+        <div class="timer-body">
+          <!-- Large Time Display -->
+          <div class="time-large">{{ getFormattedTime() }}</div>
+
+          <!-- Progress Bar -->
+          <ion-progress-bar 
+            [value]="progress / 100" 
+            [color]="getProgressColor()"
+          ></ion-progress-bar>
+
+          <!-- Control Buttons -->
+          <div class="timer-controls">
+            <ion-button 
+              fill="outline" 
+              size="small" 
+              (click)="addTime(-15); $event.stopPropagation()"
+            >
+              <ion-icon slot="start" name="remove"></ion-icon>
+              15s
+            </ion-button>
+
+            <ion-button 
+              [fill]="timerState.isPaused ? 'solid' : 'outline'"
+              size="default"
+              (click)="togglePause(); $event.stopPropagation()"
+            >
+              <ion-icon 
+                slot="icon-only" 
+                [name]="timerState.isPaused ? 'play' : 'pause'"
+              ></ion-icon>
+            </ion-button>
+
+            <ion-button 
+              fill="outline" 
+              size="small" 
+              (click)="addTime(15); $event.stopPropagation()"
+            >
+              <ion-icon slot="end" name="add"></ion-icon>
+              15s
+            </ion-button>
+          </div>
+        </div>
+
+        <!-- Tap to Collapse Hint -->
+        <div class="collapse-hint">
+          <ion-icon name="chevron-down"></ion-icon>
+          <span>Tap to minimize</span>
+        </div>
+      </div>
+    }
+  </div>
+}
