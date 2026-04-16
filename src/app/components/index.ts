@@ -9,4 +9,4 @@ export * from './enhanced-workout-card/enhanced-workout-card.component';
 export * from './inline-set-logger/inline-set-logger.component';
 export * from './rest-timer/rest-timer.component';
 export * from './progress-graph/progress-graph.component';
-export * from './shared-components.module';
+export * from '../nutrition-logger/nutrition-logger.component';

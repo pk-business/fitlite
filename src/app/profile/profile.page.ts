@@ -47,11 +47,17 @@ export class ProfilePage implements OnInit {
     this.profileForm = this.fb.group({
       name: [''],
       age: [25, [Validators.required, Validators.min(13), Validators.max(100)]],
-      heightCm: [170, [Validators.required, Validators.min(100), Validators.max(250)]],
-      weightKg: [70, [Validators.required, Validators.min(30), Validators.max(300)]],
+      heightCm: [
+        170,
+        [Validators.required, Validators.min(100), Validators.max(250)],
+      ],
+      weightKg: [
+        70,
+        [Validators.required, Validators.min(30), Validators.max(300)],
+      ],
       gender: ['male', Validators.required],
       goal: ['maintain', Validators.required],
-      activityLevel: ['medium', Validators.required]
+      activityLevel: ['moderately_active', Validators.required],
     });
   }
 

@@ -6,8 +6,18 @@ export interface UserProfile {
   age: number;
   heightCm: number;
   weightKg: number;
-  gender: 'male' | 'female' | 'other';
-  goal: 'lose' | 'maintain' | 'gain';
-  activityLevel: 'low' | 'medium' | 'high';
+  gender: 'male' | 'female';
+  goal: 'lose_weight' | 'maintain' | 'gain_muscle';
+  activityLevel:
+    | 'sedentary'
+    | 'lightly_active'
+    | 'moderately_active'
+    | 'very_active'
+    | 'extremely_active';
   theme?: 'light' | 'dark'; // Theme preference
+  // Nutrition recommendations (calculated)
+  recommendedCalories?: number;
+  recommendedProtein?: number;
+  recommendedCarbs?: number;
+  recommendedFat?: number;
 }

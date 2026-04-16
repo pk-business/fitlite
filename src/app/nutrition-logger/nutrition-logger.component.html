@@ -1,0 +1,240 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Log Nutrition - {{ date | date:'shortDate' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="nutrition-log-container">
+    <!-- Targets Summary -->
+    <ion-card class="targets-card">
+      <ion-card-header>
+        <ion-card-title>Daily Targets</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        @if (targets.calories > 0 && targets.protein > 0) {
+        <div class="targets-grid">
+          <div class="target-item">
+            <ion-label color="primary">
+              <ion-icon name="flame-outline"></ion-icon>
+              Calories
+            </ion-label>
+            <div class="target-value">{{ targets.calories }}</div>
+          </div>
+          <div class="target-item">
+            <ion-label color="secondary">
+              <ion-icon name="fitness-outline"></ion-icon>
+              Protein
+            </ion-label>
+            <div class="target-value">{{ targets.protein }}g</div>
+          </div>
+          <div class="target-item">
+            <ion-label color="tertiary">
+              <ion-icon name="restaurant-outline"></ion-icon>
+              Carbs
+            </ion-label>
+            <div class="target-value">{{ targets.carbs }}g</div>
+          </div>
+          <div class="target-item">
+            <ion-label color="success">
+              <ion-icon name="water-outline"></ion-icon>
+              Fat
+            </ion-label>
+            <div class="target-value">{{ targets.fat }}g</div>
+          </div>
+        </div>
+        } @else {
+        <div class="no-targets-message">
+          <ion-icon name="information-circle-outline" color="medium"></ion-icon>
+          <p>No nutrition targets set. Complete your profile for personalized recommendations.</p>
+        </div>
+        }
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Nutrition Input Form -->
+    <ion-card class="input-card">
+      <ion-card-header>
+        <ion-card-title>Today's Intake</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <form (ngSubmit)="saveLog()">
+          <!-- Calories Input -->
+          <ion-item>
+            <ion-label position="stacked">
+              <ion-icon name="flame-outline" slot="start"></ion-icon>
+              Calories Consumed
+            </ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="nutritionLog.caloriesConsumed"
+              name="calories"
+              placeholder="0"
+              min="0"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <!-- Progress Bar for Calories -->
+          @if (targets.calories > 0) {
+          <div class="progress-section">
+            <div class="progress-label">
+              <span>{{ calorieProgress | number:'1.0-0' }}% of target</span>
+              <span>{{ nutritionLog.caloriesConsumed || 0 }} / {{ targets.calories }}</span>
+            </div>
+            <ion-progress-bar
+              [value]="calorieProgress / 100"
+              color="primary">
+            </ion-progress-bar>
+          </div>
+          }
+
+          <!-- Protein Input -->
+          <ion-item>
+            <ion-label position="stacked">
+              <ion-icon name="fitness-outline" slot="start"></ion-icon>
+              Protein Consumed (g)
+            </ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="nutritionLog.proteinConsumed"
+              name="protein"
+              placeholder="0"
+              min="0"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <!-- Progress Bar for Protein -->
+          @if (targets.protein > 0) {
+          <div class="progress-section">
+            <div class="progress-label">
+              <span>{{ proteinProgress | number:'1.0-0' }}% of target</span>
+              <span>{{ nutritionLog.proteinConsumed || 0 }}g / {{ targets.protein }}g</span>
+            </div>
+            <ion-progress-bar
+              [value]="proteinProgress / 100"
+              color="secondary">
+            </ion-progress-bar>
+          </div>
+          }
+
+          <!-- Carbs Input -->
+          <ion-item>
+            <ion-label position="stacked">
+              <ion-icon name="restaurant-outline" slot="start"></ion-icon>
+              Carbs Consumed (g)
+            </ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="nutritionLog.carbsConsumed"
+              name="carbs"
+              placeholder="0"
+              min="0"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <!-- Progress Bar for Carbs -->
+          @if (targets.carbs > 0) {
+          <div class="progress-section">
+            <div class="progress-label">
+              <span>{{ carbsProgress | number:'1.0-0' }}% of target</span>
+              <span>{{ nutritionLog.carbsConsumed || 0 }}g / {{ targets.carbs }}g</span>
+            </div>
+            <ion-progress-bar
+              [value]="carbsProgress / 100"
+              color="tertiary">
+            </ion-progress-bar>
+          </div>
+          }
+
+          <!-- Fat Input -->
+          <ion-item>
+            <ion-label position="stacked">
+              <ion-icon name="water-outline" slot="start"></ion-icon>
+              Fat Consumed (g)
+            </ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="nutritionLog.fatConsumed"
+              name="fat"
+              placeholder="0"
+              min="0"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <!-- Progress Bar for Fat -->
+          @if (targets.fat > 0) {
+          <div class="progress-section">
+            <div class="progress-label">
+              <span>{{ fatProgress | number:'1.0-0' }}% of target</span>
+              <span>{{ nutritionLog.fatConsumed || 0 }}g / {{ targets.fat }}g</span>
+            </div>
+            <ion-progress-bar
+              [value]="fatProgress / 100"
+              color="success">
+            </ion-progress-bar>
+          </div>
+          }
+
+          <!-- Water Input -->
+          <ion-item>
+            <ion-label position="stacked">
+              <ion-icon name="water-outline" slot="start"></ion-icon>
+              Water Intake (ml)
+            </ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="nutritionLog.waterConsumed"
+              name="water"
+              placeholder="0"
+              min="0">
+            </ion-input>
+          </ion-item>
+
+          <!-- Save Button -->
+          <ion-button
+            expand="block"
+            type="submit"
+            [disabled]="isLoading"
+            class="save-button">
+            <ion-icon slot="start" name="save-outline"></ion-icon>
+            @if (isLoading) {
+              Saving...
+            } @else if (existingLog) {
+              Update Log
+            } @else {
+              Save Log
+            }
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Achievement Preview -->
+    @if (calculateAchievements().length > 0) {
+      <ion-card class="achievements-card">
+        <ion-card-header>
+          <ion-card-title>Achievements Unlocked!</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="achievements-list">
+            @for (achievement of calculateAchievements(); track achievement) {
+              <div class="achievement-item">
+                <ion-icon name="trophy-outline" color="warning"></ion-icon>
+                <span>{{ getAchievementLabel(achievement) }}</span>
+              </div>
+            }
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+  </div>
+</ion-content>

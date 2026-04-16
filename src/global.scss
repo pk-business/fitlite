@@ -40,6 +40,33 @@
 /* @import "@ionic/angular/css/palettes/dark.system.css"; */
 
 /**
+ * iOS Safari Fixed Positioning Fixes
+ * -----------------------------------------------------
+ * iOS Safari has issues with fixed positioning when transforms are applied
+ * or when certain CSS properties are used on parent elements
+ */
+
+// Ensure html and body don't break fixed positioning
+html, body {
+  // Prevent any transforms that could break fixed positioning
+  -webkit-transform: none !important;
+  transform: none !important;
+  
+  // Ensure proper viewport handling
+  height: 100%;
+  overflow-x: hidden;
+}
+
+// Ensure Ionic containers don't break fixed positioning
+ion-app, ion-router-outlet, ion-content, ion-page {
+  -webkit-transform: none !important;
+  transform: none !important;
+  -webkit-perspective: none !important;
+  perspective: none !important;
+  contain: none !important;
+}
+
+/**
  * Global Button and Color Fixes
  * -----------------------------------------------------
  * Ensure proper contrast for primary colored elements in both light and dark themes

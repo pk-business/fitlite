@@ -7,7 +7,6 @@ import { ScheduleService } from '../../services/schedule.service';
 
 import { IonicModule } from '@ionic/angular';
 import { EnhancedWorkoutCardComponent } from '../enhanced-workout-card/enhanced-workout-card.component';
-import { RestTimerComponent } from '../rest-timer/rest-timer.component';
 
 /**
  * TodayWorkoutComponent displays today's workout with enhanced UI
@@ -18,7 +17,7 @@ import { RestTimerComponent } from '../rest-timer/rest-timer.component';
     templateUrl: './today-workout.component.html',
     styleUrls: ['./today-workout.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, IonicModule, EnhancedWorkoutCardComponent, RestTimerComponent]
+    imports: [CommonModule, IonicModule, EnhancedWorkoutCardComponent]
 })
 export class TodayWorkoutComponent implements OnInit {
   todaysWorkout: WorkoutDay | null = null;
