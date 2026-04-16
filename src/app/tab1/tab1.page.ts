@@ -82,6 +82,7 @@ export class Tab1Page implements OnInit {
           await this.planService.generateAllPlans(this.userProfile);
         }
         // Load today's nutrition log
+        await this.nutritionTrackingService.loadLogs();
         this.todaysNutrition = this.nutritionTrackingService.getLogForDate(
           new Date().toISOString().split('T')[0]
         );

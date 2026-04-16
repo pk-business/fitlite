@@ -60,14 +60,15 @@ export class NutritionLoggerComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.loadExistingLog();
+    await this.loadExistingLog();
     await this.loadTargets();
   }
 
   /**
    * Load existing nutrition log for this date if it exists
    */
-  loadExistingLog(): void {
+  async loadExistingLog(): Promise<void> {
+    await this.nutritionTrackingService.loadLogs();
     this.existingLog = this.nutritionTrackingService.getLogForDate(this.date);
     if (this.existingLog) {
       this.nutritionLog = { ...this.existingLog };
