@@ -33,6 +33,9 @@ import { EditNutritionLogsComponent } from '../components/edit-nutrition-logs/ed
   ],
 })
 export class Tab1Page implements OnInit {
+  ionViewWillEnter() {
+    this.loadData();
+  }
   userProfile: UserProfile | null = null;
   todaysNutrition: DailyNutritionLog | null = null;
   currentDate: Date = new Date();
@@ -84,7 +87,7 @@ export class Tab1Page implements OnInit {
         // Load today's nutrition log
         await this.nutritionTrackingService.loadLogs();
         this.todaysNutrition = this.nutritionTrackingService.getLogForDate(
-          new Date().toISOString().split('T')[0]
+          new Date().toISOString().split('T')[0],
         );
       } else {
         this.hasProfile = false;
@@ -160,7 +163,10 @@ export class Tab1Page implements OnInit {
   getCalorieProgress(): number {
     if (!this.userProfile?.recommendedCalories) return 0;
     const consumed = this.todaysNutrition?.caloriesConsumed || 0;
-    return Math.min((consumed / this.userProfile.recommendedCalories) * 100, 100);
+    return Math.min(
+      (consumed / this.userProfile.recommendedCalories) * 100,
+      100,
+    );
   }
 
   /**
@@ -178,7 +184,10 @@ export class Tab1Page implements OnInit {
   getProteinProgress(): number {
     if (!this.userProfile?.recommendedProtein) return 0;
     const consumed = this.todaysNutrition?.proteinConsumed || 0;
-    return Math.min((consumed / this.userProfile.recommendedProtein) * 100, 100);
+    return Math.min(
+      (consumed / this.userProfile.recommendedProtein) * 100,
+      100,
+    );
   }
 
   /**

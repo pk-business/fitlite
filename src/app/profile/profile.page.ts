@@ -93,8 +93,15 @@ export class ProfilePage implements OnInit {
       // Save profile
       await this.userProfileService.saveProfile(profile);
 
-      // Generate workout and diet plans (regenerate on update as well)
-      await this.planService.generateAllPlans(profile);
+      // Only regenerate workout/diet plans if key fitness fields changed
+      // (or if it's a new profile with no existing plan)
+      const existingPlan = await this.planService.getWorkoutPlan();
+      if (!existingPlan || !this.isEditMode) {
+        await this.planService.generateAllPlans(profile);
+      } else {
+        // Still regenerate diet plan (no user customizations there)
+        await this.planService.generateDietPlan(profile);
+      }
 
       // Initialize default notification schedule (only if not edit mode)
       if (!this.isEditMode) {
