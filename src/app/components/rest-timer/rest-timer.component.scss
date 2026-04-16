@@ -1,51 +1,34 @@
+/* Rest Timer Container */
 .rest-timer-container {
-  // Use viewport positioning for iOS Safari
   position: fixed !important;
-  bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
   right: calc(16px + env(safe-area-inset-right, 0px)) !important;
-  z-index: 2147483647 !important; // Maximum z-index value
+  z-index: 2147483647 !important;
   transition: all 0.3s ease;
-
-  // iOS Safari specific fixes - NO transforms allowed
-  -webkit-backface-visibility: hidden !important;
-  backface-visibility: hidden !important;
-  -webkit-transform: none !important;
-  transform: none !important;
-  -webkit-perspective: none !important;
-  perspective: none !important;
-  will-change: auto !important;
-
-  // Additional iOS Safari fixes
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  contain: none !important;
+  transform: none !important;
+  backface-visibility: hidden !important;
+}
 
-  // Force viewport-relative positioning
-  position: fixed !important;
+.rest-timer-container.expanded {
+  left: calc(16px + env(safe-area-inset-left, 0px));
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+}
 
-  // Fallback positioning using viewport units
-  bottom: calc(80px + 34px) !important; // Standard iOS safe area fallback
-  right: 16px !important;
-
-  &.expanded {
-    right: calc(16px + env(safe-area-inset-right, 0px));
-    left: calc(16px + env(safe-area-inset-left, 0px));
-    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-
-    // Fallback for expanded state
-    @supports not (bottom: env(safe-area-inset-bottom)) {
-      bottom: 100px;
-      right: 16px;
-      left: 16px;
-    }
-  }
-
-  &.complete {
-    animation: completePulse 1s ease-in-out;
+@supports not (bottom: env(safe-area-inset-bottom)) {
+  .rest-timer-container.expanded {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
   }
 }
 
-// Floating Bubble (Collapsed)
+.rest-timer-container.complete {
+  animation: completePulse 1s ease-in-out;
+}
+
+/* Floating Bubble (Collapsed) */
 .timer-bubble {
   width: 90px;
   height: 90px;
@@ -58,69 +41,69 @@
   position: relative;
   cursor: pointer;
   transition: transform 0.2s ease;
-
-  &:active {
-    transform: scale(0.95);
-  }
-
-  // Progress Ring
-  .progress-ring {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
-
-    .progress-ring-circle-bg {
-      fill: none;
-      stroke: var(--theme-border);
-      stroke-width: 4;
-    }
-
-    .progress-ring-circle {
-      fill: none;
-      stroke-width: 4;
-      stroke-dasharray: 213.6; // 2 * PI * 34
-      stroke-linecap: round;
-      transition: stroke-dashoffset 0.3s ease, stroke 0.3s ease;
-    }
-  }
-
-  // Timer Text
-  .timer-text {
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    
-    .time-display {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--theme-text-primary);
-    }
-  }
-
-  // Pause Overlay
-  .pause-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-
-    ion-icon {
-      font-size: 32px;
-      color: white;
-    }
-  }
 }
 
-// Expanded View
+.timer-bubble:active {
+  transform: scale(0.95);
+}
+
+/* Progress Ring */
+.timer-bubble .progress-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progress-ring-circle-bg {
+  fill: none;
+  stroke: var(--theme-border);
+  stroke-width: 4;
+}
+
+.progress-ring-circle {
+  fill: none;
+  stroke-width: 4;
+  stroke-dasharray: 213.6;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s ease, stroke 0.3s ease;
+}
+
+/* Timer Text */
+.timer-bubble .timer-text {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timer-bubble .time-display {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+}
+
+/* Pause Overlay */
+.pause-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.pause-overlay ion-icon {
+  font-size: 32px;
+  color: white;
+}
+
+/* Expanded View */
 .timer-expanded {
   background: var(--theme-card);
   border-radius: 16px;
@@ -128,113 +111,101 @@
   padding: 16px;
   cursor: pointer;
   width: 100%;
-
-  .timer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 16px;
-
-    .timer-info {
-      flex: 1;
-
-      small {
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      h3 {
-        margin: 4px 0 0 0;
-        font-size: 18px;
-        font-weight: 600;
-        color: var(--theme-text-primary);
-      }
-    }
-  }
-
-  .timer-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-
-    .time-large {
-      font-size: 48px;
-      font-weight: 700;
-      color: var(--theme-text-primary);
-      letter-spacing: 2px;
-      font-feature-settings: 'tnum'; // Tabular numbers for consistent width
-    }
-
-    ion-progress-bar {
-      width: 100%;
-      height: 8px;
-      border-radius: 4px;
-    }
-
-    .timer-controls {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      margin-top: 8px;
-
-      ion-button {
-        margin: 0;
-      }
-    }
-  }
-
-  .collapse-hint {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    margin-top: 12px;
-    color: var(--theme-text-secondary);
-    font-size: 12px;
-
-    ion-icon {
-      font-size: 16px;
-    }
-  }
 }
 
-// Animations
+.timer-expanded .timer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.timer-expanded .timer-info small {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.timer-expanded .timer-info h3 {
+  margin: 4px 0 0 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--theme-text-primary);
+}
+
+.timer-expanded .timer-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.timer-expanded .time-large {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+  letter-spacing: 2px;
+  font-feature-settings: 'tnum';
+}
+
+.timer-expanded ion-progress-bar {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+}
+
+.timer-expanded .timer-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.timer-expanded .collapse-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 12px;
+  color: var(--theme-text-secondary);
+  font-size: 12px;
+}
+
+.timer-expanded .collapse-hint ion-icon {
+  font-size: 16px;
+}
+
+/* Animations */
 @keyframes completePulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
-// Responsive
+/* Responsive */
 @media (max-width: 360px) {
   .rest-timer-container {
-    bottom: 70px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
     right: 12px;
+  }
 
-    &.expanded {
-      right: 12px;
-      left: 12px;
-    }
+  .rest-timer-container.expanded {
+    right: 12px;
+    left: 12px;
   }
 
   .timer-bubble {
     width: 70px;
     height: 70px;
     border-radius: 35px;
-
-    .timer-text .time-display {
-      font-size: 16px;
-    }
   }
 
-  .timer-expanded .timer-body .time-large {
+  .timer-text .time-display {
+    font-size: 16px;
+  }
+
+  .timer-expanded .time-large {
     font-size: 40px;
   }
 }

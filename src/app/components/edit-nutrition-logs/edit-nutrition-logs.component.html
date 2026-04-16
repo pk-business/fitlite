@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Edit Nutrition Logs</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (logs.length === 0) {
+    <div class="empty-state">
+      <ion-icon name="document-outline"></ion-icon>
+      <p>No nutrition logs found yet.<br>Start logging your daily intake!</p>
+    </div>
+  }
+
+  @for (log of logs; track log.date) {
+    <ion-card class="log-card">
+      <ion-card-header>
+        <ion-card-title class="log-date">{{ formatDate(log.date) }}</ion-card-title>
+        <ion-card-subtitle>{{ log.date }}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="fields-grid">
+          <!-- Calories -->
+          <div class="field-item">
+            <ion-label>Calories (kcal)</ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="log.caloriesConsumed"
+              [placeholder]="log.caloriesGoal.toString()"
+              inputmode="decimal"
+              fill="outline"
+            ></ion-input>
+            <span class="goal-hint">Goal: {{ log.caloriesGoal }} kcal</span>
+          </div>
+
+          <!-- Protein -->
+          <div class="field-item">
+            <ion-label>Protein (g)</ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="log.proteinConsumed"
+              [placeholder]="log.proteinGoal.toString()"
+              inputmode="decimal"
+              fill="outline"
+            ></ion-input>
+            <span class="goal-hint">Goal: {{ log.proteinGoal }}g</span>
+          </div>
+
+          <!-- Carbs -->
+          <div class="field-item">
+            <ion-label>Carbs (g)</ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="log.carbsConsumed"
+              [placeholder]="log.carbsGoal.toString()"
+              inputmode="decimal"
+              fill="outline"
+            ></ion-input>
+            <span class="goal-hint">Goal: {{ log.carbsGoal }}g</span>
+          </div>
+
+          <!-- Fat -->
+          <div class="field-item">
+            <ion-label>Fat (g)</ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="log.fatConsumed"
+              [placeholder]="log.fatGoal.toString()"
+              inputmode="decimal"
+              fill="outline"
+            ></ion-input>
+            <span class="goal-hint">Goal: {{ log.fatGoal }}g</span>
+          </div>
+        </div>
+
+        <ion-button
+          expand="block"
+          fill="outline"
+          (click)="save(log)"
+          [disabled]="isSaving"
+          class="save-btn"
+        >
+          <ion-icon slot="start" name="checkmark-outline"></ion-icon>
+          Save {{ formatDate(log.date) }}
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  }
+</ion-content>

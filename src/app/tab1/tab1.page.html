@@ -43,19 +43,114 @@
           <p class="date">{{ todayName }}, {{ currentDate | date:'MMM d, y' }}</p>
         </ion-card-content>
       </ion-card>
+
       <!-- Today's Workout Section -->
-      <!-- <div class="section-header">
-        <ion-icon name="barbell-outline"></ion-icon>
-        <h2>Today's Workout</h2>
-      </div> -->
       <app-today-workout></app-today-workout>
+
       <!-- Today's Meals Section -->
       <div class="section-header">
         <ion-icon name="restaurant-outline"></ion-icon>
         <h2>Today's Meals</h2>
       </div>
+
+      <!-- Nutrition Goals Card -->
+      @if (userProfile) {
+      <ion-card class="nutrition-card">
+        <ion-card-header>
+          <div class="nutrition-card-header">
+            <ion-card-title>Daily Nutrition Goals</ion-card-title>
+            <ion-button fill="clear" size="small" (click)="openEditNutritionLogs()" class="edit-logs-btn">
+              <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-card-header>
+        <ion-card-content>
+          @if (userProfile.recommendedCalories && userProfile.recommendedProtein) {
+          <div class="nutrition-goals">
+            <!-- Calories -->
+            <div class="goal-item">
+              <div class="goal-content">
+                <div class="goal-header">
+                  <span class="current">{{ todaysNutrition?.caloriesConsumed || 0 }}</span><br>
+                  <span class="remaining">{{ getRemainingCalories() }} kcal left</span>
+                </div>
+                <p>CAL</p>
+                <div class="progress-bar-container">
+                  <div class="progress-bar calories" [style.width.%]="getCalorieProgress()"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Protein -->
+            <div class="goal-item">
+              <div class="goal-content">
+                <div class="goal-header">
+                  <span class="current">{{ todaysNutrition?.proteinConsumed || 0 }}</span><br>
+                  <span class="remaining">{{ getRemainingProtein() }}g left</span>
+                </div>
+                <p>PROT</p>
+                <div class="progress-bar-container">
+                  <div class="progress-bar protein" [style.width.%]="getProteinProgress()"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Carbs -->
+            @if (userProfile.recommendedCarbs) {
+            <div class="goal-item">
+              <div class="goal-content">
+                <div class="goal-header">
+                  <span class="current">{{ todaysNutrition?.carbsConsumed || 0 }}</span><br>
+                  <span class="remaining">{{ getRemainingCarbs() }}g left</span>
+                </div>
+                <p>CARBS</p>
+                <div class="progress-bar-container">
+                  <div class="progress-bar carbs" [style.width.%]="getCarbsProgress()"></div>
+                </div>
+              </div>
+            </div>
+            }
+
+            <!-- Fat -->
+            @if (userProfile.recommendedFat) {
+            <div class="goal-item">
+              <div class="goal-content">
+                <div class="goal-header">
+                  <span class="current">{{ todaysNutrition?.fatConsumed || 0 }}</span><br>
+                  <span class="remaining">{{ getRemainingFat() }}g left</span>
+                </div>
+                <p>FAT</p>
+                <div class="progress-bar-container">
+                  <div class="progress-bar fat" [style.width.%]="getFatProgress()"></div>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+          <p class="nutrition-explanation">
+            Your personalized targets based on your profile. Track your intake to reach your goals!
+          </p>
+          } @else {
+          <p class="nutrition-explanation">
+            Complete your profile to get personalized nutrition recommendations and track your progress!
+          </p>
+          <ion-button fill="outline" routerLink="/profile">
+            <ion-icon slot="start" name="person-outline"></ion-icon>
+            Update Profile
+          </ion-button>
+          }
+          <ion-button fill="outline" expand="block" (click)="openNutritionLogger()">
+            <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+            Log Today's Nutrition
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+      }
+
       <app-today-meals></app-today-meals>
     </div>
   }
 </ion-content>
+
+<app-rest-timer></app-rest-timer>
 

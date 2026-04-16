@@ -5,6 +5,7 @@ import { StorageService } from '../services/storage.service';
 import { UserProfileService } from '../services/user-profile.service';
 import { ScheduleService } from '../services/schedule.service';
 import { ThemeService, ThemeType } from '../services/theme.service';
+import { NutritionService } from '../services/nutrition.service';
 import { AppSettings, UserProfile } from '../models';
 import { TitleCasePipe } from '@angular/common';
 
@@ -12,10 +13,10 @@ import { TitleCasePipe } from '@angular/common';
  * SettingsPage allows users to manage app settings and data
  */
 @Component({
-    selector: 'app-settings',
-    templateUrl: './settings.page.html',
-    styleUrls: ['./settings.page.scss'],
-    imports: [IonicModule, TitleCasePipe, RouterLink]
+  selector: 'app-settings',
+  templateUrl: './settings.page.html',
+  styleUrls: ['./settings.page.scss'],
+  imports: [IonicModule, TitleCasePipe, RouterLink],
 })
 export class SettingsPage implements OnInit {
   settings: AppSettings | null = null;
@@ -27,11 +28,12 @@ export class SettingsPage implements OnInit {
     private userProfileService: UserProfileService,
     private scheduleService: ScheduleService,
     private themeService: ThemeService,
+    private nutritionService: NutritionService,
     private router: Router,
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
     private actionSheetCtrl: ActionSheetController,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   async ngOnInit() {
@@ -82,20 +84,23 @@ export class SettingsPage implements OnInit {
     const actionSheet = await this.actionSheetCtrl.create({
       header: 'Select App Theme',
       buttons: [
-        ...themes.map(theme => ({
+        ...themes.map((theme) => ({
           text: theme.name,
-          icon: currentTheme === theme.value ? 'checkmark-circle' : 'ellipse-outline',
+          icon:
+            currentTheme === theme.value
+              ? 'checkmark-circle'
+              : 'ellipse-outline',
           cssClass: currentTheme === theme.value ? 'action-sheet-selected' : '',
           handler: () => {
             this.selectTheme(theme.value);
-          }
+          },
         })),
         {
           text: 'Cancel',
           icon: 'close',
-          role: 'cancel'
-        }
-      ]
+          role: 'cancel',
+        },
+      ],
     });
 
     await actionSheet.present();
@@ -106,14 +111,17 @@ export class SettingsPage implements OnInit {
    */
   async selectTheme(theme: ThemeType): Promise<void> {
     this.themeService.applyTheme(theme);
-    
+
     // Update user profile if needed
     if (this.userProfile) {
       this.userProfile.theme = theme;
       await this.userProfileService.saveProfile(this.userProfile);
     }
 
-    await this.showToast(`Theme changed to ${this.themeService.getThemeName(theme)}`, 'success');
+    await this.showToast(
+      `Theme changed to ${this.themeService.getThemeName(theme)}`,
+      'success',
+    );
     this.cdr.markForCheck();
   }
 
@@ -122,11 +130,14 @@ export class SettingsPage implements OnInit {
    */
   async toggleUnits(event: any): Promise<void> {
     const useMetric = event.detail.checked;
-    
+
     if (this.settings) {
       this.settings.useMetricUnits = useMetric;
       await this.scheduleService.updateSettings({ useMetricUnits: useMetric });
-      await this.showToast(`Units changed to ${useMetric ? 'Metric' : 'Imperial'}`, 'success');
+      await this.showToast(
+        `Units changed to ${useMetric ? 'Metric' : 'Imperial'}`,
+        'success',
+      );
     }
   }
 
@@ -136,11 +147,12 @@ export class SettingsPage implements OnInit {
   async resetAllData(): Promise<void> {
     const alert = await this.alertCtrl.create({
       header: 'Reset All Data',
-      message: 'Are you sure you want to delete all your data? This action cannot be undone.',
+      message:
+        'Are you sure you want to delete all your data? This action cannot be undone.',
       buttons: [
         {
           text: 'Cancel',
-          role: 'cancel'
+          role: 'cancel',
         },
         {
           text: 'Reset',
@@ -149,21 +161,21 @@ export class SettingsPage implements OnInit {
             try {
               // Clear all storage
               await this.storageService.clear();
-              
+
               // Cancel all notifications
               await this.scheduleService.disableAllReminders();
-              
+
               await this.showToast('All data has been reset', 'success');
-              
+
               // Navigate to profile page
               this.router.navigate(['/profile']);
             } catch (error) {
               console.error('Error resetting data:', error);
               await this.showToast('Error resetting data', 'danger');
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     await alert.present();
@@ -177,22 +189,23 @@ export class SettingsPage implements OnInit {
       const data = {
         profile: this.userProfile,
         settings: this.settings,
-        exportDate: new Date().toISOString()
+        exportDate: new Date().toISOString(),
       };
 
       const dataStr = JSON.stringify(data, null, 2);
-      
+
       // In a real app, you would use Capacitor Filesystem to save this
       // For now, just copy to clipboard or show alert
       const alert = await this.alertCtrl.create({
         header: 'Export Data',
-        message: 'Your data has been prepared. In a full implementation, this would be saved to a file.',
-        buttons: ['OK']
+        message:
+          'Your data has been prepared. In a full implementation, this would be saved to a file.',
+        buttons: ['OK'],
       });
-      
+
       await alert.present();
       console.log('Exported data:', dataStr);
-      
+
       await this.showToast('Data export prepared', 'success');
     } catch (error) {
       console.error('Error exporting data:', error);
@@ -211,7 +224,7 @@ export class SettingsPage implements OnInit {
         <p><strong>FitLite</strong> is a lightweight fitness app that helps you achieve your fitness goals with personalized workout and diet plans.</p>
         <p>Built with Angular, Ionic, and Capacitor.</p>
       `,
-      buttons: ['OK']
+      buttons: ['OK'],
     });
 
     await alert.present();
@@ -225,7 +238,7 @@ export class SettingsPage implements OnInit {
       message,
       duration: 2000,
       color,
-      position: 'bottom'
+      position: 'bottom',
     });
     await toast.present();
   }
@@ -235,7 +248,7 @@ export class SettingsPage implements OnInit {
    */
   get userBMI(): string {
     if (!this.userProfile) return '--';
-    
+
     const bmi = this.userProfileService.calculateBMI(this.userProfile);
     return bmi.toFixed(1);
   }
@@ -245,7 +258,7 @@ export class SettingsPage implements OnInit {
    */
   get targetCalories(): number {
     if (!this.userProfile) return 0;
-    
-    return this.userProfileService.calculateTargetCalories(this.userProfile);
+
+    return this.nutritionService.calculateRecommendedCalories(this.userProfile);
   }
 }
