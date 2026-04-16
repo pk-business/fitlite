@@ -39,6 +39,10 @@ export class TodayWorkoutComponent implements OnInit {
     await this.loadSettings();
   }
 
+  ionViewWillEnter() {
+    this.loadTodaysWorkout();
+  }
+
   /**
    * Load settings to get metric preference
    */
@@ -65,7 +69,7 @@ export class TodayWorkoutComponent implements OnInit {
       console.error('Error loading today\'s workout:', error);
     } finally {
       this.isLoading = false;
-      this.cdr.markForCheck();
+      this.cdr.detectChanges();
     }
   }
 

@@ -42,6 +42,10 @@ export class Tab2Page implements OnInit {
     await this.loadSettings();
   }
 
+  ionViewWillEnter() {
+    this.loadWorkoutPlan();
+  }
+
   async loadSettings(): Promise<void> {
     try {
       const settings = await this.scheduleService.getSettings();
@@ -70,7 +74,7 @@ export class Tab2Page implements OnInit {
       console.error('Error loading workout plan:', error);
     } finally {
       this.isLoading = false;
-      this.cdr.markForCheck();
+      this.cdr.detectChanges();
     }
   }
 
