@@ -95,7 +95,7 @@ export class Tab1Page implements OnInit {
       this.hasProfile = false;
     } finally {
       this.isLoading = false;
-      this.cdr.markForCheck();
+      this.cdr.detectChanges();
     }
   }
 

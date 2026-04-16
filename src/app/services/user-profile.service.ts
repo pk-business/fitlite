@@ -35,6 +35,10 @@ export class UserProfileService {
         // Ensure nutrition recommendations are up to date
         const updatedProfile =
           this.nutritionService.updateProfileWithRecommendations(profile);
+        // If recommendations were missing, persist them back to storage
+        if (!profile.recommendedCalories || !profile.recommendedProtein) {
+          await this.storage.set(USER_PROFILE_KEY, updatedProfile);
+        }
         this.profileSubject.next(updatedProfile);
         return updatedProfile;
       }
