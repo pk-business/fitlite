@@ -477,6 +477,8 @@ export class PlanService {
     if (dayIndex === -1) {
       // Day doesn't exist, add it
       plan.weeklyPlan.push(day);
+      // Sort by day of week so days appear in correct order
+      plan.weeklyPlan.sort((a, b) => a.dayOfWeek - b.dayOfWeek);
     } else {
       // Update existing day
       plan.weeklyPlan[dayIndex] = day;

@@ -26,12 +26,11 @@
           }
         </p>
         
-        <!-- Last performance (when collapsed) -->
-        @if (!isExpanded && progress && progress.dataPoints.length > 0) {
-          <p class="last-performance">
-            <ion-icon [name]="progress.trend === 'improving' ? 'trending-up' : progress.trend === 'declining' ? 'trending-down' : 'remove'" 
-                     [color]="progressService.getTrendColor(progress.trend)"></ion-icon>
-            {{ progress.insight }}
+        <!-- Previous log (shows last workout weights) -->
+        @if (!isExpanded && getPreviousLog()) {
+          <p class="previous-log">
+            <ion-icon name="time-outline"></ion-icon>
+            {{ getPreviousLog() }}
           </p>
         }
       </div>

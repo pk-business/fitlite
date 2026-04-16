@@ -12,15 +12,26 @@
   touch-action: pan-y; // Allow vertical scrolling but handle horizontal swipes
 
   &.complete {
-    background: rgba(16, 185, 129, 0.1);
+    background: #2d7349;
     
     .set-number {
       background: var(--ion-color-success);
       color: white;
     }
 
-    .input-group ion-input {
-      color: var(--ion-color-medium);
+    .input-group {
+      ion-input {
+        color: white;
+        --color: white;
+      }
+
+      .input-label {
+        color: rgba(255, 255, 255, 0.85);
+      }
+    }
+
+    .multiply-symbol {
+      color: rgba(255, 255, 255, 0.85);
     }
   }
 

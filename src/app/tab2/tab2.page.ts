@@ -5,7 +5,7 @@ import { PlanService } from '../services/plan.service';
 import { UserProfileService } from '../services/user-profile.service';
 import { ExerciseLogService } from '../services/exercise-log.service';
 import { ScheduleService } from '../services/schedule.service';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { IonicModule, ModalController, AlertController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { ExerciseLogModal } from '../components/exercise-log-modal/exercise-log-modal.component';
 
@@ -34,6 +34,7 @@ export class Tab2Page implements OnInit {
     private scheduleService: ScheduleService,
     private router: Router,
     private modalCtrl: ModalController,
+    private alertCtrl: AlertController,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -76,6 +77,73 @@ export class Tab2Page implements OnInit {
       this.isLoading = false;
       this.cdr.detectChanges();
     }
+  }
+
+  /**
+   * Get days not yet in the plan
+   */
+  get availableDays(): { value: number; label: string }[] {
+    const used = new Set((this.workoutPlan?.weeklyPlan || []).map(d => d.dayOfWeek));
+    return this.dayNames
+      .map((label, value) => ({ value, label }))
+      .filter(d => !used.has(d.value));
+  }
+
+  /**
+   * Show alert to pick day + focus, then add it
+   */
+  async promptAddDay(): Promise<void> {
+    const dayInputs = this.availableDays.map(d => ({
+      type: 'radio' as const,
+      label: d.label,
+      value: d.value,
+      checked: false
+    }));
+
+    const dayAlert = await this.alertCtrl.create({
+      header: 'Select Day',
+      inputs: dayInputs,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Next',
+          handler: (dayOfWeek: number) => {
+            this.promptFocus(dayOfWeek);
+          }
+        }
+      ]
+    });
+    await dayAlert.present();
+  }
+
+  async promptFocus(dayOfWeek: number): Promise<void> {
+    const focusAlert = await this.alertCtrl.create({
+      header: 'Select Focus',
+      inputs: [
+        { type: 'radio', label: 'Full Body', value: 'full', checked: true },
+        { type: 'radio', label: 'Upper Body', value: 'upper' },
+        { type: 'radio', label: 'Lower Body', value: 'lower' },
+        { type: 'radio', label: 'Cardio', value: 'cardio' }
+      ],
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Add',
+          handler: async (focus: 'full' | 'upper' | 'lower' | 'cardio') => {
+            await this.addWorkoutDay(dayOfWeek, focus);
+          }
+        }
+      ]
+    });
+    await focusAlert.present();
+  }
+
+  async addWorkoutDay(dayOfWeek: number, focus: 'full' | 'upper' | 'lower' | 'cardio'): Promise<void> {
+    const newDay: WorkoutDay = { dayOfWeek, focus, exercises: [] };
+    await this.planService.updateWorkoutDay(dayOfWeek, newDay);
+    await this.loadWorkoutPlan();
+    // Navigate to builder so user can add exercises immediately
+    this.router.navigate(['/workout-builder'], { queryParams: { day: dayOfWeek } });
   }
 
   /**
@@ -183,8 +251,9 @@ export class Tab2Page implements OnInit {
     }
     
     // Format: "20kg×12, 20kg×10, 20kg×8"
+    const unit = this.useMetric ? 'kg' : 'lbs';
     const setsStr = lastLog.sets
-      .map(set => `${set.weight || 0}kg×${set.reps}`)
+      .map(set => `${set.weight || 0}${unit}×${set.reps}`)
       .join(', ');
     
     const prefix = lastLog.date === today ? 'Today' : 'Last';

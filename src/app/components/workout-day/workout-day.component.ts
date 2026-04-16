@@ -90,8 +90,9 @@ export class WorkoutDayComponent {
     }
     
     // Format: "20kg×12, 20kg×10, 20kg×8"
+    const unit = this.useMetric ? 'kg' : 'lbs';
     const setsStr = lastLog.sets
-      .map(set => `${set.weight || 0}kg×${set.reps}`)
+      .map(set => `${set.weight || 0}${unit}×${set.reps}`)
       .join(', ');
     
     const prefix = lastLog.date === today ? 'Today' : 'Last';

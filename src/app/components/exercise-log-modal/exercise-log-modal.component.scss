@@ -101,7 +101,26 @@
   transition: all 0.3s ease;
 
   &.completed {
-    background: var(--ion-color-success-tint);
+    background: #2d7349;
+
+    .set-header .set-number span {
+      color: white;
+    }
+
+    .set-inputs .input-group {
+      ion-label {
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      .input-wrapper .unit {
+        color: rgba(255, 255, 255, 0.85);
+      }
+    }
+
+    .set-volume {
+      color: rgba(255, 255, 255, 0.85);
+      border-top-color: rgba(255, 255, 255, 0.2);
+    }
   }
 
   ion-card-content {

@@ -308,6 +308,26 @@ export class EnhancedWorkoutCardComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Get previous log summary (e.g., "Last: 80kg×10, 80kg×8")
+   */
+  getPreviousLog(): string {
+    const today = new Date().toISOString().split('T')[0];
+    const lastLog = this.exerciseLogService.getLastLogForExercise(this.exercise.name);
+    
+    if (!lastLog) {
+      return '';
+    }
+    
+    const unit = this.useMetric ? 'kg' : 'lbs';
+    const setsStr = lastLog.sets
+      .map(set => `${set.weight || 0}${unit}×${set.reps}`)
+      .join(', ');
+    
+    const prefix = lastLog.date === today ? 'Today' : 'Last';
+    return `${prefix}: ${setsStr}`;
+  }
+
+  /**
    * Get completion percentage
    */
   getCompletionPercentage(): number {

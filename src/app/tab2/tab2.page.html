@@ -94,6 +94,14 @@
           </ion-card-content>
         </ion-card>
       }
+      <!-- Add a Day -->
+      @if (availableDays.length > 0) {
+        <ion-button expand="block" fill="outline" class="add-day-btn" (click)="promptAddDay()">
+          <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+          Add Workout Day
+        </ion-button>
+      }
+
       <!-- Rest Days Info -->
       <ion-card class="rest-info-card">
         <ion-card-content>
