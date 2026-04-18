@@ -46,6 +46,10 @@ export interface ActiveSet {
   reps: number;
   isComplete: boolean;
   restTimerActive: boolean;
+  // Cardio fields
+  durationMinutes?: number;
+  distanceKm?: number;
+  intensity?: 'low' | 'moderate' | 'high';
 }
 
 /**

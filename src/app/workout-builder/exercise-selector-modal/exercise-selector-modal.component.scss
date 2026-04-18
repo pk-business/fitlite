@@ -363,6 +363,54 @@
 .esm-field-row { display: flex; gap: 8px; margin-bottom: 10px; }
 
 .esm-field--third { flex: 1; min-width: 0; margin-bottom: 0; }
+.esm-field--half  { flex: 1; min-width: 0; margin-bottom: 0; }
+
+/* Cardio hint pill */
+.esm-cardio-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(var(--ion-color-danger-rgb), 0.1);
+  color: var(--ion-color-danger);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+
+  ion-icon { font-size: 16px; }
+
+  .esm-switch-btn {
+    margin-left: auto;
+    --color: var(--ion-color-danger);
+    font-size: 12px;
+    height: 26px;
+    --padding-start: 6px;
+    --padding-end: 6px;
+  }
+}
+
+/* Field label for intensity */
+.esm-field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ion-color-medium);
+  margin: 0 0 6px 4px;
+}
+
+/* Intensity segment inside custom form */
+.esm-intensity-seg {
+  --background: var(--ion-color-light);
+  border-radius: 10px;
+  margin-bottom: 10px;
+
+  ion-segment-button {
+    --padding-start: 4px;
+    --padding-end: 4px;
+    font-size: 11px;
+    min-height: 34px;
+  }
+}
 
 .esm-save-btn {
   --border-radius: 14px;

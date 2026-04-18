@@ -16,6 +16,7 @@ import {
   LibraryExercise,
   ExerciseFilters,
 } from '../../models/exercise-library.model';
+import { isCardioExercise } from '../../models/exercise-log.model';
 
 /**
  * ExerciseSelectorModal — full "Add Exercise" flow.
@@ -65,6 +66,9 @@ export class ExerciseSelectorModal implements OnInit, OnDestroy {
 
   // ── Custom form ─────────────────────────────────────────────────────────
   customForm!: FormGroup;
+  /** True when the custom exercise name matches cardio keywords */
+  isCustomFormCardio = false;
+  forceStrength = false;
 
   private destroy$ = new Subject<void>();
 
@@ -81,6 +85,7 @@ export class ExerciseSelectorModal implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.buildCustomForm();
+    this.subscribeNameToCardioDetection();
 
     this.libraryService.filteredExercises$
       .pipe(takeUntil(this.destroy$))
@@ -171,12 +176,23 @@ export class ExerciseSelectorModal implements OnInit, OnDestroy {
 
   openCustomSheet(): void {
     this.buildCustomForm();
+    this.subscribeNameToCardioDetection();
     this.showCustomSheet = true;
   }
 
   closeCustomSheet(): void {
     this.showCustomSheet = false;
-    this.customForm.reset({ sets: 3, reps: 12, weight: 0 });
+    this.isCustomFormCardio = false;
+    this.forceStrength = false;
+    this.customForm.reset({ sets: 3, reps: 12, weight: 0, durationMinutes: 20, distanceKm: null, intensity: 'moderate' });
+  }
+
+  private subscribeNameToCardioDetection(): void {
+    this.customForm.get('name')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((name: string) => {
+        this.isCustomFormCardio = isCardioExercise(name || '') && !this.forceStrength;
+      });
   }
 
   async saveCustomExercise(): Promise<void> {
@@ -186,16 +202,19 @@ export class ExerciseSelectorModal implements OnInit, OnDestroy {
     }
     this.isSubmittingCustom = true;
     try {
-      const { name, sets, reps, weight } = this.customForm.value;
+      const { name } = this.customForm.value;
+      const isCardio = this.isCustomFormCardio;
       const newEx = await this.libraryService.addCustomExercise({
         name,
-        primaryMuscle: 'Custom',
+        primaryMuscle: isCardio ? 'Custom' : 'Custom',
         secondaryMuscles: [],
         equipment: ['Other'],
         difficulty: 'beginner',
         mediaUrl: '',
         thumbnailUrl: '',
-        tags: ['custom'],
+        tags: isCardio ? ['custom', 'cardio'] : ['custom'],
+        // Store cardio category so the log modal detects it
+        ...(isCardio ? { category: 'cardio' } as any : {}),
       });
       await this.selectExercise(newEx);
     } finally {
@@ -237,12 +256,14 @@ export class ExerciseSelectorModal implements OnInit, OnDestroy {
           Validators.maxLength(60),
         ],
       ],
+      // Strength fields
       sets: [3, [Validators.required, Validators.min(1), Validators.max(20)]],
       reps: [12, [Validators.required, Validators.min(1), Validators.max(200)]],
-      weight: [
-        0,
-        [Validators.required, Validators.min(0), Validators.max(1000)],
-      ],
+      weight: [0, [Validators.required, Validators.min(0), Validators.max(1000)]],
+      // Cardio fields
+      durationMinutes: [20, [Validators.min(1), Validators.max(600)]],
+      distanceKm: [null, [Validators.min(0), Validators.max(1000)]],
+      intensity: ['moderate'],
     });
   }
 }

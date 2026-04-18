@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { Subject, takeUntil } from 'rxjs';
 import { Exercise, ExerciseSessionData, ActiveSet, ExerciseProgress } from '../../models';
+import { isCardioExercise } from '../../models/exercise-log.model';
 import { ExerciseLogService } from '../../services/exercise-log.service';
 import { RestTimerService } from '../../services/rest-timer.service';
 import { ProgressService } from '../../services/progress.service';
@@ -53,6 +54,10 @@ export class EnhancedWorkoutCardComponent implements OnInit, OnDestroy {
   progress?: ExerciseProgress;
   isExpanded: boolean = false;
   
+  get isCardio(): boolean {
+    return isCardioExercise(this.exercise?.name || '', this.exercise?.category);
+  }
+
   private destroy$ = new Subject<void>();
 
   constructor(

@@ -38,6 +38,7 @@ export class InlineSetLoggerComponent {
   @Input() previousReps?: number;
   @Input() isFirst: boolean = false;
   @Input() useMetric: boolean = false;
+  @Input() isCardio: boolean = false;
   
   @Output() setCompleted = new EventEmitter<ActiveSet>();
   @Output() setDeleted = new EventEmitter<number>();
@@ -75,7 +76,10 @@ export class InlineSetLoggerComponent {
    * Complete the current set
    */
   completeSet(): void {
-    if (!this.set.isComplete && this.set.weight > 0 && this.set.reps > 0) {
+    const valid = this.isCardio
+      ? (this.set.durationMinutes ?? 0) > 0
+      : (this.set.weight > 0 && this.set.reps > 0);
+    if (!this.set.isComplete && valid) {
       this.set.isComplete = true;
       this.setCompleted.emit(this.set);
       this.cdr.markForCheck();

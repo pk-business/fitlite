@@ -234,3 +234,16 @@
     }
   }
 }
+
+/* Intensity select inside set row */
+.intensity-group {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.intensity-select {
+  --padding-start: 4px;
+  --padding-end: 4px;
+  font-size: 12px;
+  max-width: 72px;
+}

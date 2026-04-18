@@ -3,6 +3,7 @@ import { IonicModule, ModalController, ToastController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ExerciseLog, SetLog, Exercise } from '../../models';
+import { isCardioExercise } from '../../models/exercise-log.model';
 import { ExerciseLogService } from '../../services/exercise-log.service';
 
 /**
@@ -26,6 +27,10 @@ export class ExerciseLogModal implements OnInit {
   existingLog: ExerciseLog | null = null;
   previousLog: ExerciseLog | null = null;
   isLoading = false;
+
+  get isCardio(): boolean {
+    return isCardioExercise(this.exercise?.name || '', this.exercise?.category);
+  }
 
   constructor(
     private modalCtrl: ModalController,
@@ -73,13 +78,25 @@ export class ExerciseLogModal implements OnInit {
    */
   initializeSets(): void {
     this.sets = [];
-    for (let i = 0; i < this.exercise.sets; i++) {
-      this.sets.push({
-        setNumber: i + 1,
-        reps: this.exercise.reps,
-        weight: 0,
-        completed: false
-      });
+    const count = this.exercise.sets || 1;
+    for (let i = 0; i < count; i++) {
+      if (this.isCardio) {
+        this.sets.push({
+          setNumber: i + 1,
+          reps: 0,
+          completed: false,
+          durationMinutes: 20,
+          distanceKm: undefined,
+          intensity: 'moderate',
+        });
+      } else {
+        this.sets.push({
+          setNumber: i + 1,
+          reps: this.exercise.reps,
+          weight: 0,
+          completed: false,
+        });
+      }
     }
   }
 
@@ -87,12 +104,24 @@ export class ExerciseLogModal implements OnInit {
    * Add a new set
    */
   addSet(): void {
-    this.sets.push({
-      setNumber: this.sets.length + 1,
-      reps: this.exercise.reps,
-      weight: this.sets.length > 0 ? this.sets[this.sets.length - 1].weight : 0,
-      completed: false
-    });
+    const last = this.sets.length > 0 ? this.sets[this.sets.length - 1] : null;
+    if (this.isCardio) {
+      this.sets.push({
+        setNumber: this.sets.length + 1,
+        reps: 0,
+        completed: false,
+        durationMinutes: last?.durationMinutes ?? 20,
+        distanceKm: last?.distanceKm,
+        intensity: last?.intensity ?? 'moderate',
+      });
+    } else {
+      this.sets.push({
+        setNumber: this.sets.length + 1,
+        reps: this.exercise.reps,
+        weight: last?.weight ?? 0,
+        completed: false,
+      });
+    }
   }
 
   /**
@@ -120,6 +149,15 @@ export class ExerciseLogModal implements OnInit {
     if (this.sets.length === 0) {
       await this.showToast('Add at least one set', 'warning');
       return;
+    }
+
+    // For cardio, ensure at least a duration is set
+    if (this.isCardio) {
+      const anyFilled = this.sets.some(s => (s.durationMinutes ?? 0) > 0);
+      if (!anyFilled) {
+        await this.showToast('Enter duration for at least one interval', 'warning');
+        return;
+      }
     }
 
     this.isLoading = true;
@@ -183,12 +221,21 @@ export class ExerciseLogModal implements OnInit {
   }
 
   /**
-   * Get total volume (weight × reps)
+   * Get total volume (strength) or total duration (cardio)
    */
   get totalVolume(): number {
-    return this.sets.reduce((sum, set) => {
-      return sum + ((set.weight || 0) * set.reps);
-    }, 0);
+    if (this.isCardio) {
+      return this.sets.reduce((sum, s) => sum + (s.durationMinutes || 0), 0);
+    }
+    return this.sets.reduce((sum, set) => sum + ((set.weight || 0) * set.reps), 0);
+  }
+
+  get totalVolumeLabel(): string {
+    return this.isCardio ? 'Total Min' : 'Total Volume';
+  }
+
+  get totalVolumeUnit(): string {
+    return this.isCardio ? 'min' : (this.useMetric ? 'kg' : 'lbs');
   }
 
   /**

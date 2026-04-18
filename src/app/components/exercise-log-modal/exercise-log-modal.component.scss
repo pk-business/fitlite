@@ -260,3 +260,49 @@ ion-footer {
     padding: 0.5rem;
   }
 }
+
+/* Cardio exercise badge */
+.cardio-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ion-color-danger);
+  font-size: 13px;
+  font-weight: 600;
+  margin: 2px 0 0 0;
+
+  ion-icon {
+    font-size: 15px;
+  }
+}
+
+/* Cardio inputs layout — stacked to give more room for distance */
+.cardio-inputs {
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+/* Intensity segment row */
+.intensity-row {
+  margin-top: 10px;
+
+  .intensity-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ion-color-medium);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .intensity-segment {
+    --background: var(--ion-color-light);
+    border-radius: 8px;
+
+    ion-segment-button {
+      --padding-start: 4px;
+      --padding-end: 4px;
+      font-size: 11px;
+      min-height: 32px;
+    }
+  }
+}

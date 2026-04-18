@@ -62,7 +62,7 @@
 
       @if (exerciseNames.length > 0) {
         <div class="exercise-filter">
-          <ion-segment [value]="selectedExercise" (ionChange)="selectedExercise = $any($event).detail.value" scrollable>
+          <ion-segment [value]="selectedExercise" (ionChange)="onExerciseChange($any($event).detail.value)" scrollable>
             @for (name of exerciseNames; track name) {
               <ion-segment-button [value]="name">
                 <ion-label>{{ name }}</ion-label>
@@ -73,11 +73,46 @@
 
         <ion-card class="chart-card">
           <ion-card-content>
-            <p class="chart-subtitle">Max weight lifted over time for: <strong>{{ selectedExercise }}</strong></p>
-            <div class="no-data-chart">
-              <ion-icon name="bar-chart-outline" color="medium"></ion-icon>
-              <p>Log more sets to see your progress trend!</p>
-            </div>
+            <p class="chart-subtitle">Max weight lifted (last 30 days) for: <strong>{{ selectedExercise }}</strong></p>
+            @if (exerciseProgressData.length >= 2) {
+              <div class="progress-chart">
+                <svg viewBox="0 0 280 90" class="progress-svg">
+                  <defs>
+                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stop-color="var(--ion-color-primary)" stop-opacity="0.3"/>
+                      <stop offset="100%" stop-color="var(--ion-color-primary)" stop-opacity="0.02"/>
+                    </linearGradient>
+                  </defs>
+                  <path
+                    [attr.d]="getProgressSvgPath() + ' L 280,88 L 0,88 Z'"
+                    fill="url(#progressGradient)"
+                  />
+                  <path
+                    [attr.d]="getProgressSvgPath()"
+                    fill="none"
+                    stroke="var(--ion-color-primary)"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  @for (pt of getProgressPoints(); track $index) {
+                    <circle [attr.cx]="pt.x" [attr.cy]="pt.y" r="3" fill="var(--ion-color-primary)"/>
+                  }
+                </svg>
+                <div class="progress-x-labels">
+                  <span>{{ formatDate(exerciseProgressData[0].date) }}</span>
+                  <span>{{ formatDate(exerciseProgressData[exerciseProgressData.length - 1].date) }}</span>
+                </div>
+                <div class="progress-y-label">
+                  <span>{{ exerciseProgressData[0].maxWeight }} lbs</span>
+                </div>
+              </div>
+            } @else {
+              <div class="no-data-chart">
+                <ion-icon name="bar-chart-outline" color="medium"></ion-icon>
+                <p>Log more sets to see your progress trend!</p>
+              </div>
+            }
           </ion-card-content>
         </ion-card>
       } @else {
@@ -91,43 +126,88 @@
         </ion-card>
       }
 
-      <!-- Body Heat Map -->
+      <!-- Muscle Focus Radar -->
       <div class="section-header">
         <ion-icon name="body-outline"></ion-icon>
         <h2>Muscle Focus</h2>
       </div>
 
-      <ion-card class="chart-card heat-card">
+      <ion-card class="chart-card radar-card">
         <ion-card-content>
-          <p class="chart-subtitle">Body parts worked this week</p>
-          <div class="heat-chart">
-            <div class="donut-area">
-              <svg viewBox="0 0 100 100" class="donut-svg">
-                @for (item of bodyPartData; track item.part; let i = $index) {
-                  <circle
-                    class="donut-segment"
-                    cx="50" cy="50" r="35"
-                    fill="transparent"
-                    [attr.stroke]="item.color"
-                    stroke-width="18"
-                    [attr.stroke-dasharray]="item.percentage + ' ' + (100 - item.percentage)"
-                    [attr.stroke-dashoffset]="getSegmentOffset(i)"
-                  ></circle>
-                }
-                <text x="50" y="46" class="donut-center-text" text-anchor="middle">This</text>
-                <text x="50" y="56" class="donut-center-text" text-anchor="middle">Week</text>
-              </svg>
-            </div>
-            <div class="heat-legend">
-              @for (item of bodyPartData; track item.part) {
-                <div class="legend-item">
-                  <span class="legend-dot" [style.background]="item.color"></span>
-                  <span class="legend-label">{{ item.part }}</span>
-                  <span class="legend-value">{{ item.percentage }}%</span>
-                </div>
-              }
-            </div>
+          <div class="chart-subtitle-row">
+            <p class="chart-subtitle">Body parts worked</p>
+            <ion-select
+              [(ngModel)]="musclePeriod"
+              (ionChange)="onMusclePeriodChange()"
+              interface="popover"
+              class="period-select"
+            >
+              <ion-select-option value="day">Today</ion-select-option>
+              <ion-select-option value="week">This Week</ion-select-option>
+              <ion-select-option value="year">This Year</ion-select-option>
+            </ion-select>
           </div>
+
+          @if (bodyPartData.length > 0) {
+            <div class="radar-chart">
+              <svg viewBox="0 0 100 100" class="radar-svg">
+                <!-- Grid polygons at 25/50/75/100% -->
+                @for (f of [0.25, 0.5, 0.75, 1.0]; track f) {
+                  <polygon
+                    [attr.points]="getGridPolygon(f)"
+                    fill="none"
+                    stroke="var(--ion-color-light-shade)"
+                    stroke-width="0.4"
+                  />
+                }
+                <!-- Axes -->
+                @for (axis of getRadarAxes(); track $index) {
+                  <line
+                    [attr.x1]="axis.x1" [attr.y1]="axis.y1"
+                    [attr.x2]="axis.x2" [attr.y2]="axis.y2"
+                    stroke="var(--ion-color-light-shade)"
+                    stroke-width="0.4"
+                  />
+                }
+                <!-- Data polygon -->
+                <polygon
+                  [attr.points]="getRadarPolygon()"
+                  fill="var(--ion-color-primary)"
+                  fill-opacity="0.25"
+                  stroke="var(--ion-color-primary)"
+                  stroke-width="1.5"
+                  stroke-linejoin="round"
+                />
+                <!-- Labels -->
+                @for (label of radarLabels; track label; let i = $index) {
+                  <text
+                    [attr.x]="getLabelPos(i).x"
+                    [attr.y]="getLabelPos(i).y"
+                    [attr.text-anchor]="getLabelPos(i).anchor"
+                    [attr.fill]="getLabelColor(label)"
+                    font-size="4.8"
+                    dominant-baseline="middle"
+                    font-weight="600"
+                  >{{ label }}</text>
+                }
+              </svg>
+
+              <div class="radar-legend">
+                @for (item of bodyPartData; track item.part) {
+                  <div class="legend-item">
+                    <span class="legend-dot" [style.background]="item.color"></span>
+                    <span class="legend-label">{{ item.part }}</span>
+                    <span class="legend-value">{{ item.percentage }}%</span>
+                  </div>
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="no-data-chart">
+              <ion-icon name="body-outline" color="medium"></ion-icon>
+              <p>Log workouts to see your muscle focus radar</p>
+            </div>
+          }
         </ion-card-content>
       </ion-card>
 

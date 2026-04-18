@@ -19,10 +19,15 @@
       <div class="exercise-info">
         <h3>{{ exercise.name }}</h3>
         <p class="sets-info">
-          {{ sessionData.completedSets.length }}/{{ exercise.sets }} sets
-          × {{ exercise.reps }} reps
-          @if (exercise.restSeconds > 0) {
-            <span class="rest-info">• {{ exercise.restSeconds }}s rest</span>
+          @if (isCardio) {
+            <ion-icon name="heart-outline" class="cardio-icon"></ion-icon>
+            {{ sessionData.completedSets.length }}/{{ exercise.sets }} intervals
+          } @else {
+            {{ sessionData.completedSets.length }}/{{ exercise.sets }} sets
+            × {{ exercise.reps }} reps
+            @if (exercise.restSeconds > 0) {
+              <span class="rest-info">• {{ exercise.restSeconds }}s rest</span>
+            }
           }
         </p>
         
@@ -113,6 +118,7 @@
             [previousWeight]="getPreviousSet(set.setNumber)?.weight"
             [previousReps]="getPreviousSet(set.setNumber)?.reps"
             [useMetric]="useMetric"
+            [isCardio]="isCardio"
             (setDeleted)="onSetDeleted($event)"
           ></app-inline-set-logger>
         }
@@ -125,6 +131,7 @@
             [previousReps]="getPreviousSet(sessionData.currentSet.setNumber)?.reps"
             [isFirst]="sessionData.currentSet.setNumber === 1"
             [useMetric]="useMetric"
+            [isCardio]="isCardio"
             (setCompleted)="onSetCompleted($event)"
             (setDeleted)="onSetDeleted($event)"
             (setUpdated)="onSetUpdated($event)"
@@ -133,15 +140,15 @@
 
         <!-- Add Extra Set Button -->
         @if (sessionData.completedSets.length >= sessionData.plannedSets || isComplete()) {
-          <ion-button 
-            expand="block" 
-            fill="outline" 
+          <ion-button
+            expand="block"
+            fill="outline"
             size="small"
             (click)="addExtraSet()"
             class="add-set-btn"
           >
             <ion-icon slot="start" name="add"></ion-icon>
-            Add Extra Set
+            {{ isCardio ? 'Add Interval' : 'Add Extra Set' }}
           </ion-button>
         }
       </div>

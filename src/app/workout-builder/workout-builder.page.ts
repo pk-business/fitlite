@@ -10,6 +10,7 @@ import { ScheduleService } from '../services/schedule.service';
 import { ExerciseSelectorModal } from './exercise-selector-modal/exercise-selector-modal.component';
 import { ExerciseLogModal } from '../components/exercise-log-modal/exercise-log-modal.component';
 import { MuscleGroup } from '../models/exercise-library.model';
+import { isCardioExercise } from '../models/exercise-log.model';
 
 /**
  * WorkoutBuilderPage allows users to edit their weekly workout plan
@@ -508,6 +509,13 @@ export class WorkoutBuilderPage implements OnInit {
   }
 
   /**
+   * Check if an exercise is a cardio exercise
+   */
+  isExerciseCardio(exercise: Exercise): boolean {
+    return isCardioExercise(exercise.name, exercise.category);
+  }
+
+  /**
    * Get previous log for an exercise (shows most recent log)
    */
   getPreviousLog(exerciseName: string): string {
@@ -518,13 +526,25 @@ export class WorkoutBuilderPage implements OnInit {
       return '';
     }
 
-    // Format: "20kg×12, 20kg×10, 20kg×8"
+    const prefix = lastLog.date === today ? 'Today' : 'Last';
+
+    // Cardio: show duration/distance
+    if (isCardioExercise(exerciseName)) {
+      const setsStr = lastLog.sets
+        .map((set) => {
+          const dur = set.durationMinutes ? `${set.durationMinutes}min` : '';
+          const dist = set.distanceKm ? ` · ${set.distanceKm}km` : '';
+          return dur + dist || '—';
+        })
+        .join(', ');
+      return `${prefix}: ${setsStr}`;
+    }
+
+    // Strength: show weight × reps
     const unit = this.useMetric ? 'kg' : 'lbs';
     const setsStr = lastLog.sets
       .map((set) => `${set.weight || 0}${unit}×${set.reps}`)
       .join(', ');
-
-    const prefix = lastLog.date === today ? 'Today' : 'Last';
     return `${prefix}: ${setsStr}`;
   }
 }

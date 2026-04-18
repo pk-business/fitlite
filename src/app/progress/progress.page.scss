@@ -154,38 +154,47 @@
   }
 }
 
-/* Donut / Heat Chart */
-.heat-card {
-  .heat-chart {
+/* Subtitle row with period dropdown */
+.chart-subtitle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 12px 0;
+
+  .chart-subtitle {
+    margin: 0;
+  }
+
+  .period-select {
+    --padding-start: 8px;
+    --padding-end: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    min-width: 90px;
+    text-align: right;
+  }
+}
+
+/* Radar Chart */
+.radar-card {
+  .radar-chart {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
   }
 
-  .donut-area {
-    flex: 0 0 140px;
-    width: 140px;
-    height: 140px;
+  .radar-svg {
+    flex: 0 0 150px;
+    width: 150px;
+    height: 150px;
   }
 
-  .donut-svg {
-    width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
-  }
-
-  .donut-center-text {
-    transform: rotate(90deg);
-    transform-origin: 50% 50%;
-    font-size: 8px;
-    fill: var(--ion-color-medium);
-  }
-
-  .heat-legend {
+  .radar-legend {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
   }
 
   .legend-item {
@@ -212,3 +221,30 @@
     }
   }
 }
+
+/* Exercise Progress SVG Chart */
+.progress-chart {
+  position: relative;
+
+  .progress-svg {
+    width: 100%;
+    height: 90px;
+    display: block;
+  }
+
+  .progress-x-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--ion-color-medium);
+    margin-top: 4px;
+  }
+
+  .progress-y-label {
+    font-size: 10px;
+    color: var(--ion-color-medium);
+    text-align: right;
+    margin-top: 2px;
+  }
+}
+

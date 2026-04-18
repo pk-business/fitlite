@@ -256,54 +256,99 @@
   </div>
 <form [formGroup]="customForm" (ngSubmit)="saveCustomExercise()" class="esm-custom-form">
 
+  <!-- Name field — always shown -->
   <div class="esm-field">
     <ion-item class="esm-field-item" lines="none">
       <ion-icon slot="start" name="create-outline" color="primary"></ion-icon>
-      <ion-input label="Exercise Name *" labelPlacement="stacked" formControlName="name" placeholder="e.g. Cable Crunch"
+      <ion-input label="Exercise Name *" labelPlacement="stacked" formControlName="name"
+        placeholder="e.g. Cable Crunch or Morning Walk"
         type="text" autocapitalize="words" maxlength="60"></ion-input>
     </ion-item>
     @if (customForm.get('name')?.touched && customForm.get('name')?.invalid) {
-    <p class="esm-field-err">Please enter a name (2–60 characters).</p>
-      }
+      <p class="esm-field-err">Please enter a name (2–60 characters).</p>
+    }
+  </div>
+
+  <!-- Cardio detected hint -->
+  @if (isCustomFormCardio) {
+    <div class="esm-cardio-hint">
+      <ion-icon name="heart-outline"></ion-icon>
+      Cardio detected — logging Duration, Distance &amp; Intensity
+      <ion-button fill="clear" size="small" class="esm-switch-btn" (click)="forceStrength = true; isCustomFormCardio = false">
+        Use sets/weight instead
+      </ion-button>
+    </div>
+  }
+
+  <!-- ── CARDIO FIELDS ── -->
+  @if (isCustomFormCardio) {
+    <div class="esm-field-row">
+      <div class="esm-field esm-field--half">
+        <ion-item class="esm-field-item" lines="none">
+          <ion-input label="Default Duration (min)" labelPlacement="stacked"
+            formControlName="durationMinutes" type="number" min="1" inputmode="numeric">
+          </ion-input>
+        </ion-item>
+      </div>
+      <div class="esm-field esm-field--half">
+        <ion-item class="esm-field-item" lines="none">
+          <ion-input label="Distance (km, optional)" labelPlacement="stacked"
+            formControlName="distanceKm" type="number" min="0" step="0.1" inputmode="decimal">
+          </ion-input>
+        </ion-item>
+      </div>
     </div>
 
+    <div class="esm-field">
+      <p class="esm-field-label">Default Intensity</p>
+      <ion-segment formControlName="intensity" class="esm-intensity-seg">
+        <ion-segment-button value="low"><ion-label>🚶 Low</ion-label></ion-segment-button>
+        <ion-segment-button value="moderate"><ion-label>🏃 Moderate</ion-label></ion-segment-button>
+        <ion-segment-button value="high"><ion-label>⚡ High</ion-label></ion-segment-button>
+      </ion-segment>
+    </div>
+  }
+
+  <!-- ── STRENGTH FIELDS ── -->
+  @if (!isCustomFormCardio) {
     <div class="esm-field-row">
       <div class="esm-field esm-field--third">
         <ion-item class="esm-field-item" lines="none">
-          <ion-input label="Sets" labelPlacement="stacked" formControlName="sets" type="number" min="1" max="20"
-            inputmode="numeric"></ion-input>
+          <ion-input label="Sets" labelPlacement="stacked" formControlName="sets"
+            type="number" min="1" max="20" inputmode="numeric"></ion-input>
         </ion-item>
         @if (customForm.get('sets')?.touched && customForm.get('sets')?.invalid) {
-        <p class="esm-field-err">1–20</p>
+          <p class="esm-field-err">1–20</p>
         }
-        </div>
-        <div class="esm-field esm-field--third">
-          <ion-item class="esm-field-item" lines="none">
-            <ion-input label="Reps" labelPlacement="stacked" formControlName="reps" type="number" min="1" max="200"
-              inputmode="numeric"></ion-input>
-          </ion-item>
-          @if (customForm.get('reps')?.touched && customForm.get('reps')?.invalid) {
+      </div>
+      <div class="esm-field esm-field--third">
+        <ion-item class="esm-field-item" lines="none">
+          <ion-input label="Reps" labelPlacement="stacked" formControlName="reps"
+            type="number" min="1" max="200" inputmode="numeric"></ion-input>
+        </ion-item>
+        @if (customForm.get('reps')?.touched && customForm.get('reps')?.invalid) {
           <p class="esm-field-err">1–200</p>
-          }
-          </div>
-        <div class="esm-field esm-field--third">
-          <ion-item class="esm-field-item" lines="none">
-            <ion-input label="Weight (kg)" labelPlacement="stacked" formControlName="weight" type="number" min="0" max="1000"
-              inputmode="decimal"></ion-input>
-          </ion-item>
-          @if (customForm.get('weight')?.touched && customForm.get('weight')?.invalid) {
-          <p class="esm-field-err">0–1000 kg</p>
-          }
-        </div>
-        </div>
-
-      <ion-button type="submit" expand="block" class="esm-save-btn" [disabled]="isSubmittingCustom">
-        @if (isSubmittingCustom) {
-        <ion-spinner name="crescent" slot="start"></ion-spinner>Saving…
-        } @else {
-        <ion-icon slot="start" name="checkmark-outline"></ion-icon>Save & Add to Workout
         }
-      </ion-button>
+      </div>
+      <div class="esm-field esm-field--third">
+        <ion-item class="esm-field-item" lines="none">
+          <ion-input label="Weight (kg)" labelPlacement="stacked" formControlName="weight"
+            type="number" min="0" max="1000" inputmode="decimal"></ion-input>
+        </ion-item>
+        @if (customForm.get('weight')?.touched && customForm.get('weight')?.invalid) {
+          <p class="esm-field-err">0–1000 kg</p>
+        }
+      </div>
+    </div>
+  }
+
+  <ion-button type="submit" expand="block" class="esm-save-btn" [disabled]="isSubmittingCustom">
+    @if (isSubmittingCustom) {
+      <ion-spinner name="crescent" slot="start"></ion-spinner>Saving…
+    } @else {
+      <ion-icon slot="start" name="checkmark-outline"></ion-icon>Save &amp; Add to Workout
+    }
+  </ion-button>
 </form>
 </div>
 }

@@ -82,10 +82,17 @@
                 <div class="exercise-info">
                   <h3>{{ exercise.name }}</h3>
                   <div class="exercise-details">
-                    <span class="detail-badge">
-                      <ion-icon name="repeat-outline"></ion-icon>
-                      {{ exercise.sets }} × {{ exercise.reps }}
-                    </span>
+                    @if (isExerciseCardio(exercise)) {
+                      <span class="detail-badge">
+                        <ion-icon name="heart-outline"></ion-icon>
+                        Cardio
+                      </span>
+                    } @else {
+                      <span class="detail-badge">
+                        <ion-icon name="repeat-outline"></ion-icon>
+                        {{ exercise.sets }} × {{ exercise.reps }}
+                      </span>
+                    }
                     <span class="detail-badge">
                       <ion-icon name="timer-outline"></ion-icon>
                       {{ exercise.restSeconds }}s
