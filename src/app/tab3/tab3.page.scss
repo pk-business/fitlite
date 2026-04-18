@@ -5,6 +5,95 @@
   height: 60vh;
 }
 
+.diet-page-container {
+  padding-bottom: 32px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 16px 4px;
+
+  ion-icon {
+    font-size: 22px;
+    color: var(--ion-color-primary);
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  &--spaced {
+    margin-top: 12px;
+    border-top: 1px solid var(--ion-color-light);
+    padding-top: 20px;
+  }
+}
+
+/* Nutrition Card */
+.nutrition-card {
+  margin: 8px 12px;
+  border-radius: 16px;
+
+  .nutrition-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.nutrition-goals {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.goal-item {
+  flex: 1;
+  .goal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .goal-header {
+    text-align: center;
+    .current { font-size: 18px; font-weight: 700; color: var(--ion-color-primary); }
+    .remaining { font-size: 10px; color: var(--ion-color-medium); }
+  }
+  p {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+  .progress-bar-container {
+    width: 100%;
+    height: 4px;
+    background: var(--ion-color-light);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    border-radius: 2px;
+    &.calories { background: var(--ion-color-warning); }
+    &.protein { background: var(--ion-color-primary); }
+    &.carbs { background: var(--ion-color-success); }
+    &.fat { background: var(--ion-color-danger); }
+  }
+}
+
+.nutrition-explanation {
+  font-size: 12px;
+  color: var(--ion-color-medium);
+  margin: 0 0 12px;
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;

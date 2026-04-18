@@ -8,16 +8,23 @@ import { ScheduleService } from '../services/schedule.service';
 import { IonicModule, ModalController, AlertController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { ExerciseLogModal } from '../components/exercise-log-modal/exercise-log-modal.component';
+import { TodayWorkoutComponent } from '../components/today-workout/today-workout.component';
+import { RestTimerComponent } from '../components/rest-timer/rest-timer.component';
 
 /**
  * Tab2Page (Workout Plan) displays the weekly workout schedule
  */
 @Component({
-    selector: 'app-tab2',
-    templateUrl: 'tab2.page.html',
-    styleUrls: ['tab2.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, CommonModule]
+  selector: 'app-tab2',
+  templateUrl: 'tab2.page.html',
+  styleUrls: ['tab2.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    IonicModule,
+    CommonModule,
+    TodayWorkoutComponent,
+    RestTimerComponent,
+  ],
 })
 export class Tab2Page implements OnInit {
   workoutPlan: WorkoutPlan | null = null;
@@ -25,7 +32,15 @@ export class Tab2Page implements OnInit {
   hasProfile = false;
   useMetric = false;
 
-  readonly dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  readonly dayNames = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
 
   constructor(
     private planService: PlanService,
@@ -35,7 +50,7 @@ export class Tab2Page implements OnInit {
     private router: Router,
     private modalCtrl: ModalController,
     private alertCtrl: AlertController,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   async ngOnInit() {
@@ -83,21 +98,23 @@ export class Tab2Page implements OnInit {
    * Get days not yet in the plan
    */
   get availableDays(): { value: number; label: string }[] {
-    const used = new Set((this.workoutPlan?.weeklyPlan || []).map(d => d.dayOfWeek));
+    const used = new Set(
+      (this.workoutPlan?.weeklyPlan || []).map((d) => d.dayOfWeek),
+    );
     return this.dayNames
       .map((label, value) => ({ value, label }))
-      .filter(d => !used.has(d.value));
+      .filter((d) => !used.has(d.value));
   }
 
   /**
    * Show alert to pick day + focus, then add it
    */
   async promptAddDay(): Promise<void> {
-    const dayInputs = this.availableDays.map(d => ({
+    const dayInputs = this.availableDays.map((d) => ({
       type: 'radio' as const,
       label: d.label,
       value: d.value,
-      checked: false
+      checked: false,
     }));
 
     const dayAlert = await this.alertCtrl.create({
@@ -109,9 +126,9 @@ export class Tab2Page implements OnInit {
           text: 'Next',
           handler: (dayOfWeek: number) => {
             this.promptFocus(dayOfWeek);
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
     await dayAlert.present();
   }
@@ -123,7 +140,7 @@ export class Tab2Page implements OnInit {
         { type: 'radio', label: 'Full Body', value: 'full', checked: true },
         { type: 'radio', label: 'Upper Body', value: 'upper' },
         { type: 'radio', label: 'Lower Body', value: 'lower' },
-        { type: 'radio', label: 'Cardio', value: 'cardio' }
+        { type: 'radio', label: 'Cardio', value: 'cardio' },
       ],
       buttons: [
         { text: 'Cancel', role: 'cancel' },
@@ -131,19 +148,24 @@ export class Tab2Page implements OnInit {
           text: 'Add',
           handler: async (focus: 'full' | 'upper' | 'lower' | 'cardio') => {
             await this.addWorkoutDay(dayOfWeek, focus);
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
     await focusAlert.present();
   }
 
-  async addWorkoutDay(dayOfWeek: number, focus: 'full' | 'upper' | 'lower' | 'cardio'): Promise<void> {
+  async addWorkoutDay(
+    dayOfWeek: number,
+    focus: 'full' | 'upper' | 'lower' | 'cardio',
+  ): Promise<void> {
     const newDay: WorkoutDay = { dayOfWeek, focus, exercises: [] };
     await this.planService.updateWorkoutDay(dayOfWeek, newDay);
     await this.loadWorkoutPlan();
     // Navigate to builder so user can add exercises immediately
-    this.router.navigate(['/workout-builder'], { queryParams: { day: dayOfWeek } });
+    this.router.navigate(['/workout-builder'], {
+      queryParams: { day: dayOfWeek },
+    });
   }
 
   /**
@@ -168,7 +190,7 @@ export class Tab2Page implements OnInit {
       full: 'body-outline',
       upper: 'hand-left-outline',
       lower: 'walk-outline',
-      cardio: 'heart-outline'
+      cardio: 'heart-outline',
     };
     return icons[focus] || 'barbell-outline';
   }
@@ -181,7 +203,7 @@ export class Tab2Page implements OnInit {
       full: 'primary',
       upper: 'secondary',
       lower: 'tertiary',
-      cardio: 'danger'
+      cardio: 'danger',
     };
     return colors[focus] || 'medium';
   }
@@ -198,7 +220,7 @@ export class Tab2Page implements OnInit {
    */
   editWorkout(dayOfWeek: number): void {
     this.router.navigate(['/workout-builder'], {
-      queryParams: { day: dayOfWeek }
+      queryParams: { day: dayOfWeek },
     });
   }
 
@@ -219,8 +241,8 @@ export class Tab2Page implements OnInit {
       componentProps: {
         exercise,
         date: new Date().toISOString().split('T')[0],
-        useMetric: this.useMetric
-      }
+        useMetric: this.useMetric,
+      },
     });
 
     await modal.present();
@@ -245,17 +267,17 @@ export class Tab2Page implements OnInit {
   getPreviousLog(exerciseName: string): string {
     const today = new Date().toISOString().split('T')[0];
     const lastLog = this.exerciseLogService.getLastLogForExercise(exerciseName);
-    
+
     if (!lastLog) {
       return '';
     }
-    
+
     // Format: "20kg×12, 20kg×10, 20kg×8"
     const unit = this.useMetric ? 'kg' : 'lbs';
     const setsStr = lastLog.sets
-      .map(set => `${set.weight || 0}${unit}×${set.reps}`)
+      .map((set) => `${set.weight || 0}${unit}×${set.reps}`)
       .join(', ');
-    
+
     const prefix = lastLog.date === today ? 'Today' : 'Last';
     return `${prefix}: ${setsStr}`;
   }

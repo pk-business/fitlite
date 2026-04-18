@@ -1,9 +1,12 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Daily Overview</ion-title>
+    <ion-title>FitLite</ion-title>
     <ion-buttons slot="end">
-      <ion-button routerLink="/settings">
-        <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+      <ion-button>
+        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
+      </ion-button>
+      <ion-button>
+        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -14,143 +17,145 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- Loading State -->
   @if (isLoading) {
     <div class="loading-container">
       <ion-spinner name="crescent"></ion-spinner>
     </div>
   }
 
-  <!-- No Profile State -->
   @if (!isLoading && !hasProfile) {
     <div class="empty-state">
-      <ion-icon name="clipboard-outline" class="empty-icon"></ion-icon>
+      <ion-icon name="fitness-outline" class="empty-icon"></ion-icon>
       <h2>Welcome to FitLite!</h2>
-      <p>Create your profile to get started with your personalized workout and diet plan</p>
+      <p>Create your profile to get started and connect with the community</p>
       <ion-button expand="block" (click)="goToProfile()">
         Create Profile
       </ion-button>
     </div>
   }
 
-  <!-- Main Content -->
   @if (!isLoading && hasProfile) {
-    <div class="home-container">
-      <!-- Greeting Card -->
-      <ion-card class="greeting-card">
+    <div class="feed-container">
+
+      <!-- Stories Bar -->
+      <div class="stories-bar">
+        <div class="story-item your-story">
+          <div class="story-avatar add-story">
+            <ion-icon name="add-outline"></ion-icon>
+          </div>
+          <span class="story-name">Your Story</span>
+          </div>
+        @for (friend of friendSuggestions.slice(0, 4); track friend.username) {
+        <div class="story-item">
+          <div class="story-avatar" [style.background]="friend.avatarColor">
+            <span>{{ friend.initials }}</span>
+          </div>
+            <span class="story-name">{{ friend.username }}</span>
+            </div>
+        }
+        </div>
+
+      <!-- Create Post -->
+      <ion-card class="create-post-card">
         <ion-card-content>
-          <h1>{{ greeting }}!</h1>
-          <p class="date">{{ todayName }}, {{ currentDate | date:'MMM d, y' }}</p>
-        </ion-card-content>
-      </ion-card>
-
-      <!-- Today's Workout Section -->
-      <app-today-workout></app-today-workout>
-
-      <!-- Today's Meals Section -->
-      <div class="section-header">
-        <ion-icon name="restaurant-outline"></ion-icon>
-        <h2>Today's Meals</h2>
-      </div>
-
-      <!-- Nutrition Goals Card -->
-      @if (userProfile) {
-      <ion-card class="nutrition-card">
-        <ion-card-header>
-          <div class="nutrition-card-header">
-            <ion-card-title>Daily Nutrition Goals</ion-card-title>
-            <ion-button fill="clear" size="small" (click)="openEditNutritionLogs()" class="edit-logs-btn">
-              <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+          <div class="create-post-row">
+            <div class="user-avatar-sm">
+              <ion-icon name="person"></ion-icon>
+            </div>
+            <div class="post-input-placeholder">
+              What's your workout today?
+            </div>
+            <ion-button fill="clear" size="small">
+              <ion-icon slot="icon-only" name="image-outline"></ion-icon>
             </ion-button>
           </div>
-        </ion-card-header>
-        <ion-card-content>
-          @if (userProfile.recommendedCalories && userProfile.recommendedProtein) {
-          <div class="nutrition-goals">
-            <!-- Calories -->
-            <div class="goal-item">
-              <div class="goal-content">
-                <div class="goal-header">
-                  <span class="current">{{ todaysNutrition?.caloriesConsumed || 0 }}</span><br>
-                  <span class="remaining">{{ getRemainingCalories() }} kcal left</span>
-                </div>
-                <p>CAL</p>
-                <div class="progress-bar-container">
-                  <div class="progress-bar calories" [style.width.%]="getCalorieProgress()"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Protein -->
-            <div class="goal-item">
-              <div class="goal-content">
-                <div class="goal-header">
-                  <span class="current">{{ todaysNutrition?.proteinConsumed || 0 }}</span><br>
-                  <span class="remaining">{{ getRemainingProtein() }}g left</span>
-                </div>
-                <p>PROT</p>
-                <div class="progress-bar-container">
-                  <div class="progress-bar protein" [style.width.%]="getProteinProgress()"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Carbs -->
-            @if (userProfile.recommendedCarbs) {
-            <div class="goal-item">
-              <div class="goal-content">
-                <div class="goal-header">
-                  <span class="current">{{ todaysNutrition?.carbsConsumed || 0 }}</span><br>
-                  <span class="remaining">{{ getRemainingCarbs() }}g left</span>
-                </div>
-                <p>CARBS</p>
-                <div class="progress-bar-container">
-                  <div class="progress-bar carbs" [style.width.%]="getCarbsProgress()"></div>
-                </div>
-              </div>
-            </div>
-            }
-
-            <!-- Fat -->
-            @if (userProfile.recommendedFat) {
-            <div class="goal-item">
-              <div class="goal-content">
-                <div class="goal-header">
-                  <span class="current">{{ todaysNutrition?.fatConsumed || 0 }}</span><br>
-                  <span class="remaining">{{ getRemainingFat() }}g left</span>
-                </div>
-                <p>FAT</p>
-                <div class="progress-bar-container">
-                  <div class="progress-bar fat" [style.width.%]="getFatProgress()"></div>
-                </div>
-              </div>
-            </div>
-            }
+          <div class="post-actions-row">
+            <ion-button fill="clear" size="small">
+              <ion-icon slot="start" name="barbell-outline"></ion-icon>
+              Workout
+            </ion-button>
+            <ion-button fill="clear" size="small">
+              <ion-icon slot="start" name="camera-outline"></ion-icon>
+              Photo
+            </ion-button>
+            <ion-button fill="clear" size="small">
+              <ion-icon slot="start" name="trophy-outline"></ion-icon>
+              Achievement
+            </ion-button>
           </div>
-          <p class="nutrition-explanation">
-            Your personalized targets based on your profile. Track your intake to reach your goals!
-          </p>
-          } @else {
-          <p class="nutrition-explanation">
-            Complete your profile to get personalized nutrition recommendations and track your progress!
-          </p>
-          <ion-button fill="outline" routerLink="/profile">
-            <ion-icon slot="start" name="person-outline"></ion-icon>
-            Update Profile
-          </ion-button>
-          }
-          <ion-button fill="outline" expand="block" (click)="openNutritionLogger()">
-            <ion-icon slot="start" name="add-circle-outline"></ion-icon>
-            Log Today's Nutrition
-          </ion-button>
         </ion-card-content>
-      </ion-card>
-      }
+        </ion-card>
 
-      <app-today-meals></app-today-meals>
+      <!-- Feed Posts -->
+      @for (post of feedPosts; track post.id) {
+      <ion-card class="feed-post-card">
+        <ion-card-content>
+          <div class="post-header">
+            <div class="post-avatar" [style.background]="post.avatarColor">
+              <span>{{ post.initials }}</span>
+            </div>
+              <div class="post-user-info">
+                <h3>{{ post.username }}</h3>
+                <p>{{ post.timeAgo }} • {{ post.category }}</p>
+              </div>
+              <ion-button fill="clear" size="small">
+                <ion-icon slot="icon-only" name="ellipsis-horizontal"></ion-icon>
+              </ion-button>
+            </div>
+<p class="post-content">{{ post.content }}</p>
+
+@if (post.stats) {
+<div class="post-stats-row">
+  @for (stat of post.stats; track stat.label) {
+  <div class="post-stat">
+    <ion-icon [name]="stat.icon" color="primary"></ion-icon>
+    <span class="stat-val">{{ stat.value }}</span>
+    <span class="stat-lbl">{{ stat.label }}</span>
+  </div>
+  }
+              </div>
+            }
+
+            <div class="post-footer">
+              <ion-button fill="clear" size="small" [color]="post.liked ? 'danger' : 'medium'" (click)="toggleLike(post)">
+                <ion-icon slot="start" [name]="post.liked ? 'heart' : 'heart-outline'"></ion-icon>
+                {{ post.likes }}
+              </ion-button>
+              <ion-button fill="clear" size="small" color="medium">
+                <ion-icon slot="start" name="chatbubble-outline"></ion-icon>
+                {{ post.comments }}
+              </ion-button>
+              <ion-button fill="clear" size="small" color="medium">
+                <ion-icon slot="start" name="share-social-outline"></ion-icon>
+                Share
+              </ion-button>
+            </div>
+          </ion-card-content>
+          </ion-card>
+      }
+<!-- Friend Suggestions -->
+<div class="section-header">
+  <h3>People You May Know</h3>
+      </div>
+<div class="suggestions-scroll">
+  @for (friend of friendSuggestions; track friend.username) {
+  <ion-card class="suggestion-card">
+    <ion-card-content>
+      <div class="suggestion-avatar" [style.background]="friend.avatarColor">
+        <span>{{ friend.initials }}</span>
+      </div>
+      <h4>{{ friend.username }}</h4>
+      <p>{{ friend.mutualFriends }} mutual</p>
+      <p class="friend-goal">{{ friend.goal }}</p>
+      <ion-button size="small" expand="block" fill="outline">
+        <ion-icon slot="start" name="person-add-outline"></ion-icon>
+        Follow
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+  }
+      </div>
+
     </div>
   }
 </ion-content>
-
-<app-rest-timer></app-rest-timer>
-

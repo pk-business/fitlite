@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Diet Plan</ion-title>
+    <ion-title>Diet</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -29,76 +29,169 @@
   }
 
   <!-- Main Content -->
-  @if (!isLoading && hasProfile && dietPlan) {
-    <div class="diet-plan-container">
-      <div class="intro-section">
-        <h2>Your Weekly Diet Plan</h2>
-        <p>Balanced nutrition for your fitness goals</p>
-      </div>
-      <!-- Diet Days -->
-      @for (day of dietPlan.weeklyPlan; track day) {
-        <ion-card class="diet-day-card" [class.today]="isToday(day.dayOfWeek)">
-          <ion-card-header>
-            <div class="day-header">
-              <div>
-                <ion-card-title>{{ getDayName(day.dayOfWeek) }}</ion-card-title>
-                <ion-card-subtitle>{{ getDailyCalories(day) }} Calories</ion-card-subtitle>
+  @if (!isLoading && hasProfile) {
+  <div class="diet-page-container">
+  
+    <!-- Today's Nutrition Section -->
+    <div class="section-header">
+      <ion-icon name="restaurant-outline"></ion-icon>
+      <h2>Today's Meals</h2>
+    </div>
+  
+    <!-- Nutrition Goals Card -->
+    @if (userProfile) {
+    <ion-card class="nutrition-card">
+      <ion-card-header>
+        <div class="nutrition-card-header">
+          <ion-card-title>Daily Nutrition Goals</ion-card-title>
+          <ion-button fill="clear" size="small" (click)="openEditNutritionLogs()" class="edit-logs-btn">
+            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        @if (userProfile.recommendedCalories && userProfile.recommendedProtein) {
+        <div class="nutrition-goals">
+          <div class="goal-item">
+            <div class="goal-content">
+              <div class="goal-header">
+                <span class="current">{{ todaysNutrition?.caloriesConsumed || 0 }}</span><br>
+                <span class="remaining">{{ getRemainingCalories() }} kcal left</span>
               </div>
-              @if (isToday(day.dayOfWeek)) {
+              <p>CAL</p>
+              <div class="progress-bar-container">
+                <div class="progress-bar calories" [style.width.%]="getCalorieProgress()"></div>
+              </div>
+            </div>
+          </div>
+          <div class="goal-item">
+            <div class="goal-content">
+              <div class="goal-header">
+                <span class="current">{{ todaysNutrition?.proteinConsumed || 0 }}</span><br>
+                <span class="remaining">{{ getRemainingProtein() }}g left</span>
+              </div>
+              <p>PROT</p>
+              <div class="progress-bar-container">
+                <div class="progress-bar protein" [style.width.%]="getProteinProgress()"></div>
+              </div>
+            </div>
+          </div>
+          @if (userProfile.recommendedCarbs) {
+          <div class="goal-item">
+            <div class="goal-content">
+              <div class="goal-header">
+                <span class="current">{{ todaysNutrition?.carbsConsumed || 0 }}</span><br>
+                <span class="remaining">{{ getRemainingCarbs() }}g left</span>
+              </div>
+              <p>CARBS</p>
+              <div class="progress-bar-container">
+                <div class="progress-bar carbs" [style.width.%]="getCarbsProgress()"></div>
+              </div>
+            </div>
+          </div>
+          }
+          @if (userProfile.recommendedFat) {
+          <div class="goal-item">
+            <div class="goal-content">
+              <div class="goal-header">
+                <span class="current">{{ todaysNutrition?.fatConsumed || 0 }}</span><br>
+                <span class="remaining">{{ getRemainingFat() }}g left</span>
+              </div>
+              <p>FAT</p>
+              <div class="progress-bar-container">
+                <div class="progress-bar fat" [style.width.%]="getFatProgress()"></div>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+        <p class="nutrition-explanation">
+          Your personalized targets based on your profile. Track your intake to reach your goals!
+        </p>
+        } @else {
+        <p class="nutrition-explanation">
+          Complete your profile to get personalized nutrition recommendations!
+        </p>
+        }
+        <ion-button fill="outline" expand="block" (click)="openNutritionLogger()">
+          <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+          Log Today's Nutrition
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+    }
+  
+    <app-today-meals></app-today-meals>
+  
+    <!-- Weekly Diet Plan Section -->
+    @if (dietPlan) {
+    <div class="section-header section-header--spaced">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <h2>Weekly Diet Plan</h2>
+    </div>
+    <div class="diet-plan-container">
+          @for (day of dietPlan.weeklyPlan; track day) {
+          <ion-card class="diet-day-card" [class.today]="isToday(day.dayOfWeek)">
+            <ion-card-header>
+              <div class="day-header">
+                <div>
+                  <ion-card-title>{{ getDayName(day.dayOfWeek) }}</ion-card-title>
+                  <ion-card-subtitle>{{ getDailyCalories(day) }} Calories</ion-card-subtitle>
+                </div>
+                @if (isToday(day.dayOfWeek)) {
                 <ion-chip color="success">
                   <ion-label>Today</ion-label>
                 </ion-chip>
-              }
-            </div>
-          </ion-card-header>
-          <ion-card-content>
-            <!-- Macros Summary -->
-            <div class="macros-row">
-              <div class="macro-item">
-                <span class="macro-label">Protein</span>
-                <span class="macro-value">{{ getDailyProtein(day) }}g</span>
+                }
               </div>
-              <div class="macro-item">
-                <span class="macro-label">Carbs</span>
-                <span class="macro-value">{{ getDailyCarbs(day) }}g</span>
-              </div>
-              <div class="macro-item">
-                <span class="macro-label">Fat</span>
-                <span class="macro-value">{{ getDailyFat(day) }}g</span>
-              </div>
-            </div>
-            <!-- Meals List -->
-            <ion-list lines="none" class="meals-list">
-              @for (meal of day.meals; track meal) {
-                <ion-item class="meal-item">
-                  <ion-icon [name]="getMealIcon(meal.name)" slot="start"></ion-icon>
-                  <ion-label>
-                    <h3>{{ meal.name }}</h3>
-                    <p>{{ meal.calories }} cal • P: {{ meal.protein }}g • C: {{ meal.carbs }}g • F: {{ meal.fat }}g</p>
-                  </ion-label>
-                </ion-item>
-              }
-            </ion-list>
-          </ion-card-content>
-        </ion-card>
-      }
-      <!-- Nutrition Tips -->
-      <ion-card class="tips-card">
-        <ion-card-header>
-          <ion-card-title>
-            <ion-icon name="bulb-outline"></ion-icon>
-            Nutrition Tips
-          </ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <ul>
-            <li>Drink at least 8 glasses of water daily</li>
-            <li>Eat whole, unprocessed foods when possible</li>
-            <li>Include vegetables with each meal</li>
-            <li>Listen to your body's hunger cues</li>
-          </ul>
-        </ion-card-content>
-      </ion-card>
+            </ion-card-header>
+            <ion-card-content>
+                <div class="macros-row">
+                  <div class="macro-item">
+                    <span class="macro-label">Protein</span>
+                    <span class="macro-value">{{ getDailyProtein(day) }}g</span>
+                  </div>
+                  <div class="macro-item">
+                    <span class="macro-label">Carbs</span>
+                    <span class="macro-value">{{ getDailyCarbs(day) }}g</span>
+                  </div>
+                  <div class="macro-item">
+                    <span class="macro-label">Fat</span>
+                    <span class="macro-value">{{ getDailyFat(day) }}g</span>
+                  </div>
+                </div>
+                <ion-list lines="none" class="meals-list">
+                  @for (meal of day.meals; track meal) {
+                  <ion-item class="meal-item">
+                    <ion-icon [name]="getMealIcon(meal.name)" slot="start"></ion-icon>
+                    <ion-label>
+                      <h3>{{ meal.name }}</h3>
+                      <p>{{ meal.calories }} cal • P: {{ meal.protein }}g • C: {{ meal.carbs }}g • F: {{ meal.fat }}g</p>
+                    </ion-label>
+                  </ion-item>
+                  }
+                </ion-list>
+                </ion-card-content>
+                </ion-card>
+                }
+          <ion-card class="tips-card">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="bulb-outline"></ion-icon>
+                Nutrition Tips
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ul>
+                <li>Drink at least 8 glasses of water daily</li>
+                <li>Eat whole, unprocessed foods when possible</li>
+                <li>Include vegetables with each meal</li>
+                <li>Listen to your body's hunger cues</li>
+              </ul>
+            </ion-card-content>
+          </ion-card>
+        </div>
+        }
     </div>
   }
 </ion-content>

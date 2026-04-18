@@ -1,0 +1,136 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Workout Logs</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (isLoading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  }
+
+  @if (!isLoading && !hasProfile) {
+    <div class="empty-state">
+      <ion-icon name="bar-chart-outline" class="empty-icon"></ion-icon>
+      <h2>No Data Yet</h2>
+      <p>Create your profile and start logging workouts to see your progress charts here.</p>
+      <ion-button expand="block" routerLink="/profile">
+        Create Profile
+      </ion-button>
+    </div>
+  }
+
+  @if (!isLoading && hasProfile) {
+    <div class="logs-container">
+
+      <!-- Overall Progress Section -->
+      <div class="section-header">
+        <ion-icon name="trending-up-outline"></ion-icon>
+        <h2>Weekly Volume</h2>
+      </div>
+
+      <ion-card class="chart-card">
+        <ion-card-content>
+          <p class="chart-subtitle">Total weight lifted per day (lbs)</p>
+          <div class="bar-chart">
+            @for (item of weeklyVolume; track item.day) {
+              <div class="bar-group">
+                <div class="bar-wrapper">
+                  <div
+                    class="bar"
+                    [style.height.%]="getBarHeight(item.value)"
+                    [class.zero]="item.value === 0"
+                  ></div>
+                </div>
+                <span class="bar-label">{{ item.day }}</span>
+                @if (item.value > 0) {
+                  <span class="bar-value">{{ item.value }}</span>
+                }
+              </div>
+            }
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Individual Exercise Progress -->
+      <div class="section-header">
+        <ion-icon name="fitness-outline"></ion-icon>
+        <h2>Exercise Progress</h2>
+      </div>
+
+      @if (exerciseNames.length > 0) {
+        <div class="exercise-filter">
+          <ion-segment [value]="selectedExercise" (ionChange)="selectedExercise = $any($event).detail.value" scrollable>
+            @for (name of exerciseNames; track name) {
+              <ion-segment-button [value]="name">
+                <ion-label>{{ name }}</ion-label>
+              </ion-segment-button>
+            }
+          </ion-segment>
+        </div>
+
+        <ion-card class="chart-card">
+          <ion-card-content>
+            <p class="chart-subtitle">Max weight lifted over time for: <strong>{{ selectedExercise }}</strong></p>
+            <div class="no-data-chart">
+              <ion-icon name="bar-chart-outline" color="medium"></ion-icon>
+              <p>Log more sets to see your progress trend!</p>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      } @else {
+        <ion-card class="chart-card">
+          <ion-card-content>
+            <div class="no-data-chart">
+              <ion-icon name="barbell-outline" color="medium"></ion-icon>
+              <p>Start logging your exercises to see individual progress charts here.</p>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      }
+
+      <!-- Body Heat Map -->
+      <div class="section-header">
+        <ion-icon name="body-outline"></ion-icon>
+        <h2>Muscle Focus</h2>
+      </div>
+
+      <ion-card class="chart-card heat-card">
+        <ion-card-content>
+          <p class="chart-subtitle">Body parts worked this week</p>
+          <div class="heat-chart">
+            <div class="donut-area">
+              <svg viewBox="0 0 100 100" class="donut-svg">
+                @for (item of bodyPartData; track item.part; let i = $index) {
+                  <circle
+                    class="donut-segment"
+                    cx="50" cy="50" r="35"
+                    fill="transparent"
+                    [attr.stroke]="item.color"
+                    stroke-width="18"
+                    [attr.stroke-dasharray]="item.percentage + ' ' + (100 - item.percentage)"
+                    [attr.stroke-dashoffset]="getSegmentOffset(i)"
+                  ></circle>
+                }
+                <text x="50" y="46" class="donut-center-text" text-anchor="middle">This</text>
+                <text x="50" y="56" class="donut-center-text" text-anchor="middle">Week</text>
+              </svg>
+            </div>
+            <div class="heat-legend">
+              @for (item of bodyPartData; track item.part) {
+                <div class="legend-item">
+                  <span class="legend-dot" [style.background]="item.color"></span>
+                  <span class="legend-label">{{ item.part }}</span>
+                  <span class="legend-value">{{ item.percentage }}%</span>
+                </div>
+              }
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+    </div>
+  }
+</ion-content>

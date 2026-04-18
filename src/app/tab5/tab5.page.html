@@ -1,0 +1,151 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Profile</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="editProfile()">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (isLoading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  }
+
+  @if (!isLoading && !userProfile) {
+    <div class="empty-state">
+      <ion-icon name="person-circle-outline" class="empty-icon"></ion-icon>
+      <h2>No Profile Yet</h2>
+      <p>Set up your profile to get a personalized workout and diet plan.</p>
+      <ion-button expand="block" (click)="editProfile()">
+        <ion-icon slot="start" name="person-add-outline"></ion-icon>
+        Create Profile
+      </ion-button>
+    </div>
+  }
+
+  @if (!isLoading && userProfile) {
+    <div class="profile-container">
+
+      <!-- Avatar & Name -->
+      <div class="avatar-section">
+        <div class="avatar-circle">
+          <ion-icon name="person" class="avatar-icon"></ion-icon>
+        </div>
+        <h1 class="profile-name">{{ userProfile.name || 'Athlete' }}</h1>
+        <p class="profile-goal">{{ getGoalLabel(userProfile.goal) }}</p>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat-item">
+          <span class="stat-value">{{ userProfile.age }}</span>
+          <span class="stat-label">Age</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value">{{ userProfile.heightCm }}</span>
+          <span class="stat-label">Height (cm)</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value">{{ userProfile.weightKg }}</span>
+          <span class="stat-label">Weight (kg)</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value">{{ getBmi(userProfile).toFixed(1) }}</span>
+          <span class="stat-label">BMI</span>
+        </div>
+      </div>
+
+      @if (userProfile) {
+        <div class="bmi-banner">
+          <ion-chip [color]="getBmiColor(getBmi(userProfile))">
+            <ion-label>BMI {{ getBmi(userProfile).toFixed(1) }} – {{ getBmiCategory(getBmi(userProfile)) }}</ion-label>
+          </ion-chip>
+        </div>
+      }
+
+      <!-- Nutrition Targets -->
+      <ion-card class="info-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="nutrition-outline"></ion-icon> Daily Targets
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list lines="none">
+            <ion-item>
+              <ion-label>Calories</ion-label>
+              <ion-note slot="end">{{ userProfile.recommendedCalories || '—' }} kcal</ion-note>
+            </ion-item>
+            <ion-item>
+              <ion-label>Protein</ion-label>
+              <ion-note slot="end">{{ userProfile.recommendedProtein || '—' }}g</ion-note>
+            </ion-item>
+            @if (userProfile.recommendedCarbs) {
+              <ion-item>
+                <ion-label>Carbs</ion-label>
+                <ion-note slot="end">{{ userProfile.recommendedCarbs }}g</ion-note>
+              </ion-item>
+            }
+            @if (userProfile.recommendedFat) {
+              <ion-item>
+                <ion-label>Fat</ion-label>
+                <ion-note slot="end">{{ userProfile.recommendedFat }}g</ion-note>
+              </ion-item>
+            }
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Activity -->
+      <ion-card class="info-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="walk-outline"></ion-icon> Activity
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list lines="none">
+            <ion-item>
+              <ion-label>Activity Level</ion-label>
+              <ion-note slot="end">{{ getActivityLabel(userProfile.activityLevel) }}</ion-note>
+            </ion-item>
+            <ion-item>
+              <ion-label>Gender</ion-label>
+              <ion-note slot="end">{{ userProfile.gender | titlecase }}</ion-note>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Quick Actions -->
+      <ion-card class="info-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="settings-outline"></ion-icon> Settings
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list lines="full">
+            <ion-item button detail (click)="editProfile()">
+              <ion-icon slot="start" name="create-outline" color="primary"></ion-icon>
+              <ion-label>Edit Profile</ion-label>
+            </ion-item>
+            <ion-item button detail (click)="openSettings()">
+              <ion-icon slot="start" name="settings-outline" color="medium"></ion-icon>
+              <ion-label>App Settings</ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+
+    </div>
+  }
+</ion-content>
