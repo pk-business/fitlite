@@ -1,95 +1,309 @@
-<ion-header>
+<!-- ═══════════════════════════════════════════════════════
+     ADD EXERCISE MODAL
+     ═══════════════════════════════════════════════════════ -->
+
+<!-- ── Sticky header ───────────────────────────────────── -->
+<ion-header class="esm-header">
+
   <ion-toolbar>
-    <ion-title>Select Exercise</ion-title>
+    <ion-title class="esm-title">Add Exercise</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="close()">
-        <ion-icon slot="icon-only" name="close"></ion-icon>
+      <ion-button (click)="close()" fill="clear">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  
-  <!-- Search Bar -->
-  <ion-toolbar>
-    <ion-searchbar
-      [(ngModel)]="searchTerm"
-      (ionInput)="onSearchChange()"
-      placeholder="Search exercises..."
-      animated
-    ></ion-searchbar>
+
+  <!-- Search + Custom button row -->
+  <ion-toolbar class="esm-search-bar">
+    <div class="esm-search-row">
+      <ion-searchbar
+        placeholder="Search exercises…"
+        [debounce]="200"
+        (ionInput)="onSearchChange($event)"
+        animated
+        show-clear-button="focus"
+        class="esm-searchbar"
+      ></ion-searchbar>
+      <ion-button (click)="openCustomSheet()" fill="outline" class="esm-custom-btn">
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+        Custom
+      </ion-button>
+      </div>
   </ion-toolbar>
 
-  <!-- Tabs -->
-  <ion-toolbar>
-    <ion-segment [(ngModel)]="selectedTab" (ionChange)="filterExercises()">
-      <ion-segment-button value="custom">
-        <ion-label>
-          My Exercises
-          <ion-badge color="primary">{{ filteredCustomExercises.length }}</ion-badge>
-        </ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="default">
-        <ion-label>
-          Templates
-          <ion-badge color="secondary">{{ filteredDefaultExercises.length }}</ion-badge>
-        </ion-label>
-      </ion-segment-button>
-    </ion-segment>
+  <!-- Filter chips -->
+  <ion-toolbar class="esm-chips-bar">
+    <div class="esm-chips-scroll">
+  
+      @if (hasActiveFilters) {
+      <ion-chip class="esm-chip esm-chip--clear" color="danger" (click)="clearFilters()">
+        <ion-icon name="close-circle" slot="start"></ion-icon>Clear
+      </ion-chip>
+      <span class="esm-chip-divider"></span>
+      }
+  
+      <span class="esm-chip-label">Muscle</span>
+      @for (m of muscleGroups; track m) {
+      <ion-chip class="esm-chip" [class.esm-chip--on]="isMuscleActive(m)" (click)="toggleMuscle(m)">{{ m }}</ion-chip>
+      }
+  
+      <span class="esm-chip-divider"></span>
+      <span class="esm-chip-label">Equipment</span>
+      @for (eq of equipmentTypes; track eq) {
+      <ion-chip class="esm-chip" [class.esm-chip--on]="isEquipmentActive(eq)" (click)="toggleEquipment(eq)">{{ eq
+        }}</ion-chip>
+      }
+  
+      <span class="esm-chip-divider"></span>
+      <span class="esm-chip-label">Level</span>
+      @for (d of difficultyLevels; track d.value) {
+      <ion-chip class="esm-chip esm-chip--diff" [class.esm-chip--on]="isDifficultyActive(d.value)"
+        [attr.data-diff]="d.value" (click)="toggleDifficulty(d.value)">{{ d.label }}</ion-chip>
+      }
+  
+    </div>
   </ion-toolbar>
+
 </ion-header>
 
-<ion-content>
-  <!-- Custom Exercises Tab -->
-  @if (selectedTab === 'custom') {
-    <div class="exercises-list">
-      @if (filteredCustomExercises.length === 0) {
-        <div class="empty-state">
-          <ion-icon name="barbell-outline" class="empty-icon"></ion-icon>
-          <p>No custom exercises found</p>
-          <p class="hint">Go to Exercise Library to create custom exercises</p>
-        </div>
-      }
+<!-- ═══════════════════════════════════════════════════════
+     CONTENT
+     ═══════════════════════════════════════════════════════ -->
+<ion-content class="esm-content">
 
-      @for (exercise of filteredCustomExercises; track exercise.id) {
-        <ion-item button (click)="selectExercise(exercise)" detail>
-          <ion-icon slot="start" name="barbell-outline" color="primary"></ion-icon>
-          <ion-label>
-            <h3>{{ exercise.name }}</h3>
-            <p>{{ exercise.sets }} × {{ exercise.reps }} • {{ exercise.restSeconds }}s rest</p>
-          </ion-label>
-          <ion-badge slot="end" color="primary">Custom</ion-badge>
-        </ion-item>
+  <!-- ── Recently Used ────────────────────────────────── -->
+  @if (recentlyUsed.length > 0 && !activeFilters.searchQuery && !hasActiveFilters) {
+  <section class="esm-section">
+    <h2 class="esm-section-title">
+      <ion-icon name="time-outline"></ion-icon> Recently Used
+    </h2>
+    <div class="esm-mini-row">
+      @for (ex of recentlyUsed; track ex.id) {
+      <button class="esm-mini-card" (click)="selectExercise(ex)" type="button">
+        <div class="esm-mini-img-wrap">
+          <img class="esm-mini-img" [src]="ex.thumbnailUrl || 'assets/icon/favicon.png'" [alt]="ex.name"
+            (error)="$any($event.target).src='assets/icon/favicon.png'" />
+        </div>
+        <p class="esm-mini-name">{{ ex.name }}</p>
+        <ion-badge class="esm-mini-badge" [color]="difficultyColor(ex.difficulty)">{{ ex.difficulty }}</ion-badge>
+      </button>
       }
     </div>
+  </section>
   }
 
-  <!-- Default Exercises Tab -->
-  @if (selectedTab === 'default') {
-    <div class="exercises-list">
-      @if (filteredDefaultExercises.length === 0) {
-        <div class="empty-state">
-          <ion-icon name="search-outline" class="empty-icon"></ion-icon>
-          <p>No exercises found</p>
-        </div>
+  <!-- ── Popular ──────────────────────────────────────── -->
+  @if (popular.length > 0 && !activeFilters.searchQuery && !hasActiveFilters) {
+  <section class="esm-section">
+    <h2 class="esm-section-title">
+      <ion-icon name="flame-outline"></ion-icon> Popular
+    </h2>
+    <ion-list class="esm-list" lines="none">
+      @for (ex of popular; track trackById($index, ex)) {
+      <ng-container *ngTemplateOutlet="exerciseRow; context: { $implicit: ex }"></ng-container>
       }
+    </ion-list>
+  </section>
+  }
 
-      @for (exercise of filteredDefaultExercises; track exercise.name) {
-        <ion-item button (click)="selectExercise(exercise)" detail>
-          <ion-icon slot="start" name="fitness-outline" color="secondary"></ion-icon>
-          <ion-label>
-            <h3>{{ exercise.name }}</h3>
-            <p>{{ exercise.sets }} × {{ exercise.reps }} • {{ exercise.restSeconds }}s rest</p>
-          </ion-label>
-        </ion-item>
+  <!-- ── All / Filtered ───────────────────────────────── -->
+  <section class="esm-section">
+    <h2 class="esm-section-title">
+      <ion-icon name="barbell-outline"></ion-icon>
+      @if (hasActiveFilters || activeFilters.searchQuery) {
+      Results <ion-badge color="primary" class="esm-count-badge">{{ filteredExercises.length }}</ion-badge>
+      } @else {
+      All Exercises
       }
+    </h2>
+
+    @if (filteredExercises.length === 0) {
+    <div class="esm-empty">
+      <ion-icon name="search-outline" class="esm-empty-icon"></ion-icon>
+      <p>No exercises match your filters.</p>
+      <div class="esm-empty-actions">
+        <ion-button fill="outline" size="small" (click)="clearFilters()">Clear Filters</ion-button>
+        <ion-button fill="outline" size="small" (click)="openCustomSheet()">
+          <ion-icon slot="start" name="add-outline"></ion-icon>Create Custom
+        </ion-button>
+      </div>
     </div>
-  }
+    } @else {
+    <ion-list class="esm-list" lines="none">
+      @for (ex of filteredExercises; track trackById($index, ex)) {
+      <ng-container *ngTemplateOutlet="exerciseRow; context: { $implicit: ex }"></ng-container>
+      }
+    </ion-list>
+    }
+  </section>
+
+  <div class="esm-bottom-pad"></div>
 </ion-content>
 
-<ion-footer>
-  <ion-toolbar>
-    <ion-button expand="block" fill="outline" (click)="createQuickExercise()">
-      <ion-icon slot="start" name="add-circle-outline"></ion-icon>
-      Create New Exercise
+
+<!-- ═══════════════════════════════════════════════════════
+     REUSABLE ROW TEMPLATE
+     ═══════════════════════════════════════════════════════ -->
+<ng-template #exerciseRow let-ex>
+  <ion-item class="esm-item" [class.esm-item--custom]="ex.isCustom" button detail="false" (click)="openPreview(ex, $event)">
+    <div class="esm-thumb-wrap" slot="start">
+      @if (ex.thumbnailUrl) {
+      <img class="esm-thumb" [src]="ex.thumbnailUrl" [alt]="ex.name"
+        (error)="$any($event.target).src='assets/icon/favicon.png'" />
+      } @else {
+      <div class="esm-thumb esm-thumb--ph">
+        <ion-icon name="barbell-outline"></ion-icon>
+        </div>
+      }
+      @if (ex.isCustom) { <span class="esm-my-badge">MY</span> }
+      </div>
+
+    <ion-label class="esm-label">
+      <h3 class="esm-name">{{ ex.name }}</h3>
+      <p class="esm-meta">
+        <ion-icon name="body-outline"></ion-icon> {{ ex.primaryMuscle }}
+        <span class="esm-dot">·</span>
+        <ion-icon name="fitness-outline"></ion-icon> {{ ex.equipment.join(', ') }}
+      </p>
+      @if (ex.secondaryMuscles.length > 0) {
+      <p class="esm-secondary">Also: {{ ex.secondaryMuscles.join(', ') }}</p>
+      }
+    </ion-label>
+<div slot="end" class="esm-item-end">
+  <ion-badge [color]="difficultyColor(ex.difficulty)" class="esm-diff-badge">{{ ex.difficulty }}</ion-badge>
+  <ion-icon name="add-circle-outline" color="primary" class="esm-add-icon" (click)="selectExercise(ex); $event.stopPropagation()"></ion-icon>
+</div>
+</ion-item>
+</ng-template>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     EXERCISE PREVIEW BOTTOM SHEET
+     ═══════════════════════════════════════════════════════ -->
+@if (previewExercise) {
+<div class="esm-backdrop" (click)="closePreview()"></div>
+
+<div class="esm-sheet esm-preview-sheet" role="dialog" aria-modal="true"
+  [attr.aria-label]="previewExercise.name + ' preview'">
+  <div class="esm-sheet-handle"></div>
+
+  <ion-button fill="clear" class="esm-preview-close" (click)="closePreview()">
+    <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+  </ion-button>
+
+  <!-- Media -->
+  <div class="esm-preview-media">
+    @if (previewExercise.mediaUrl) {
+    <video class="esm-preview-video" [poster]="previewExercise.thumbnailUrl || ''" controls playsinline
+      preload="metadata">
+      <source [src]="previewExercise.mediaUrl" type="video/mp4" />
+    </video>
+    } @else if (previewExercise.thumbnailUrl) {
+    <img class="esm-preview-thumb" [src]="previewExercise.thumbnailUrl" [alt]="previewExercise.name"
+      (error)="$any($event.target).src='assets/icon/favicon.png'" />
+    } @else {
+    <div class="esm-preview-ph">
+      <ion-icon name="barbell-outline"></ion-icon>
+    </div>
+    }
+  </div>
+
+  <!-- Body -->
+  <div class="esm-preview-body">
+    <div class="esm-preview-header">
+      <h2 class="esm-preview-name">{{ previewExercise.name }}</h2>
+      <ion-badge [color]="difficultyColor(previewExercise.difficulty)" class="esm-preview-diff">
+        {{ previewExercise.difficulty }}
+      </ion-badge>
+    </div>
+
+    @if (previewExercise.description) {
+    <p class="esm-preview-desc">{{ previewExercise.description }}</p>
+    }
+
+    <div class="esm-preview-meta">
+      <span class="esm-meta-chip"><ion-icon name="body-outline"></ion-icon> {{ previewExercise.primaryMuscle }}</span>
+      @if (previewExercise.secondaryMuscles.length > 0) {
+      <span class="esm-meta-chip esm-meta-chip--secondary">{{ previewExercise.secondaryMuscles.join(', ') }}</span>
+      }
+      <span class="esm-meta-chip"><ion-icon name="fitness-outline"></ion-icon> {{ previewExercise.equipment.join(', ')
+        }}</span>
+      </div>
+      
+      <ion-button expand="block" class="esm-preview-add-btn" (click)="confirmSelect(previewExercise)">
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+        Add to Workout
+      </ion-button>
+      </div>
+</div>
+}
+
+<!-- ═══════════════════════════════════════════════════════
+     CUSTOM EXERCISE BOTTOM SHEET
+     ═══════════════════════════════════════════════════════ -->
+@if (showCustomSheet) {
+<div class="esm-backdrop" (click)="closeCustomSheet()"></div>
+
+<div class="esm-sheet" role="dialog" aria-modal="true" aria-labelledby="customSheetTitle">
+  <div class="esm-sheet-handle"></div>
+
+  <div class="esm-sheet-top">
+    <h2 id="customSheetTitle" class="esm-sheet-title">Create Custom Exercise</h2>
+    <ion-button fill="clear" (click)="closeCustomSheet()">
+      <ion-icon slot="icon-only" name="close-outline"></ion-icon>
     </ion-button>
-  </ion-toolbar>
-</ion-footer>
+  </div>
+<form [formGroup]="customForm" (ngSubmit)="saveCustomExercise()" class="esm-custom-form">
+
+  <div class="esm-field">
+    <ion-item class="esm-field-item" lines="none">
+      <ion-icon slot="start" name="create-outline" color="primary"></ion-icon>
+      <ion-input label="Exercise Name *" labelPlacement="stacked" formControlName="name" placeholder="e.g. Cable Crunch"
+        type="text" autocapitalize="words" maxlength="60"></ion-input>
+    </ion-item>
+    @if (customForm.get('name')?.touched && customForm.get('name')?.invalid) {
+    <p class="esm-field-err">Please enter a name (2–60 characters).</p>
+      }
+    </div>
+
+    <div class="esm-field-row">
+      <div class="esm-field esm-field--third">
+        <ion-item class="esm-field-item" lines="none">
+          <ion-input label="Sets" labelPlacement="stacked" formControlName="sets" type="number" min="1" max="20"
+            inputmode="numeric"></ion-input>
+        </ion-item>
+        @if (customForm.get('sets')?.touched && customForm.get('sets')?.invalid) {
+        <p class="esm-field-err">1–20</p>
+        }
+        </div>
+        <div class="esm-field esm-field--third">
+          <ion-item class="esm-field-item" lines="none">
+            <ion-input label="Reps" labelPlacement="stacked" formControlName="reps" type="number" min="1" max="200"
+              inputmode="numeric"></ion-input>
+          </ion-item>
+          @if (customForm.get('reps')?.touched && customForm.get('reps')?.invalid) {
+          <p class="esm-field-err">1–200</p>
+          }
+          </div>
+        <div class="esm-field esm-field--third">
+          <ion-item class="esm-field-item" lines="none">
+            <ion-input label="Weight (kg)" labelPlacement="stacked" formControlName="weight" type="number" min="0" max="1000"
+              inputmode="decimal"></ion-input>
+          </ion-item>
+          @if (customForm.get('weight')?.touched && customForm.get('weight')?.invalid) {
+          <p class="esm-field-err">0–1000 kg</p>
+          }
+        </div>
+        </div>
+
+      <ion-button type="submit" expand="block" class="esm-save-btn" [disabled]="isSubmittingCustom">
+        @if (isSubmittingCustom) {
+        <ion-spinner name="crescent" slot="start"></ion-spinner>Saving…
+        } @else {
+        <ion-icon slot="start" name="checkmark-outline"></ion-icon>Save & Add to Workout
+        }
+      </ion-button>
+</form>
+</div>
+}

@@ -1,0 +1,992 @@
+[
+  {
+    "id": "ex001", "name": "Bench Press",
+    "description": "Lie flat on a bench and grip the bar just outside shoulder width. Lower the bar to mid-chest with control, then press explosively back to lockout. Keep shoulder blades retracted and feet planted throughout.",
+    "primaryMuscle": "Chest", "secondaryMuscles": ["Triceps", "Shoulders"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/benchpress.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/benchpress.png",
+    "tags": ["chest", "push", "barbell", "compound", "strength"]
+  },
+  {
+    "id": "ex002", "name": "Incline Dumbbell Press",
+    "description": "Set the bench to 30–45°. Press dumbbells from shoulder height upward, angling slightly inward at the top to squeeze the upper chest. Lower slowly to maximise stretch.",
+    "primaryMuscle": "Chest", "secondaryMuscles": ["Shoulders"],
+    "equipment": ["Dumbbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/inclinepress.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/inclinepress.png",
+    "tags": ["chest", "upper chest", "dumbbell", "push", "hypertrophy"]
+  },
+  {
+    "id": "ex003", "name": "Push-Up",
+    "description": "Start in a high plank with hands shoulder-width apart. Lower your chest to the floor keeping a rigid core, then push back up. Elbows should track at roughly 45° from your torso.",
+    "primaryMuscle": "Chest", "secondaryMuscles": ["Triceps"],
+    "equipment": ["Bodyweight"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/pushup.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/pushup.png",
+    "tags": ["chest", "bodyweight", "push", "beginner", "compound"]
+  },
+  {
+    "id": "ex004", "name": "Lat Pulldown",
+    "description": "Grip the bar slightly wider than shoulder width, lean back slightly, and pull the bar to upper-chest level by driving elbows down and back. Control the ascent to full arm extension.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Biceps"],
+    "equipment": ["Machine"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/latpulldown.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/latpulldown.png",
+    "tags": ["back", "machine", "pull", "lats"]
+  },
+  {
+    "id": "ex005", "name": "Pull-Up",
+    "description": "Hang from a bar with an overhand grip. Pull your chin above the bar by driving elbows down toward your hips. Avoid swinging and lower yourself fully for each rep.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Biceps"],
+    "equipment": ["Bodyweight"], "difficulty": "advanced",
+    "mediaUrl": "https://example.com/videos/pullup.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/pullup.png",
+    "tags": ["back", "bodyweight", "pull", "lats", "compound"]
+  },
+  {
+    "id": "ex006", "name": "Barbell Squat",
+    "description": "Position the bar on your upper traps, brace your core, and descend until thighs are parallel or below. Drive through your heels to stand, keeping a neutral spine and knees tracking over toes.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Glutes", "Core"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/squat.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/squat.png",
+    "tags": ["legs", "barbell", "compound", "squat", "strength"]
+  },
+  {
+    "id": "ex007", "name": "Leg Press",
+    "description": "Sit in the machine with feet shoulder-width on the platform. Lower the sled until knees reach 90°, then press back to near-lockout. Keep your lower back pressed against the pad throughout.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Glutes"],
+    "equipment": ["Machine"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/legpress.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/legpress.png",
+    "tags": ["legs", "machine", "squat", "hypertrophy"]
+  },
+  {
+    "id": "ex008", "name": "Deadlift",
+    "description": "Stand with feet hip-width, bar over mid-foot. Hinge at the hips, grip just outside your legs, brace hard, and drive the floor away to stand tall. Lower with control by pushing hips back first.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Glutes", "Hamstrings"],
+    "equipment": ["Barbell"], "difficulty": "advanced",
+    "mediaUrl": "https://example.com/videos/deadlift.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/deadlift.png",
+    "tags": ["back", "legs", "barbell", "compound", "hinge", "strength"]
+  },
+  {
+    "id": "ex009", "name": "Shoulder Press",
+    "description": "Hold dumbbells at shoulder height with palms facing forward. Press overhead until arms are fully extended, then lower back to start with control. Keep your core tight and avoid excessive lumbar arch.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": ["Triceps"],
+    "equipment": ["Dumbbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/shoulderpress.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/shoulderpress.png",
+    "tags": ["shoulders", "dumbbell", "push", "compound"]
+  },
+  {
+    "id": "ex010", "name": "Lateral Raise",
+    "description": "Hold light dumbbells at your sides with a slight elbow bend. Raise them out to shoulder height, leading with your elbows, then lower slowly. Avoid shrugging or using momentum.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": [],
+    "equipment": ["Dumbbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/lateralraise.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/lateralraise.png",
+    "tags": ["shoulders", "dumbbell", "isolation", "hypertrophy"]
+  },
+  {
+    "id": "ex011", "name": "Bicep Curl",
+    "description": "Stand with dumbbells hanging at your sides, palms forward. Curl the weight toward your shoulders by bending at the elbow only. Lower slowly for a full stretch at the bottom.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Dumbbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/bicepcurl.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/bicepcurl.png",
+    "tags": ["arms", "biceps", "dumbbell", "isolation"]
+  },
+  {
+    "id": "ex012", "name": "Tricep Pushdown",
+    "description": "Stand facing a high cable with a straight-bar or rope attachment. Keep elbows pinned to your sides and extend the forearms downward to lockout, then return with control. Focus on elbow extension only.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Cable"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/triceppushdown.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/triceppushdown.png",
+    "tags": ["arms", "triceps", "cable", "isolation"]
+  },
+  {
+    "id": "ex013", "name": "Plank",
+    "description": "Support your body on forearms and toes, forming a straight line from head to heels. Brace your abs, glutes and quads simultaneously. Breathe steadily and hold the position without sagging hips.",
+    "primaryMuscle": "Core", "secondaryMuscles": ["Shoulders"],
+    "equipment": ["Bodyweight"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/plank.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/plank.png",
+    "tags": ["core", "bodyweight", "isometric", "stability"]
+  },
+  {
+    "id": "ex014", "name": "Cable Fly",
+    "description": "Stand between two high cable pulleys. With a slight elbow bend, bring the handles together in an arc in front of your chest, squeezing the pecs at the peak. Control the return to full stretch.",
+    "primaryMuscle": "Chest", "secondaryMuscles": ["Shoulders"],
+    "equipment": ["Cable"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/cablefly.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/cablefly.png",
+    "tags": ["chest", "cable", "isolation", "fly", "hypertrophy"]
+  },
+  {
+    "id": "ex015", "name": "Romanian Deadlift",
+    "description": "Stand holding a barbell. Push your hips back and lower the bar along your legs until you feel a deep hamstring stretch, keeping a neutral spine. Drive hips forward to return to standing.",
+    "primaryMuscle": "Hamstrings", "secondaryMuscles": ["Glutes", "Back"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/rdl.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/rdl.png",
+    "tags": ["legs", "hamstrings", "barbell", "hinge", "compound"]
+  },
+  {
+    "id": "ex016", "name": "Dumbbell Row",
+    "description": "Place one knee and hand on a bench for support. Hold a dumbbell in the opposite hand and row it to your hip, driving your elbow back. Keep your torso parallel to the floor.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Biceps"],
+    "equipment": ["Dumbbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/dumbbellrow.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/dumbbellrow.png",
+    "tags": ["back", "dumbbell", "pull", "row", "compound"]
+  },
+  {
+    "id": "ex017", "name": "Leg Curl",
+    "description": "Lie prone on the machine with the pad on the back of your ankles. Curl your heels toward your glutes as far as possible, hold briefly, then lower with control. Avoid lifting your hips.",
+    "primaryMuscle": "Hamstrings", "secondaryMuscles": [],
+    "equipment": ["Machine"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/legcurl.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/legcurl.png",
+    "tags": ["legs", "hamstrings", "machine", "isolation"]
+  },
+  {
+    "id": "ex018", "name": "Face Pull",
+    "description": "Set a cable at face height with a rope attachment. Pull toward your face with elbows high and flared, externally rotating at the finish. Great for rear-delt and rotator-cuff health.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": ["Back"],
+    "equipment": ["Cable"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/facepull.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/facepull.png",
+    "tags": ["shoulders", "cable", "rear delt", "pull", "hypertrophy"]
+  },
+  {
+    "id": "ex019", "name": "Ab Wheel Rollout",
+    "description": "Kneel and grip the ab wheel. Brace your core and roll forward as far as you can maintain a neutral spine, then contract your abs to roll back in. Avoid letting your lower back collapse.",
+    "primaryMuscle": "Core", "secondaryMuscles": ["Shoulders"],
+    "equipment": ["Other"], "difficulty": "advanced",
+    "mediaUrl": "https://example.com/videos/abwheel.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/abwheel.png",
+    "tags": ["core", "abs", "advanced", "stability"]
+  },
+  {
+    "id": "ex020", "name": "Hip Thrust",
+    "description": "Rest your upper back on a bench, roll a barbell over your hips. Drive your hips up to full extension, squeezing your glutes hard at the top. Lower with control and repeat.",
+    "primaryMuscle": "Glutes", "secondaryMuscles": ["Hamstrings"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/hipthrust.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/hipthrust.png",
+    "tags": ["glutes", "barbell", "hinge", "hypertrophy"]
+  },
+  {
+    "id": "ex021", "name": "Cable Crossover",
+    "description": "Stand mid-way between two high cables. Bring the handles together in a wide arc, crossing them slightly in front of your chest. Lean forward slightly to emphasise the lower chest.",
+    "primaryMuscle": "Chest", "secondaryMuscles": ["Shoulders"],
+    "equipment": ["Cable"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/cablecrossover.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/cablecrossover.png",
+    "tags": ["chest", "cable", "isolation", "fly", "hypertrophy"]
+  },
+  {
+    "id": "ex022", "name": "Dumbbell Fly",
+    "description": "Lie flat on a bench holding dumbbells above your chest, arms slightly bent. Lower them out to your sides in a wide arc until you feel a deep chest stretch, then reverse the arc to return.",
+    "primaryMuscle": "Chest", "secondaryMuscles": ["Shoulders"],
+    "equipment": ["Dumbbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/dumbbellfly.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/dumbbellfly.png",
+    "tags": ["chest", "dumbbell", "isolation", "fly", "hypertrophy"]
+  },
+  {
+    "id": "ex023", "name": "Pec Deck Machine",
+    "description": "Sit in the machine with forearms on the pads. Bring the pads together until your elbows meet in front of your chest, squeeze the pecs, then control the return to full stretch.",
+    "primaryMuscle": "Chest", "secondaryMuscles": [],
+    "equipment": ["Machine"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/pecdeck.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/pecdeck.png",
+    "tags": ["chest", "machine", "isolation", "fly", "hypertrophy"]
+  },
+  {
+    "id": "ex024", "name": "Incline Barbell Press",
+    "description": "Set the bench to 30°–45°. Unrack a barbell and lower it to the upper chest, keeping elbows at about 75° from your torso. Press back to lockout without bouncing off the chest.",
+    "primaryMuscle": "Chest", "secondaryMuscles": ["Shoulders", "Triceps"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/inclinebarbellpress.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/inclinebarbellpress.png",
+    "tags": ["chest", "upper chest", "barbell", "push", "compound", "strength"]
+  },
+  {
+    "id": "ex025", "name": "Chest Dip",
+    "description": "On parallel bars, lean your torso forward ~30° to bias the chest. Lower until shoulders are below elbows, then press back up. Avoid locking out completely at the top to keep tension on the pecs.",
+    "primaryMuscle": "Chest", "secondaryMuscles": ["Triceps", "Shoulders"],
+    "equipment": ["Bodyweight"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/chestdip.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/chestdip.png",
+    "tags": ["chest", "bodyweight", "push", "compound", "dip"]
+  },
+  {
+    "id": "ex026", "name": "Decline Bench Press",
+    "description": "Lie on a decline bench (head below hips) and press a barbell from lower-chest level. The decline angle shifts more stress onto the lower chest. Control the descent and press explosively.",
+    "primaryMuscle": "Chest", "secondaryMuscles": ["Triceps"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/declinebench.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/declinebench.png",
+    "tags": ["chest", "lower chest", "barbell", "push", "compound"]
+  },
+  {
+    "id": "ex027", "name": "Seated Cable Row",
+    "description": "Sit upright at a low cable with a neutral-grip handle. Pull the handle to your lower sternum, squeezing shoulder blades together at the end range. Return until arms are fully extended.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Biceps"],
+    "equipment": ["Cable"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/seatedcablerow.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/seatedcablerow.png",
+    "tags": ["back", "cable", "pull", "row", "compound"]
+  },
+  {
+    "id": "ex028", "name": "T-Bar Row",
+    "description": "Straddle the T-bar and hinge forward ~45°. Pull the bar to your chest, driving elbows back and squeezing the back at the top. Keep a neutral spine and avoid rounding under load.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Biceps", "Core"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/tbarrow.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/tbarrow.png",
+    "tags": ["back", "barbell", "pull", "row", "compound", "strength"]
+  },
+  {
+    "id": "ex029", "name": "Barbell Row",
+    "description": "Hinge to roughly 45°, grip the bar overhand just outside hip width. Pull the bar to your lower sternum, leading with elbows. Lower with control and maintain a flat back throughout.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Biceps", "Core"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/barbellrow.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/barbellrow.png",
+    "tags": ["back", "barbell", "pull", "row", "compound", "strength"]
+  },
+  {
+    "id": "ex030", "name": "Straight-Arm Pulldown",
+    "description": "Stand facing a high cable with a bar attachment. Keep arms straight and pull the bar down to your thighs, pivoting at the shoulder. This isolates the lats without loading the biceps.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Core"],
+    "equipment": ["Cable"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/straightarmpulldown.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/straightarmpulldown.png",
+    "tags": ["back", "lats", "cable", "pull", "isolation"]
+  },
+  {
+    "id": "ex031", "name": "Chest-Supported Row",
+    "description": "Lie prone on an inclined bench holding dumbbells. Row them toward your hips, retracting the shoulder blades fully. The bench supports your torso, eliminating lower-back stress.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Biceps"],
+    "equipment": ["Dumbbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/chestrow.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/chestrow.png",
+    "tags": ["back", "dumbbell", "pull", "row", "isolation"]
+  },
+  {
+    "id": "ex032", "name": "Rack Pull",
+    "description": "Set safety bars at knee height and deadlift from there. This shortened range of motion lets you overload the upper back and traps. Brace hard and lock out the hips fully at the top.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Glutes", "Hamstrings"],
+    "equipment": ["Barbell"], "difficulty": "advanced",
+    "mediaUrl": "https://example.com/videos/rackpull.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/rackpull.png",
+    "tags": ["back", "barbell", "hinge", "compound", "strength"]
+  },
+  {
+    "id": "ex033", "name": "Bulgarian Split Squat",
+    "description": "Place your rear foot on a bench, front foot forward. Lower your rear knee toward the floor, keeping your front shin vertical. Drive through the front heel to return. Excellent for unilateral leg development.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Glutes", "Core"],
+    "equipment": ["Dumbbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/bulgariansplitsquat.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/bulgariansplitsquat.png",
+    "tags": ["legs", "dumbbell", "lunge", "compound", "hypertrophy"]
+  },
+  {
+    "id": "ex034", "name": "Hack Squat",
+    "description": "Position yourself in the hack-squat machine with shoulders under the pads. Lower until thighs pass parallel, then drive back up. Foot placement shifts emphasis between quads and glutes.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Glutes"],
+    "equipment": ["Machine"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/hacksquat.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/hacksquat.png",
+    "tags": ["legs", "machine", "squat", "compound", "hypertrophy"]
+  },
+  {
+    "id": "ex035", "name": "Leg Extension",
+    "description": "Sit in the machine with the pad on your shins just above the ankles. Extend your knees to full lockout, hold briefly to squeeze the quads, then lower with control. Excellent quad isolation.",
+    "primaryMuscle": "Legs", "secondaryMuscles": [],
+    "equipment": ["Machine"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/legextension.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/legextension.png",
+    "tags": ["legs", "quads", "machine", "isolation"]
+  },
+  {
+    "id": "ex036", "name": "Walking Lunge",
+    "description": "Step forward with one leg and lower your rear knee to near the floor, then step through with the other leg to continue walking. Keep your torso upright and core braced throughout.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Glutes", "Core"],
+    "equipment": ["Dumbbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/walkinglunge.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/walkinglunge.png",
+    "tags": ["legs", "dumbbell", "lunge", "compound"]
+  },
+  {
+    "id": "ex037", "name": "Calf Raise",
+    "description": "Stand on the platform with the shoulder pads in place. Rise as high as possible on your toes, pause at the top, then lower your heels as far as the range allows for a full stretch.",
+    "primaryMuscle": "Legs", "secondaryMuscles": [],
+    "equipment": ["Machine"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/calfraise.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/calfraise.png",
+    "tags": ["legs", "calves", "machine", "isolation"]
+  },
+  {
+    "id": "ex038", "name": "Sumo Deadlift",
+    "description": "Take a wide stance with feet turned out and grip the bar inside your legs. The wider stance shortens the range of motion and shifts load to the adductors and glutes. Drive the floor away to stand.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Glutes", "Back"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/sumodeadlift.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/sumodeadlift.png",
+    "tags": ["legs", "glutes", "barbell", "hinge", "compound", "strength"]
+  },
+  {
+    "id": "ex039", "name": "Step-Up",
+    "description": "Hold dumbbells and step onto a box or bench with one foot. Drive through that heel to stand fully upright, then step back down. Alternate legs or complete all reps on one side first.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Glutes", "Core"],
+    "equipment": ["Dumbbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/stepup.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/stepup.png",
+    "tags": ["legs", "dumbbell", "lunge", "compound", "functional"]
+  },
+  {
+    "id": "ex040", "name": "Nordic Hamstring Curl",
+    "description": "Anchor your feet under a pad. Lower your body toward the floor as slowly as possible, then use your hamstrings to pull yourself back up. One of the best exercises for hamstring injury prevention.",
+    "primaryMuscle": "Hamstrings", "secondaryMuscles": ["Glutes"],
+    "equipment": ["Bodyweight"], "difficulty": "advanced",
+    "mediaUrl": "https://example.com/videos/nordichamstring.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/nordichamstring.png",
+    "tags": ["legs", "hamstrings", "bodyweight", "isolation", "advanced"]
+  },
+  {
+    "id": "ex041", "name": "Arnold Press",
+    "description": "Start with dumbbells at shoulder height, palms facing you. Press overhead while simultaneously rotating palms outward. Reverse the rotation on the way back down for full shoulder activation.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": ["Triceps"],
+    "equipment": ["Dumbbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/arnoldpress.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/arnoldpress.png",
+    "tags": ["shoulders", "dumbbell", "push", "compound", "hypertrophy"]
+  },
+  {
+    "id": "ex042", "name": "Front Raise",
+    "description": "Hold dumbbells at hip height. Raise one or both arms to shoulder height directly in front of you with slightly bent elbows, then lower slowly. Targets the anterior deltoid.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": [],
+    "equipment": ["Dumbbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/frontraise.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/frontraise.png",
+    "tags": ["shoulders", "front delt", "dumbbell", "isolation"]
+  },
+  {
+    "id": "ex043", "name": "Upright Row",
+    "description": "Hold a barbell with a narrow overhand grip. Pull it straight up to chin height, flaring elbows above wrists. Lower with control. Use moderate weight and avoid excessive internal shoulder rotation.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": ["Biceps"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/uprightrow.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/uprightrow.png",
+    "tags": ["shoulders", "barbell", "pull", "compound"]
+  },
+  {
+    "id": "ex044", "name": "Cable Lateral Raise",
+    "description": "Stand side-on to a low cable with the handle in your far hand. Raise your arm out to shoulder height in an arc, pause, and lower. The cable keeps constant tension through the full range unlike dumbbells.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": [],
+    "equipment": ["Cable"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/cablelateralraise.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/cablelateralraise.png",
+    "tags": ["shoulders", "side delt", "cable", "isolation", "hypertrophy"]
+  },
+  {
+    "id": "ex045", "name": "Barbell Overhead Press",
+    "description": "Stand with the bar at collarbone height. Brace your core, press the bar straight up to full lockout, and tuck your head through at the top. Lower back to the clavicle under control.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": ["Triceps", "Core"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/barbellohp.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/barbellohp.png",
+    "tags": ["shoulders", "barbell", "push", "compound", "strength"]
+  },
+  {
+    "id": "ex046", "name": "Rear Delt Fly",
+    "description": "Hold light dumbbells, hinge forward until torso is near horizontal. With a slight elbow bend, raise the dumbbells out to the sides until arms are parallel to the floor, targeting the rear deltoids.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": ["Back"],
+    "equipment": ["Dumbbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/reardeltfly.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/reardeltfly.png",
+    "tags": ["shoulders", "rear delt", "dumbbell", "isolation", "hypertrophy"]
+  },
+  {
+    "id": "ex047", "name": "Hammer Curl",
+    "description": "Hold dumbbells with a neutral grip (thumbs up) and curl them toward your shoulders. The hammer grip shifts emphasis to the brachialis and brachioradialis for thicker overall arm development.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Dumbbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/hammercurl.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/hammercurl.png",
+    "tags": ["arms", "biceps", "forearms", "dumbbell", "isolation"]
+  },
+  {
+    "id": "ex048", "name": "Preacher Curl",
+    "description": "Sit at the preacher bench with your upper arms firmly on the pad. Curl the bar or dumbbells up, holding at the peak contraction, then lower all the way to full elbow extension.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Barbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/preachercurl.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/preachercurl.png",
+    "tags": ["arms", "biceps", "barbell", "isolation", "hypertrophy"]
+  },
+  {
+    "id": "ex049", "name": "Concentration Curl",
+    "description": "Seated, brace your elbow on the inside of your thigh. Curl a dumbbell toward your shoulder in a slow, controlled arc. The braced position eliminates momentum for maximum bicep isolation.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Dumbbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/concentrationcurl.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/concentrationcurl.png",
+    "tags": ["arms", "biceps", "dumbbell", "isolation"]
+  },
+  {
+    "id": "ex050", "name": "Cable Curl",
+    "description": "Stand facing a low cable with a straight bar or EZ-bar attachment. Curl the bar up to shoulder height, keeping elbows stationary. The cable provides smooth, consistent resistance throughout.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Cable"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/cablecurl.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/cablecurl.png",
+    "tags": ["arms", "biceps", "cable", "isolation"]
+  },
+  {
+    "id": "ex051", "name": "Incline Dumbbell Curl",
+    "description": "Lie on an incline bench (about 60°) and let dumbbells hang behind you. Curl them up, allowing the incline to put the bicep in a stretched position at the bottom. Great for peak contraction.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Dumbbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/inclinecurl.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/inclinecurl.png",
+    "tags": ["arms", "biceps", "dumbbell", "isolation", "stretch", "hypertrophy"]
+  },
+  {
+    "id": "ex052", "name": "Skull Crusher",
+    "description": "Lie on a bench holding an EZ-bar above your forehead with arms extended. Lower the bar toward your forehead by bending only at the elbows, then press back to extension. Keep upper arms perpendicular to the floor.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/skullcrusher.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/skullcrusher.png",
+    "tags": ["arms", "triceps", "barbell", "isolation", "hypertrophy"]
+  },
+  {
+    "id": "ex053", "name": "Overhead Tricep Extension",
+    "description": "Hold a dumbbell overhead with both hands. Lower it behind your head by bending at the elbows, feeling a deep tricep stretch, then press back to full extension. Great for the long tricep head.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Dumbbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/overheadtricep.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/overheadtricep.png",
+    "tags": ["arms", "triceps", "dumbbell", "isolation", "stretch"]
+  },
+  {
+    "id": "ex054", "name": "Rope Pushdown",
+    "description": "Attach a rope to a high cable. Grip the rope ends, push down and apart to full elbow extension, then return. The rope allows the wrists to pronate at the bottom for better tricep contraction.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Cable"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/ropepushdown.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/ropepushdown.png",
+    "tags": ["arms", "triceps", "cable", "isolation"]
+  },
+  {
+    "id": "ex055", "name": "Tricep Dip",
+    "description": "Hold parallel bars with arms extended. Lower your body by bending your elbows, keeping them close to your sides. Press back up to lockout. Stay upright to target triceps; lean forward for more chest.",
+    "primaryMuscle": "Arms", "secondaryMuscles": ["Chest", "Shoulders"],
+    "equipment": ["Bodyweight"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/tricepdip.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/tricepdip.png",
+    "tags": ["arms", "triceps", "bodyweight", "push", "compound"]
+  },
+  {
+    "id": "ex056", "name": "Diamond Push-Up",
+    "description": "Form a diamond shape with your index fingers and thumbs under your chest. Perform a push-up keeping elbows close to your torso. The narrow hand placement maximises tricep activation.",
+    "primaryMuscle": "Arms", "secondaryMuscles": ["Chest"],
+    "equipment": ["Bodyweight"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/diamondpushup.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/diamondpushup.png",
+    "tags": ["arms", "triceps", "bodyweight", "push", "compound"]
+  },
+  {
+    "id": "ex057", "name": "Wrist Curl",
+    "description": "Sit with your forearms resting on your thighs, palms up, holding a barbell. Curl the bar by flexing your wrists as high as possible, then lower slowly all the way down for a full forearm stretch.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Barbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/wristcurl.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/wristcurl.png",
+    "tags": ["arms", "forearms", "barbell", "isolation"]
+  },
+  {
+    "id": "ex058", "name": "Crunch",
+    "description": "Lie on your back with knees bent and hands behind your head. Curl your upper back off the floor by contracting your abs, then lower with control. Keep your lower back on the floor throughout.",
+    "primaryMuscle": "Core", "secondaryMuscles": [],
+    "equipment": ["Bodyweight"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/crunch.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/crunch.png",
+    "tags": ["core", "abs", "bodyweight", "isolation"]
+  },
+  {
+    "id": "ex059", "name": "Russian Twist",
+    "description": "Sit with knees bent, lean back slightly to engage your core. Rotate your torso side to side, touching a weight to the floor on each side. Elevate feet to increase difficulty.",
+    "primaryMuscle": "Core", "secondaryMuscles": [],
+    "equipment": ["Bodyweight"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/russiantwist.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/russiantwist.png",
+    "tags": ["core", "obliques", "bodyweight", "rotation"]
+  },
+  {
+    "id": "ex060", "name": "Hanging Leg Raise",
+    "description": "Hang from a pull-up bar with an overhand grip. Without swinging, raise your legs to horizontal or higher by flexing your hips and curling your pelvis up. Lower slowly to maintain tension.",
+    "primaryMuscle": "Core", "secondaryMuscles": [],
+    "equipment": ["Bodyweight"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/hanginglegraise.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/hanginglegraise.png",
+    "tags": ["core", "abs", "bodyweight", "lower abs"]
+  },
+  {
+    "id": "ex061", "name": "Cable Crunch",
+    "description": "Kneel below a high cable with a rope attachment held at forehead level. Round your upper back to crunch your ribs toward your pelvis, then return to full spinal extension. Keep hips stationary.",
+    "primaryMuscle": "Core", "secondaryMuscles": [],
+    "equipment": ["Cable"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/cablecrunch.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/cablecrunch.png",
+    "tags": ["core", "abs", "cable", "isolation", "hypertrophy"]
+  },
+  {
+    "id": "ex062", "name": "Side Plank",
+    "description": "Support your body on one forearm and the side of your foot. Align your body in a straight line and hold. Keep your hips lifted and avoid letting them sag. Progress by adding hip dips.",
+    "primaryMuscle": "Core", "secondaryMuscles": ["Shoulders"],
+    "equipment": ["Bodyweight"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/sideplank.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/sideplank.png",
+    "tags": ["core", "obliques", "bodyweight", "isometric", "stability"]
+  },
+  {
+    "id": "ex063", "name": "Dead Bug",
+    "description": "Lie on your back with arms straight up and knees at 90°. Slowly lower opposite arm and leg toward the floor while keeping your lower back pressed flat. Return and alternate sides.",
+    "primaryMuscle": "Core", "secondaryMuscles": [],
+    "equipment": ["Bodyweight"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/deadbug.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/deadbug.png",
+    "tags": ["core", "bodyweight", "stability", "functional"]
+  },
+  {
+    "id": "ex064", "name": "Pallof Press",
+    "description": "Stand side-on to a cable set at chest height. Hold the handle at your chest, then press straight out without rotating your torso. The anti-rotation challenge makes this great for core stability.",
+    "primaryMuscle": "Core", "secondaryMuscles": ["Shoulders"],
+    "equipment": ["Cable"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/pallofpress.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/pallofpress.png",
+    "tags": ["core", "cable", "stability", "anti-rotation"]
+  },
+  {
+    "id": "ex065", "name": "Dragon Flag",
+    "description": "Lie on a bench and grip it behind your head. Raise your whole body like a lever, supported only on your upper back. Lower with control, keeping your body rigid. An elite core movement.",
+    "primaryMuscle": "Core", "secondaryMuscles": ["Back"],
+    "equipment": ["Bodyweight"], "difficulty": "advanced",
+    "mediaUrl": "https://example.com/videos/dragonflag.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/dragonflag.png",
+    "tags": ["core", "abs", "bodyweight", "advanced", "compound"]
+  },
+  {
+    "id": "ex066", "name": "Kettlebell Swing",
+    "description": "Hinge at the hips and swing the kettlebell between your legs, then drive your hips forward explosively to swing it to shoulder height. Power comes from the hip snap, not the arms.",
+    "primaryMuscle": "Glutes", "secondaryMuscles": ["Hamstrings", "Back", "Core"],
+    "equipment": ["Kettlebell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/kettlebellswing.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/kettlebellswing.png",
+    "tags": ["full body", "kettlebell", "hinge", "power", "cardio"]
+  },
+  {
+    "id": "ex067", "name": "Kettlebell Goblet Squat",
+    "description": "Hold a kettlebell by the horns at chest height. Squat deep while keeping your torso upright, using your elbows to push your knees out. The front load naturally teaches an upright squat pattern.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Glutes", "Core"],
+    "equipment": ["Kettlebell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/gobletsquat.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/gobletsquat.png",
+    "tags": ["legs", "kettlebell", "squat", "compound"]
+  },
+  {
+    "id": "ex068", "name": "Kettlebell Row",
+    "description": "Hinge forward with one hand supporting on your knee. Row the kettlebell toward your hip, driving your elbow back and retracting the shoulder blade. Ideal for unilateral back development.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Biceps"],
+    "equipment": ["Kettlebell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/kettlebellrow.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/kettlebellrow.png",
+    "tags": ["back", "kettlebell", "pull", "row"]
+  },
+  {
+    "id": "ex069", "name": "Kettlebell Press",
+    "description": "Clean the kettlebell to the rack position (bell resting on forearm). Press straight overhead to lockout, keeping your wrist straight and core braced. Lower back to rack under control.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": ["Triceps", "Core"],
+    "equipment": ["Kettlebell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/kettlebellpress.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/kettlebellpress.png",
+    "tags": ["shoulders", "kettlebell", "push", "compound"]
+  },
+  {
+    "id": "ex070", "name": "Kettlebell Turkish Get-Up",
+    "description": "From lying, hold a kettlebell locked out overhead and follow a sequence of movements to reach a standing position, then reverse back to the floor. Tests strength, stability and mobility in one movement.",
+    "primaryMuscle": "Core", "secondaryMuscles": ["Shoulders", "Legs"],
+    "equipment": ["Kettlebell"], "difficulty": "advanced",
+    "mediaUrl": "https://example.com/videos/turkishgetup.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/turkishgetup.png",
+    "tags": ["full body", "kettlebell", "stability", "functional", "advanced"]
+  },
+  {
+    "id": "ex071", "name": "Burpee",
+    "description": "From standing, drop into a push-up position, perform a push-up, jump your feet to your hands, then leap upward with arms overhead. A demanding full-body conditioning exercise.",
+    "primaryMuscle": "Core", "secondaryMuscles": ["Chest", "Legs", "Shoulders"],
+    "equipment": ["Bodyweight"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/burpee.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/burpee.png",
+    "tags": ["full body", "bodyweight", "cardio", "compound", "functional"]
+  },
+  {
+    "id": "ex072", "name": "Box Jump",
+    "description": "Stand in front of a plyo box. Hinge slightly, then explode upward landing softly with both feet on the box. Step back down (don't jump down) to protect your knees. Focus on soft landing mechanics.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Glutes", "Core"],
+    "equipment": ["Bodyweight"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/boxjump.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/boxjump.png",
+    "tags": ["legs", "bodyweight", "power", "plyometric", "functional"]
+  },
+  {
+    "id": "ex073", "name": "Jump Squat",
+    "description": "Perform a bodyweight squat, then explode upward into a jump at the top. Land softly by bending at the hips and knees, absorbing the impact, then immediately drop into the next squat.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Glutes", "Core"],
+    "equipment": ["Bodyweight"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/jumpsquat.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/jumpsquat.png",
+    "tags": ["legs", "bodyweight", "power", "plyometric", "cardio"]
+  },
+  {
+    "id": "ex074", "name": "Mountain Climbers",
+    "description": "Start in a high plank. Drive one knee to your chest then quickly switch legs in a running motion, keeping your hips low. Maintain a tight core throughout and don't let your lower back sag.",
+    "primaryMuscle": "Core", "secondaryMuscles": ["Shoulders", "Legs"],
+    "equipment": ["Bodyweight"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/mountainclimbers.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/mountainclimbers.png",
+    "tags": ["core", "bodyweight", "cardio", "compound", "functional"]
+  },
+  {
+    "id": "ex075", "name": "Farmer's Walk",
+    "description": "Hold heavy dumbbells or kettlebells at your sides with a strong grip. Walk a set distance or time, keeping your chest tall, shoulders back, and core braced. Trains grip strength and full-body stability.",
+    "primaryMuscle": "Core", "secondaryMuscles": ["Arms", "Legs", "Back"],
+    "equipment": ["Dumbbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/farmerswalk.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/farmerswalk.png",
+    "tags": ["full body", "dumbbell", "carry", "functional", "strength"]
+  },
+  {
+    "id": "ex076", "name": "Band Pull-Apart",
+    "description": "Hold a resistance band in front of you at chest height with both hands. Pull the band apart until your arms are fully extended at your sides, squeezing your shoulder blades together. Excellent shoulder warm-up.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": ["Back"],
+    "equipment": ["Resistance Band"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/bandpullapart.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/bandpullapart.png",
+    "tags": ["shoulders", "rear delt", "bands", "pull", "warm-up"]
+  },
+  {
+    "id": "ex077", "name": "Banded Squat",
+    "description": "Place a resistance band just above your knees and perform a squat. The band provides cue to push your knees out, reinforcing proper squat mechanics and activating the hip abductors.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Glutes"],
+    "equipment": ["Resistance Band"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/bandedsquat.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/bandedsquat.png",
+    "tags": ["legs", "bands", "squat", "compound", "warm-up"]
+  },
+  {
+    "id": "ex078", "name": "Banded Glute Bridge",
+    "description": "Lie on your back with a band just above the knees. Push your knees outward against the band while driving your hips up to full extension. Great as a glute activation warm-up before lower-body training.",
+    "primaryMuscle": "Glutes", "secondaryMuscles": ["Hamstrings"],
+    "equipment": ["Resistance Band"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/bandedglutebridge.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/bandedglutebridge.png",
+    "tags": ["glutes", "bands", "hinge", "isolation", "warm-up"]
+  },
+  {
+    "id": "ex079", "name": "Band Bicep Curl",
+    "description": "Stand on the centre of a resistance band and curl the handles upward. The band provides increasing resistance at the top where a dumbbell loses tension, making it a great finisher for biceps.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Resistance Band"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/bandbicepcurl.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/bandbicepcurl.png",
+    "tags": ["arms", "biceps", "bands", "isolation"]
+  },
+  {
+    "id": "ex080", "name": "Band Tricep Pushdown",
+    "description": "Anchor a band overhead. Grip the end and push down to full elbow extension, keeping elbows pinned at your sides. The portable, low-impact nature makes this ideal for warm-ups or high-rep finishing sets.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Resistance Band"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/bandtriceppushdown.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/bandtriceppushdown.png",
+    "tags": ["arms", "triceps", "bands", "isolation"]
+  },
+  {
+    "id": "ex081", "name": "World's Greatest Stretch",
+    "description": "Step into a deep lunge, place your same-side hand on the floor, then rotate your opposite arm up toward the ceiling. Cycle through the sequence to open the hips, thoracic spine and shoulder.",
+    "primaryMuscle": "Core", "secondaryMuscles": ["Legs", "Shoulders"],
+    "equipment": ["Bodyweight"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/worldsgreateststretch.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/worldsgreateststretch.png",
+    "tags": ["full body", "bodyweight", "mobility", "warm-up", "stretch"]
+  },
+  {
+    "id": "ex082", "name": "Hip Flexor Stretch",
+    "description": "Kneel on one knee in a lunge position. Push your hips forward until you feel a stretch in the front of the rear hip. Hold and breathe. Essential after prolonged sitting to reduce anterior pelvic tilt.",
+    "primaryMuscle": "Legs", "secondaryMuscles": [],
+    "equipment": ["Bodyweight"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/hipflexorstretch.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/hipflexorstretch.png",
+    "tags": ["legs", "hip flexors", "bodyweight", "mobility", "stretch", "warm-up"]
+  },
+  {
+    "id": "ex083", "name": "Cat-Cow Stretch",
+    "description": "On all fours, alternate between arching your back up (cat) and dropping it down with chest and tail raised (cow). Move slowly and breathe deeply. A classic spine warm-up and mobility drill.",
+    "primaryMuscle": "Core", "secondaryMuscles": ["Back"],
+    "equipment": ["Bodyweight"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/catcow.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/catcow.png",
+    "tags": ["core", "back", "bodyweight", "mobility", "warm-up", "stretch"]
+  },
+  {
+    "id": "ex084", "name": "Shoulder Dislocate",
+    "description": "Hold a resistance band with a very wide grip in front of you. With straight arms, arc the band overhead and behind you, then return. Gradually narrow your grip over time to improve shoulder mobility.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": [],
+    "equipment": ["Resistance Band"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/shoulderdislocate.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/shoulderdislocate.png",
+    "tags": ["shoulders", "bands", "mobility", "warm-up", "stretch"]
+  },
+  {
+    "id": "ex085", "name": "Thoracic Rotation",
+    "description": "From a side-lying or kneeling position, place one hand behind your head and rotate your upper back, opening your elbow toward the ceiling. Breathe into the rotation to maximise range. Helps with posture and shoulder health.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Core"],
+    "equipment": ["Bodyweight"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/thoracicrotation.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/thoracicrotation.png",
+    "tags": ["back", "bodyweight", "mobility", "warm-up", "rotation"]
+  },
+  {
+    "id": "ex086", "name": "Glute Kickback",
+    "description": "Attach an ankle strap to a low cable. Hinge forward slightly, brace your core, and kick your leg back and up by extending at the hip. Squeeze your glute at the top before lowering with control.",
+    "primaryMuscle": "Glutes", "secondaryMuscles": ["Hamstrings"],
+    "equipment": ["Cable"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/glutekickback.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/glutekickback.png",
+    "tags": ["glutes", "cable", "isolation", "hypertrophy"]
+  },
+  {
+    "id": "ex087", "name": "Smith Machine Squat",
+    "description": "Set the bar on the Smith machine at shoulder height. Un-rack and squat with feet slightly forward of the bar. The fixed bar path can help beginners learn squat mechanics with added stability.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Glutes", "Core"],
+    "equipment": ["Machine"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/smithmachinesquat.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/smithmachinesquat.png",
+    "tags": ["legs", "machine", "squat", "compound"]
+  },
+  {
+    "id": "ex088", "name": "Chest Press Machine",
+    "description": "Adjust the seat so the handles are at chest height. Press the handles forward to full extension, then control the weight back. Ideal for beginners learning the pressing pattern with a stable movement.",
+    "primaryMuscle": "Chest", "secondaryMuscles": ["Triceps", "Shoulders"],
+    "equipment": ["Machine"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/chestpressmachine.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/chestpressmachine.png",
+    "tags": ["chest", "machine", "push", "compound"]
+  },
+  {
+    "id": "ex089", "name": "Shoulder Press Machine",
+    "description": "Sit upright in the machine with handles at shoulder height. Press overhead to full arm extension and lower back to start. The guided path makes this accessible for beginners and for isolation work.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": ["Triceps"],
+    "equipment": ["Machine"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/shoulderpressmachine.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/shoulderpressmachine.png",
+    "tags": ["shoulders", "machine", "push", "compound"]
+  },
+  {
+    "id": "ex090", "name": "Seated Row Machine",
+    "description": "Sit at the row machine and grip the handles. Pull toward your abdomen squeezing your shoulder blades at the end, then return to full arm extension. Use a controlled tempo throughout.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Biceps"],
+    "equipment": ["Machine"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/seatedrowmachine.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/seatedrowmachine.png",
+    "tags": ["back", "machine", "pull", "row"]
+  },
+  {
+    "id": "ex091", "name": "Bicep Curl Machine",
+    "description": "Sit at the machine with your upper arms resting on the pad. Curl the handles upward to full contraction, then lower slowly. The fixed pad prevents cheating, ensuring pure bicep work.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Machine"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/bicepcurlmachine.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/bicepcurlmachine.png",
+    "tags": ["arms", "biceps", "machine", "isolation"]
+  },
+  {
+    "id": "ex092", "name": "Tricep Extension Machine",
+    "description": "Sit with upper arms on the pad and grip the bar overhead. Extend your elbows to push the bar or pads down to full lockout, then return. Provides consistent resistance for tricep hypertrophy.",
+    "primaryMuscle": "Arms", "secondaryMuscles": [],
+    "equipment": ["Machine"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/tricepextensionmachine.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/tricepextensionmachine.png",
+    "tags": ["arms", "triceps", "machine", "isolation"]
+  },
+  {
+    "id": "ex093", "name": "Barbell Hip Thrust",
+    "description": "Rest your upper back on a bench with a barbell across your hips. Drive hips up to full extension, squeezing your glutes hard, then lower. The barbell allows progressive overload far beyond bodyweight.",
+    "primaryMuscle": "Glutes", "secondaryMuscles": ["Hamstrings", "Core"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/barbellhipthrust.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/barbellhipthrust.png",
+    "tags": ["glutes", "barbell", "hinge", "compound", "hypertrophy"]
+  },
+  {
+    "id": "ex094", "name": "Glute Bridge",
+    "description": "Lie on your back with knees bent. Drive your hips up by squeezing your glutes until your body forms a straight line from shoulders to knees. Hold briefly at the top before lowering.",
+    "primaryMuscle": "Glutes", "secondaryMuscles": ["Hamstrings"],
+    "equipment": ["Bodyweight"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/glutebridge.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/glutebridge.png",
+    "tags": ["glutes", "bodyweight", "hinge", "isolation", "warm-up"]
+  },
+  {
+    "id": "ex095", "name": "Barbell Clean",
+    "description": "Pull the bar from the floor with a powerful hip extension, shrug, and pull under the bar into a front-squat receiving position. Stand up to complete the lift. A foundational Olympic weightlifting movement.",
+    "primaryMuscle": "Core", "secondaryMuscles": ["Legs", "Shoulders", "Back"],
+    "equipment": ["Barbell"], "difficulty": "advanced",
+    "mediaUrl": "https://example.com/videos/barbellclean.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/barbellclean.png",
+    "tags": ["full body", "barbell", "power", "compound", "advanced"]
+  },
+  {
+    "id": "ex096", "name": "Thruster",
+    "description": "Hold a barbell in the front-rack position. Squat deep and use the momentum from standing to drive the bar overhead to full lockout in one fluid motion. A brutal combination of squat and press.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Shoulders", "Core"],
+    "equipment": ["Barbell"], "difficulty": "advanced",
+    "mediaUrl": "https://example.com/videos/thruster.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/thruster.png",
+    "tags": ["full body", "barbell", "squat", "push", "compound", "advanced"]
+  },
+  {
+    "id": "ex097", "name": "Man Maker",
+    "description": "Hold dumbbells, perform a push-up, row each dumbbell, jump your feet in and clean-press the dumbbells overhead. A challenging metabolic exercise combining multiple movement patterns.",
+    "primaryMuscle": "Core", "secondaryMuscles": ["Chest", "Back", "Legs", "Shoulders"],
+    "equipment": ["Dumbbell"], "difficulty": "advanced",
+    "mediaUrl": "https://example.com/videos/manmaker.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/manmaker.png",
+    "tags": ["full body", "dumbbell", "compound", "cardio", "advanced"]
+  },
+  {
+    "id": "ex098", "name": "Good Morning",
+    "description": "Place a barbell on your traps. With soft knee bend, hinge at the hips pushing them back until your torso approaches horizontal, then drive hips forward to return. Strengthens the posterior chain under load.",
+    "primaryMuscle": "Hamstrings", "secondaryMuscles": ["Glutes", "Back"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/goodmorning.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/goodmorning.png",
+    "tags": ["legs", "hamstrings", "barbell", "hinge", "compound"]
+  },
+  {
+    "id": "ex099", "name": "Dumbbell Shrug",
+    "description": "Hold heavy dumbbells at your sides. Elevate your shoulders straight up as high as possible, pause at the top to squeeze the traps, then lower fully. Avoid rolling your shoulders.",
+    "primaryMuscle": "Back", "secondaryMuscles": [],
+    "equipment": ["Dumbbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/dumbbellshrug.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/dumbbellshrug.png",
+    "tags": ["back", "traps", "dumbbell", "isolation"]
+  },
+  {
+    "id": "ex100", "name": "Barbell Shrug",
+    "description": "Hold a loaded barbell at hip height with an overhand grip. Shrug your shoulders as high as possible, hold at the top, then lower fully. Allows heavier loads than dumbbell shrugs for maximum trap overload.",
+    "primaryMuscle": "Back", "secondaryMuscles": [],
+    "equipment": ["Barbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/barbellshrug.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/barbellshrug.png",
+    "tags": ["back", "traps", "barbell", "isolation", "strength"]
+  },
+  {
+    "id": "ex101", "name": "Reverse Fly",
+    "description": "Attach two low cables with single handles. Stand in the middle and pull them outward and upward in a wide arc, squeezing your rear delts at the peak. Helps counteract forward shoulder posture.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": ["Back"],
+    "equipment": ["Cable"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/reversefly.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/reversefly.png",
+    "tags": ["shoulders", "rear delt", "cable", "isolation", "hypertrophy"]
+  },
+  {
+    "id": "ex102", "name": "Dumbbell Lunge",
+    "description": "Stand holding dumbbells at your sides. Step forward and lower your rear knee toward the floor, keeping your front shin vertical, then push back to standing. Complete all reps on one leg or alternate.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Glutes", "Core"],
+    "equipment": ["Dumbbell"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/dumbbellunge.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/dumbbellunge.png",
+    "tags": ["legs", "dumbbell", "lunge", "compound"]
+  },
+  {
+    "id": "ex103", "name": "Pistol Squat",
+    "description": "Stand on one leg and lower yourself into a single-leg squat while extending the other leg straight in front. Requires significant leg strength, hip flexibility and balance. Use a support to assist until strong enough.",
+    "primaryMuscle": "Legs", "secondaryMuscles": ["Glutes", "Core"],
+    "equipment": ["Bodyweight"], "difficulty": "advanced",
+    "mediaUrl": "https://example.com/videos/pistolsquat.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/pistolsquat.png",
+    "tags": ["legs", "bodyweight", "squat", "advanced", "functional"]
+  },
+  {
+    "id": "ex104", "name": "Close-Grip Bench Press",
+    "description": "Use a shoulder-width grip on the barbell. Lower to mid-chest keeping elbows closer to the torso than a normal bench press, then press to lockout. Increases tricep activation compared to a wide grip.",
+    "primaryMuscle": "Arms", "secondaryMuscles": ["Chest", "Shoulders"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/closegripbench.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/closegripbench.png",
+    "tags": ["arms", "triceps", "barbell", "push", "compound", "strength"]
+  },
+  {
+    "id": "ex105", "name": "Pull-Over",
+    "description": "Lie across a bench with only your upper back supported, holding a dumbbell over your chest. Lower it overhead toward the floor in a wide arc, feeling a deep lat and chest stretch, then pull back up.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Chest"],
+    "equipment": ["Dumbbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/pullover.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/pullover.png",
+    "tags": ["back", "lats", "dumbbell", "isolation", "hypertrophy"]
+  },
+  {
+    "id": "ex106", "name": "Seated Calf Raise",
+    "description": "Sit in the machine with the pad resting on your lower thighs just above the knees. Rise onto your toes as high as possible, pause, then lower your heels below the platform for a full stretch.",
+    "primaryMuscle": "Legs", "secondaryMuscles": [],
+    "equipment": ["Machine"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/seatedcalfraise.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/seatedcalfraise.png",
+    "tags": ["legs", "calves", "machine", "isolation"]
+  },
+  {
+    "id": "ex107", "name": "Single-Leg Deadlift",
+    "description": "Stand on one leg, hinge at the hip and lower a dumbbell toward the floor while your free leg extends behind you for counterbalance. Keep a flat back and return to standing. Excellent for hamstring strength and balance.",
+    "primaryMuscle": "Hamstrings", "secondaryMuscles": ["Glutes", "Core"],
+    "equipment": ["Dumbbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/singlelegdeadlift.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/singlelegdeadlift.png",
+    "tags": ["legs", "hamstrings", "dumbbell", "hinge", "balance", "functional"]
+  },
+  {
+    "id": "ex108", "name": "Landmine Press",
+    "description": "Anchor one end of a barbell in a corner. Stand holding the other end at shoulder height with one or both hands. Press it upward in an arc to lockout. Shoulder-friendly pressing alternative.",
+    "primaryMuscle": "Shoulders", "secondaryMuscles": ["Chest", "Core"],
+    "equipment": ["Barbell"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/landminepress.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/landminepress.png",
+    "tags": ["shoulders", "barbell", "push", "compound", "functional"]
+  },
+  {
+    "id": "ex109", "name": "Inverted Row",
+    "description": "Set a bar at hip height. Lie beneath it and grip it overhand. Keeping your body straight, pull your chest to the bar by retracting your shoulder blades, then lower back to full arm extension.",
+    "primaryMuscle": "Back", "secondaryMuscles": ["Biceps", "Core"],
+    "equipment": ["Bodyweight"], "difficulty": "beginner",
+    "mediaUrl": "https://example.com/videos/invertedrow.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/invertedrow.png",
+    "tags": ["back", "bodyweight", "pull", "row", "compound"]
+  },
+  {
+    "id": "ex110", "name": "Hollow Body Hold",
+    "description": "Lie on your back and press your lower back firmly into the floor. Lift your arms overhead, legs off the floor, and hold with your body forming a slight C-curve. The foundation of gymnastics core strength.",
+    "primaryMuscle": "Core", "secondaryMuscles": [],
+    "equipment": ["Bodyweight"], "difficulty": "intermediate",
+    "mediaUrl": "https://example.com/videos/hollowbodyhold.mp4",
+    "thumbnailUrl": "https://example.com/thumbs/hollowbodyhold.png",
+    "tags": ["core", "abs", "bodyweight", "isometric", "stability"]
+  }
+]

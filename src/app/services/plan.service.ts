@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { UserProfile, WorkoutPlan, WorkoutDay, Exercise, DietPlan, DietDay, Meal } from '../models';
 import { StorageService } from './storage.service';
 import { UserProfileService } from './user-profile.service';
-import { ExerciseService } from './exercise.service';
+import { ExerciseLibraryService } from './exercise-library.service';
 import { NutritionService } from './nutrition.service';
+import { MuscleGroup, LibraryExercise } from '../models/exercise-library.model';
 
 const WORKOUT_PLAN_KEY = 'workout_plan';
 const DIET_PLAN_KEY = 'diet_plan';
@@ -11,7 +12,7 @@ const DIET_PLAN_KEY = 'diet_plan';
 /**
  * PlanService generates rule-based workout and diet plans
  * based on user profile and fitness goals
- * Now supports custom user-created exercises
+ * Uses ExerciseLibraryService for exercise data
  */
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,7 @@ export class PlanService {
   constructor(
     private storage: StorageService,
     private userProfileService: UserProfileService,
-    private exerciseService: ExerciseService,
+    private exerciseLibraryService: ExerciseLibraryService,
     private nutritionService: NutritionService,
   ) {}
 
@@ -121,6 +122,23 @@ export class PlanService {
   }
 
   /**
+   * Convert a LibraryExercise to an Exercise for workout plans
+   */
+  private libraryExerciseToExercise(
+    libraryEx: LibraryExercise,
+    setsRepsConfig: { sets: number; reps: number },
+    category: 'full' | 'upper' | 'lower' | 'cardio',
+  ): Exercise {
+    return {
+      name: libraryEx.name,
+      sets: setsRepsConfig.sets,
+      reps: setsRepsConfig.reps,
+      restSeconds: 60,
+      category,
+    };
+  }
+
+  /**
    * Get exercises for a specific workout focus
    * Mixes custom user exercises with default templates
    */
@@ -131,12 +149,26 @@ export class PlanService {
     // Adjust sets/reps based on goal
     const setsRepsConfig = this.getSetsRepsForGoal(profile.goal);
 
-    // Get custom exercises for this category
-    const customExercises = this.exerciseService.getExercisesByCategory(focus);
+    // Map workout focus to muscle groups
+    const muscleGroupMap: Record<string, MuscleGroup[]> = {
+      upper: ['Chest', 'Back', 'Shoulders', 'Arms'],
+      lower: ['Legs', 'Glutes', 'Hamstrings'],
+      full: ['Core', 'Chest', 'Legs'],
+      cardio: ['Core'],
+    };
 
-    // If user has custom exercises for this category, use them (convert to Exercise[])
+    const targetMuscles = muscleGroupMap[focus] || [];
+
+    // Get custom exercises for relevant muscle groups
+    const customExercises = this.exerciseLibraryService
+      .getCustomExercises()
+      .filter((ex) => targetMuscles.includes(ex.primaryMuscle));
+
+    // If user has custom exercises for this category, use them
     if (customExercises.length > 0) {
-      return customExercises.map((ex) => this.exerciseService.toExercise(ex));
+      return customExercises.map((ex) =>
+        this.libraryExerciseToExercise(ex, setsRepsConfig, focus),
+      );
     }
 
     // Otherwise, use default exercises

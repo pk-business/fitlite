@@ -1,126 +1,248 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { IonicModule, ModalController } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Exercise, CustomExercise } from '../../models';
-import { ExerciseService } from '../../services/exercise.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { IonicModule, ModalController, ToastController } from '@ionic/angular';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { ExerciseLibraryService } from '../../services/exercise-library.service';
+import {
+  LibraryExercise,
+  ExerciseFilters,
+} from '../../models/exercise-library.model';
 
 /**
- * ExerciseSelectorModal allows users to select an exercise from:
- * 1. Their custom exercises
- * 2. Default exercise templates
- * 3. Create a new custom exercise on the fly
+ * ExerciseSelectorModal — full "Add Exercise" flow.
+ *
+ * Users can:
+ *  1. Instantly search the bundled 20-exercise library
+ *  2. Filter by muscle group, equipment, and difficulty (multi-select chips)
+ *  3. Browse Recently Used, Popular, and All Exercises sections
+ *  4. Tap any row to add it to the current workout day
+ *  5. Create a fully custom exercise via an inline bottom sheet
  */
 @Component({
   selector: 'app-exercise-selector-modal',
   templateUrl: './exercise-selector-modal.component.html',
   styleUrls: ['./exercise-selector-modal.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [
+    IonicModule,
+    CommonModule,
+    NgTemplateOutlet,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
 })
-export class ExerciseSelectorModal implements OnInit {
-  @Input() category: 'full' | 'upper' | 'lower' | 'cardio' | 'custom' = 'full';
+export class ExerciseSelectorModal implements OnInit, OnDestroy {
+  // ── Reactive data ───────────────────────────────────────────────────────
+  filteredExercises: LibraryExercise[] = [];
+  recentlyUsed: LibraryExercise[] = [];
+  popular: LibraryExercise[] = [];
+  activeFilters: ExerciseFilters = {
+    muscles: [],
+    equipment: [],
+    difficulty: [],
+    searchQuery: '',
+  };
 
-  customExercises: CustomExercise[] = [];
-  defaultExercises: Exercise[] = [];
-  filteredCustomExercises: CustomExercise[] = [];
-  filteredDefaultExercises: Exercise[] = [];
+  // ── UI state ────────────────────────────────────────────────────────────
+  showCustomSheet = false;
+  isSubmittingCustom = false;
+  /** Exercise currently shown in the preview bottom-sheet (null = closed) */
+  previewExercise: LibraryExercise | null = null;
 
-  searchTerm = '';
-  selectedTab: 'custom' | 'default' = 'custom';
+  // ── Filter chip groups ──────────────────────────────────────────────────
+  muscleGroups: string[];
+  equipmentTypes: string[];
+  difficultyLevels: { value: string; label: string; color: string }[];
+
+  // ── Custom form ─────────────────────────────────────────────────────────
+  customForm!: FormGroup;
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private modalCtrl: ModalController,
-    private exerciseService: ExerciseService
-  ) {}
-
-  async ngOnInit() {
-    await this.loadExercises();
+    private toastCtrl: ToastController,
+    private libraryService: ExerciseLibraryService,
+    private fb: FormBuilder,
+  ) {
+    this.muscleGroups = libraryService.muscleGroups;
+    this.equipmentTypes = libraryService.equipmentTypes;
+    this.difficultyLevels = libraryService.difficultyLevels;
   }
 
-  /**
-   * Load exercises from service
-   */
-  async loadExercises(): Promise<void> {
-    // Load custom exercises
-    this.customExercises = await this.exerciseService.loadExercises();
-    
-    // Get default templates
-    this.defaultExercises = this.exerciseService.getDefaultExerciseTemplates();
+  ngOnInit(): void {
+    this.buildCustomForm();
 
-    // Filter by category
-    this.filterExercises();
+    this.libraryService.filteredExercises$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((ex) => (this.filteredExercises = ex));
+
+    this.libraryService.recentlyUsed$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((ex) => (this.recentlyUsed = ex));
+
+    this.libraryService.popular$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((ex) => (this.popular = ex));
+
+    this.libraryService.filters$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((f) => (this.activeFilters = f));
   }
 
-  /**
-   * Filter exercises by category and search term
-   */
-  filterExercises(): void {
-    let customFiltered = this.customExercises;
-    let defaultFiltered = this.defaultExercises;
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.libraryService.clearFilters();
+  }
 
-    // Filter by category
-    if (this.category && this.category !== 'custom') {
-      customFiltered = customFiltered.filter(ex => ex.category === this.category);
-      defaultFiltered = defaultFiltered.filter(ex => ex.category === this.category);
+  // ── Search ──────────────────────────────────────────────────────────────
+
+  onSearchChange(event: CustomEvent): void {
+    this.libraryService.setSearchQuery((event.detail.value as string) ?? '');
+  }
+
+  // ── Chip filters ────────────────────────────────────────────────────────
+
+  toggleMuscle(m: string): void {
+    this.libraryService.toggleMuscle(m);
+  }
+  toggleEquipment(eq: string): void {
+    this.libraryService.toggleEquipment(eq);
+  }
+  toggleDifficulty(d: string): void {
+    this.libraryService.toggleDifficulty(d);
+  }
+
+  isMuscleActive(m: string): boolean {
+    return this.activeFilters.muscles.includes(m as any);
+  }
+  isEquipmentActive(eq: string): boolean {
+    return this.activeFilters.equipment.includes(eq as any);
+  }
+  isDifficultyActive(d: string): boolean {
+    return this.activeFilters.difficulty.includes(d as any);
+  }
+
+  get hasActiveFilters(): boolean {
+    return (
+      this.activeFilters.muscles.length > 0 ||
+      this.activeFilters.equipment.length > 0 ||
+      this.activeFilters.difficulty.length > 0
+    );
+  }
+
+  clearFilters(): void {
+    this.libraryService.clearFilters();
+  }
+  // ── Exercise preview ─────────────────────────────────────────────────
+
+  openPreview(ex: LibraryExercise, event: Event): void {
+    event.stopPropagation();
+    this.previewExercise = ex;
+  }
+
+  closePreview(): void {
+    this.previewExercise = null;
+  }
+
+  async confirmSelect(ex: LibraryExercise): Promise<void> {
+    this.closePreview();
+    await this.selectExercise(ex);
+  }
+
+  // ── Select exercise → dismiss with result ───────────────────────────
+
+  async selectExercise(exercise: LibraryExercise): Promise<void> {
+    await this.libraryService.markAsUsed(exercise.id);
+    this.modalCtrl.dismiss({ exercise });
+  }
+
+  // ── Custom exercise sheet ───────────────────────────────────────────────
+
+  openCustomSheet(): void {
+    this.buildCustomForm();
+    this.showCustomSheet = true;
+  }
+
+  closeCustomSheet(): void {
+    this.showCustomSheet = false;
+    this.customForm.reset({ sets: 3, reps: 12, weight: 0 });
+  }
+
+  async saveCustomExercise(): Promise<void> {
+    if (this.customForm.invalid) {
+      this.customForm.markAllAsTouched();
+      return;
     }
-
-    // Filter by search term
-    if (this.searchTerm) {
-      const term = this.searchTerm.toLowerCase();
-      customFiltered = customFiltered.filter(ex => 
-        ex.name.toLowerCase().includes(term)
-      );
-      defaultFiltered = defaultFiltered.filter(ex => 
-        ex.name.toLowerCase().includes(term)
-      );
+    this.isSubmittingCustom = true;
+    try {
+      const { name, sets, reps, weight } = this.customForm.value;
+      const newEx = await this.libraryService.addCustomExercise({
+        name,
+        primaryMuscle: 'Custom',
+        secondaryMuscles: [],
+        equipment: ['Other'],
+        difficulty: 'beginner',
+        mediaUrl: '',
+        thumbnailUrl: '',
+        tags: ['custom'],
+      });
+      await this.selectExercise(newEx);
+    } finally {
+      this.isSubmittingCustom = false;
     }
-
-    this.filteredCustomExercises = customFiltered;
-    this.filteredDefaultExercises = defaultFiltered;
   }
 
-  /**
-   * Handle search input
-   */
-  onSearchChange(): void {
-    this.filterExercises();
-  }
+  // ── Modal ───────────────────────────────────────────────────────────────
 
-  /**
-   * Select an exercise
-   */
-  selectExercise(exercise: Exercise | CustomExercise): void {
-    // Convert CustomExercise to Exercise if needed
-    const selectedEx: Exercise = 'isCustom' in exercise 
-      ? this.exerciseService.toExercise(exercise)
-      : exercise;
-
-    this.modalCtrl.dismiss({
-      exercise: selectedEx
-    });
-  }
-
-  /**
-   * Create new exercise on the fly
-   */
-  async createQuickExercise(): Promise<void> {
-    this.modalCtrl.dismiss({
-      createNew: true
-    });
-  }
-
-  /**
-   * Close modal
-   */
   close(): void {
     this.modalCtrl.dismiss();
   }
 
-  /**
-   * Change tab
-   */
-  changeTab(tab: 'custom' | 'default'): void {
-    this.selectedTab = tab;
+  // ── Helpers ─────────────────────────────────────────────────────────────
+
+  difficultyColor(diff: string): string {
+    return (
+      (
+        {
+          beginner: 'success',
+          intermediate: 'warning',
+          advanced: 'danger',
+        } as any
+      )[diff] ?? 'medium'
+    );
+  }
+
+  trackById(_: number, ex: LibraryExercise): string {
+    return ex.id;
+  }
+
+  private buildCustomForm(): void {
+    this.customForm = this.fb.group({
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(60),
+        ],
+      ],
+      sets: [3, [Validators.required, Validators.min(1), Validators.max(20)]],
+      reps: [12, [Validators.required, Validators.min(1), Validators.max(200)]],
+      weight: [
+        0,
+        [Validators.required, Validators.min(0), Validators.max(1000)],
+      ],
+    });
   }
 }

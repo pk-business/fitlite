@@ -1,165 +1,327 @@
-<ion-header [translucent]="true">
+<!-- ═══════════════════════════════════════════════════════════
+     EXERCISE LIBRARY  —  Add Exercise
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- ── Sticky Header ──────────────────────────────────────── -->
+<ion-header class="ex-header" [translucent]="true">
+
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/schedule"></ion-back-button>
     </ion-buttons>
-    <ion-title>Exercise Library</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="toggleAddForm()">
-        <ion-icon slot="icon-only" [name]="showAddForm ? 'close' : 'add'"></ion-icon>
+    <ion-title class="ex-title">Add Exercise</ion-title>
+    </ion-toolbar>
+    
+    <!-- Search bar + Custom button row -->
+    <ion-toolbar class="ex-search-bar">
+      <div class="ex-search-row">
+        <ion-searchbar placeholder="Search exercises…" [debounce]="200" (ionInput)="onSearchChange($event)" animated
+          show-clear-button="focus" class="ex-searchbar"></ion-searchbar>
+        <ion-button (click)="openCustomModal()" fill="outline" class="ex-custom-btn">
+          <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+          Custom
       </ion-button>
-    </ion-buttons>
+    </div>
   </ion-toolbar>
-</ion-header>
+<!-- Filter chips -->
+<ion-toolbar class="ex-chips-bar">
+  <div class="ex-chips-scroll">
 
-<ion-content [fullscreen]="true">
-  <!-- Add/Edit Form -->
-  @if (showAddForm) {
-    <ion-card class="form-card">
-      <ion-card-header>
-        <ion-card-title>{{ editingExerciseId ? 'Edit Exercise' : 'Add New Exercise' }}</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <form [formGroup]="exerciseForm" (ngSubmit)="saveExercise()">
-          <ion-item>
-            <ion-input
-              label="Exercise Name"
-              labelPlacement="stacked"
-              formControlName="name"
-              placeholder="e.g., Dumbbell Press"
-              type="text"
-            ></ion-input>
-          </ion-item>
+    @if (hasActiveFilters) {
+    <ion-chip class="ex-chip ex-chip--clear" color="danger" (click)="clearFilters()">
+      <ion-icon name="close-circle" slot="start"></ion-icon>
+      Clear
+    </ion-chip>
+    <span class="ex-chip-divider"></span>
+    }
 
-          <ion-item>
-            <ion-select
-              label="Category"
-              labelPlacement="stacked"
-              formControlName="category"
-            >
-              @for (cat of categories; track cat.value) {
-                <ion-select-option [value]="cat.value">{{ cat.label }}</ion-select-option>
+    <span class="ex-chip-label">Muscle</span>
+    @for (m of muscleGroups; track m) {
+    <ion-chip class="ex-chip" [class.ex-chip--on]="isMuscleActive(m)" (click)="toggleMuscle(m)">{{ m }}</ion-chip>
+    }
+
+    <span class="ex-chip-divider"></span>
+    <span class="ex-chip-label">Equipment</span>
+    @for (eq of equipmentTypes; track eq) {
+    <ion-chip class="ex-chip" [class.ex-chip--on]="isEquipmentActive(eq)" (click)="toggleEquipment(eq)">{{ eq
+      }}</ion-chip>
+    }
+
+    <span class="ex-chip-divider"></span>
+    <span class="ex-chip-label">Level</span>
+    @for (d of difficultyLevels; track d.value) {
+    <ion-chip class="ex-chip ex-chip--diff" [class.ex-chip--on]="isDifficultyActive(d.value)" [attr.data-diff]="d.value"
+      (click)="toggleDifficulty(d.value)">{{ d.label }}</ion-chip>
+    }
+
+  </div>
+</ion-toolbar>
+    </ion-header>
+    
+    <!-- ═══════════════════════════════════════════════════════════
+             SCROLLABLE CONTENT
+             ═══════════════════════════════════════════════════════════ -->
+    <ion-content class="ex-content" [fullscreen]="true">
+    
+      <!-- ── Recently Used ─────────────────────────────────────── -->
+      @if (recentlyUsed.length > 0 && !activeFilters.searchQuery && !hasActiveFilters) {
+      <section class="ex-section">
+        <h2 class="ex-section-title">
+          <ion-icon name="time-outline"></ion-icon> Recently Used
+        </h2>
+    
+        <div class="ex-mini-row">
+          @for (ex of recentlyUsed; track ex.id) {
+          <button class="ex-mini-card" (click)="addExercise(ex)" type="button">
+            <div class="ex-mini-img-wrap">
+              <img class="ex-mini-img" [src]="ex.thumbnailUrl || 'assets/icon/favicon.png'" [alt]="ex.name"
+                (error)="$any($event.target).src='assets/icon/favicon.png'" />
+              @if (isAdded(ex.id)) {
+              <div class="ex-mini-added-overlay">
+                <ion-icon name="checkmark-circle"></ion-icon>
+              </div>
               }
-            </ion-select>
-          </ion-item>
-
-          <ion-item>
-            <ion-input
-              label="Sets"
-              labelPlacement="stacked"
-              formControlName="sets"
-              type="number"
-              min="1"
-              max="10"
-            ></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-input
-              label="Reps"
-              labelPlacement="stacked"
-              formControlName="reps"
-              type="number"
-              min="1"
-              max="100"
-            ></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-input
-              label="Rest (seconds)"
-              labelPlacement="stacked"
-              formControlName="restSeconds"
-              type="number"
-              min="10"
-              max="300"
-            ></ion-input>
-          </ion-item>
-
-          <div class="form-buttons">
-            <ion-button expand="block" type="submit" [disabled]="exerciseForm.invalid">
-              <ion-icon slot="start" name="checkmark"></ion-icon>
-              {{ editingExerciseId ? 'Update' : 'Add' }} Exercise
-            </ion-button>
-            @if (editingExerciseId) {
-              <ion-button expand="block" fill="outline" (click)="cancelEdit()">
-                Cancel
-              </ion-button>
-            }
-          </div>
-        </form>
-      </ion-card-content>
-    </ion-card>
-  }
-
-  <!-- Loading State -->
-  @if (isLoading) {
-    <div class="loading-container">
-      <ion-spinner name="crescent"></ion-spinner>
-    </div>
-  }
-
-  <!-- Empty State -->
-  @if (!isLoading && exercises.length === 0 && !showAddForm) {
-    <div class="empty-state">
-      <ion-icon name="barbell-outline" class="empty-icon"></ion-icon>
-      <h2>No Custom Exercises</h2>
-      <p>Create your own exercises to build personalized workout plans</p>
-      <ion-button (click)="toggleAddForm()">
-        <ion-icon slot="start" name="add"></ion-icon>
-        Add Your First Exercise
-      </ion-button>
-    </div>
-  }
-
-  <!-- Exercise List -->
-  @if (!isLoading && exercises.length > 0) {
-    <div class="exercises-container">
-      @for (category of categories; track category.value) {
-        @if (getExercisesByCategory(category.value).length > 0) {
-          <div class="category-section">
-            <div class="category-header">
-              <ion-icon 
-                [name]="category.value === 'upper' ? 'fitness-outline' : 
-                        category.value === 'lower' ? 'walk-outline' : 
-                        category.value === 'cardio' ? 'heart-outline' : 
-                        'barbell-outline'"
-              ></ion-icon>
-              <h3>{{ category.label }}</h3>
-              <ion-badge color="primary">{{ getExercisesByCategory(category.value).length }}</ion-badge>
             </div>
+            <p class="ex-mini-name">{{ ex.name }}</p>
+            <ion-badge class="ex-mini-badge" [color]="difficultyColor(ex.difficulty)">
+              {{ ex.difficulty }}
+            </ion-badge>
+            </button>
+            }
+            </div>
+            </section>
+            }
+            <!-- ── Popular ────────────────────────────────────────────── -->
+            @if (popular.length > 0 && !activeFilters.searchQuery && !hasActiveFilters) {
+            <section class="ex-section">
+              <h2 class="ex-section-title">
+                <ion-icon name="flame-outline"></ion-icon> Popular
+              </h2>
+              <ion-list class="ex-list" lines="none">
+                @for (ex of popular; track trackById($index, ex)) {
+                <ng-container *ngTemplateOutlet="exerciseRow; context: { $implicit: ex }"></ng-container>
+                }
+              </ion-list>
+            </section>
+            }
+            <!-- ── All / Filtered ─────────────────────────────────────── -->
+            <section class="ex-section">
+              <h2 class="ex-section-title">
+                <ion-icon name="barbell-outline"></ion-icon>
+                @if (hasActiveFilters || activeFilters.searchQuery) {
+                Results
+                <ion-badge color="primary" class="ex-count-badge">{{ filteredExercises.length }}</ion-badge>
+                } @else {
+                All Exercises
+                }
+              </h2>
 
-            @for (exercise of getExercisesByCategory(category.value); track exercise.id) {
-              <ion-card class="exercise-card">
-                <ion-card-content>
-                  <div class="exercise-header">
-                    <h3>{{ exercise.name }}</h3>
-                    <div class="exercise-actions">
-                      <ion-button fill="clear" size="small" (click)="editExercise(exercise)">
-                        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
-                      </ion-button>
-                      <ion-button fill="clear" size="small" color="danger" (click)="deleteExercise(exercise)">
-                        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-                      </ion-button>
-                    </div>
-                  </div>
-
-                  <div class="exercise-details">
-                    <div class="detail-item">
-                      <ion-icon name="repeat-outline"></ion-icon>
-                      <span>{{ exercise.sets }} × {{ exercise.reps }}</span>
-                    </div>
-                    <div class="detail-item">
-                      <ion-icon name="timer-outline"></ion-icon>
-                      <span>{{ exercise.restSeconds }}s rest</span>
-                    </div>
-                  </div>
-                </ion-card-content>
-              </ion-card>
+    @if (filteredExercises.length === 0) {
+    <div class="ex-empty">
+      <ion-icon name="search-outline" class="ex-empty-icon"></ion-icon>
+      <p>No exercises match your filters.</p>
+      <div class="ex-empty-actions">
+        <ion-button fill="outline" size="small" (click)="clearFilters()">Clear Filters</ion-button>
+        <ion-button fill="outline" size="small" (click)="openCustomModal()">
+          <ion-icon slot="start" name="add-outline"></ion-icon>Create Custom
+        </ion-button>
+      </div>
+    </div>
+    } @else {
+    <ion-list class="ex-list" lines="none">
+      @for (ex of filteredExercises; track trackById($index, ex)) {
+      <ng-container *ngTemplateOutlet="exerciseRow; context: { $implicit: ex }"></ng-container>
+      }
+    </ion-list>
+    }
+    </section>
+      <div class="ex-bottom-pad"></div>
+      </ion-content>
+      
+      
+      <!-- ═══════════════════════════════════════════════════════════
+           REUSABLE EXERCISE ROW TEMPLATE
+           ═══════════════════════════════════════════════════════════ -->
+      <ng-template #exerciseRow let-ex>
+        <ion-item class="ex-item" [class.ex-item--added]="isAdded(ex.id)" [class.ex-item--custom]="ex.isCustom" button
+          detail="false" (click)="openPreview(ex, $event)">
+          <!-- Thumbnail -->
+          <div class="ex-thumb-wrap" slot="start">
+            @if (ex.thumbnailUrl) {
+            <img class="ex-thumb" [src]="ex.thumbnailUrl" [alt]="ex.name"
+              (error)="$any($event.target).src='assets/icon/favicon.png'" />
+            } @else {
+            <div class="ex-thumb ex-thumb--ph">
+              <ion-icon name="barbell-outline"></ion-icon>
+            </div>
+            }
+            @if (ex.isCustom) {
+            <span class="ex-my-badge">MY</span>
             }
           </div>
-        }
+<!-- Text -->
+<ion-label class="ex-label">
+  <h3 class="ex-name">{{ ex.name }}</h3>
+  <p class="ex-meta">
+    <ion-icon name="body-outline"></ion-icon> {{ ex.primaryMuscle }}
+    <span class="ex-dot">·</span>
+    <ion-icon name="fitness-outline"></ion-icon> {{ ex.equipment.join(', ') }}
+  </p>
+  @if (ex.secondaryMuscles.length > 0) {
+  <p class="ex-secondary">Also: {{ ex.secondaryMuscles.join(', ') }}</p>
+  }
+</ion-label>
+
+<!-- Right side -->
+<div slot="end" class="ex-item-end">
+  <ion-badge [color]="difficultyColor(ex.difficulty)" class="ex-diff-badge">
+    {{ ex.difficulty }}
+  </ion-badge>
+  @if (isAdded(ex.id)) {
+  <ion-icon name="checkmark-circle" color="success" class="ex-check-icon"></ion-icon>
+  } @else {
+  <ion-icon name="add-circle-outline" color="primary" class="ex-add-icon" (click)="addExercise(ex); $event.stopPropagation()"></ion-icon>
+  }
+    </div>
+    </ion-item>
+    </ng-template>
+    
+    
+    <!-- ═══════════════════════════════════════════════════════════
+           CUSTOM EXERCISE BOTTOM SHEET MODAL
+           ═══════════════════════════════════════════════════════════ -->
+    <!-- ═══════════════════════════════════════════════════════════
+           EXERCISE PREVIEW BOTTOM SHEET
+           ═══════════════════════════════════════════════════════════ -->
+    @if (previewExercise) {
+    <div class="ex-modal-backdrop" (click)="closePreview()"></div>
+    
+    <div class="ex-modal-sheet ex-preview-sheet" role="dialog" aria-modal="true"
+      [attr.aria-label]="previewExercise.name + ' preview'">
+      <div class="ex-modal-handle"></div>
+    
+      <!-- Close button -->
+      <ion-button fill="clear" class="ex-modal-close ex-preview-close" (click)="closePreview()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+
+    <!-- Media (video when available, else thumbnail, else placeholder) -->
+    <div class="ex-preview-media">
+      @if (previewExercise.mediaUrl) {
+      <video class="ex-preview-video" [poster]="previewExercise.thumbnailUrl || ''" controls playsinline preload="metadata">
+        <source [src]="previewExercise.mediaUrl" type="video/mp4" />
+      </video>
+      } @else if (previewExercise.thumbnailUrl) {
+      <img class="ex-preview-thumb" [src]="previewExercise.thumbnailUrl" [alt]="previewExercise.name"
+        (error)="$any($event.target).src='assets/icon/favicon.png'" />
+      } @else {
+      <div class="ex-preview-ph">
+        <ion-icon name="barbell-outline"></ion-icon>
+      </div>
       }
     </div>
+
+    <!-- Body -->
+    <div class="ex-preview-body">
+      <div class="ex-preview-header">
+        <h2 class="ex-preview-name">{{ previewExercise.name }}</h2>
+        <ion-badge [color]="difficultyColor(previewExercise.difficulty)" class="ex-preview-diff">
+          {{ previewExercise.difficulty }}
+        </ion-badge>
+      </div>
+@if (previewExercise.description) {
+<p class="ex-preview-desc">{{ previewExercise.description }}</p>
+      }
+
+      <!-- Meta chips -->
+      <div class="ex-preview-meta">
+        <span class="ex-meta-chip">
+          <ion-icon name="body-outline"></ion-icon> {{ previewExercise.primaryMuscle }}
+        </span>
+        @if (previewExercise.secondaryMuscles.length > 0) {
+        <span class="ex-meta-chip ex-meta-chip--secondary">
+          {{ previewExercise.secondaryMuscles.join(', ') }}
+        </span>
+        }
+        <span class="ex-meta-chip">
+          <ion-icon name="fitness-outline"></ion-icon> {{ previewExercise.equipment.join(', ') }}
+        </span>
+      </div>
+
+      <!-- CTA -->
+      <ion-button expand="block" class="ex-preview-add-btn" (click)="confirmAdd(previewExercise)">
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+        Add to Workout
+      </ion-button>
+      </div>
+      </div>
   }
-</ion-content>
+  
+  @if (showCustomModal) {
+  <div class="ex-modal-backdrop" (click)="closeCustomModal()"></div>
+  
+  <div class="ex-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="customModalTitle">
+    <div class="ex-modal-handle"></div>
+
+    <div class="ex-modal-top">
+      <h2 id="customModalTitle" class="ex-modal-title">Create Custom Exercise</h2>
+      <ion-button fill="clear" (click)="closeCustomModal()" class="ex-modal-close">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </div>
+<form [formGroup]="customForm" (ngSubmit)="saveCustomExercise()" class="ex-custom-form">
+
+  <!-- Name -->
+  <div class="ex-field">
+    <ion-item class="ex-field-item" lines="none">
+      <ion-icon slot="start" name="create-outline" color="primary"></ion-icon>
+      <ion-input label="Exercise Name *" labelPlacement="stacked" formControlName="name" placeholder="e.g. Cable Crunch"
+        type="text" autocapitalize="words" maxlength="60"></ion-input>
+    </ion-item>
+    @if (customForm.get('name')?.touched && customForm.get('name')?.invalid) {
+    <p class="ex-field-err">Please enter a name (2–60 characters).</p>
+    }
+  </div>
+<!-- Sets / Reps / Weight -->
+<div class="ex-field-row">
+  <div class="ex-field ex-field--third">
+    <ion-item class="ex-field-item" lines="none">
+      <ion-input label="Sets" labelPlacement="stacked" formControlName="sets" type="number" min="1" max="20"
+        inputmode="numeric"></ion-input>
+    </ion-item>
+    @if (customForm.get('sets')?.touched && customForm.get('sets')?.invalid) {
+    <p class="ex-field-err">1–20</p>
+    }
+        </div>
+<div class="ex-field ex-field--third">
+  <ion-item class="ex-field-item" lines="none">
+    <ion-input label="Reps" labelPlacement="stacked" formControlName="reps" type="number" min="1" max="200"
+      inputmode="numeric"></ion-input>
+  </ion-item>
+  @if (customForm.get('reps')?.touched && customForm.get('reps')?.invalid) {
+  <p class="ex-field-err">1–200</p>
+  }
+</div>
+<div class="ex-field ex-field--third">
+  <ion-item class="ex-field-item" lines="none">
+    <ion-input label="Weight (kg)" labelPlacement="stacked" formControlName="weight" type="number" min="0" max="1000"
+      inputmode="decimal"></ion-input>
+  </ion-item>
+  @if (customForm.get('weight')?.touched && customForm.get('weight')?.invalid) {
+  <p class="ex-field-err">0–1000 kg</p>
+          }
+        </div>
+        </div>
+        
+        <!-- Save -->
+        <ion-button type="submit" expand="block" class="ex-save-btn" [disabled]="isSubmittingCustom">
+          @if (isSubmittingCustom) {
+          <ion-spinner name="crescent" slot="start"></ion-spinner>Saving…
+          } @else {
+          <ion-icon slot="start" name="checkmark-outline"></ion-icon>Save & Add to Workout
+        }
+      </ion-button>
+      
+      </form>
+  </div>
+  }

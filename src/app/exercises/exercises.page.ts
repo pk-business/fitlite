@@ -1,212 +1,274 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CustomExercise } from '../models';
-import { ExerciseService } from '../services/exercise.service';
-import { IonicModule, AlertController, ToastController } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { IonicModule, ToastController, NavController } from '@ionic/angular';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { ExerciseLibraryService } from '../services/exercise-library.service';
+import {
+  LibraryExercise,
+  ExerciseFilters,
+} from '../models/exercise-library.model';
 
 /**
- * ExercisesPage allows users to manage their custom exercise library
- * Create, view, edit, and delete custom exercises
+ * ExercisesPage — full "Add Exercise" flow.
+ *
+ * Users can:
+ *  1. Search the bundled exercise library instantly
+ *  2. Filter by muscle group, equipment and difficulty (multi-select chips)
+ *  3. Browse smart sections: Recently Used, Popular, All Exercises
+ *  4. Tap any card to add it to today's workout
+ *  5. Open an inline bottom-sheet to create a fully custom exercise
  */
 @Component({
   selector: 'app-exercises',
   templateUrl: './exercises.page.html',
   styleUrls: ['./exercises.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [
+    IonicModule,
+    CommonModule,
+    NgTemplateOutlet,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
 })
-export class ExercisesPage implements OnInit {
-  exercises: CustomExercise[] = [];
-  isLoading = true;
-  showAddForm = false;
-  exerciseForm!: FormGroup;
-  editingExerciseId: string | null = null;
+export class ExercisesPage implements OnInit, OnDestroy {
+  // ── Reactive data ─────────────────────────────────────────────────────────
+  filteredExercises: LibraryExercise[] = [];
+  recentlyUsed: LibraryExercise[] = [];
+  popular: LibraryExercise[] = [];
+  activeFilters: ExerciseFilters = {
+    muscles: [],
+    equipment: [],
+    difficulty: [],
+    searchQuery: '',
+  };
 
-  categories = [
-    { value: 'upper', label: 'Upper Body' },
-    { value: 'lower', label: 'Lower Body' },
-    { value: 'full', label: 'Full Body' },
-    { value: 'cardio', label: 'Cardio' },
-    { value: 'custom', label: 'Custom' }
-  ];
+  // ── UI state ──────────────────────────────────────────────────────────────
+  showCustomModal = false;
+  isSubmittingCustom = false;
+  /** Tracks which exercises were added this session for the ✓ icon */
+  addedExerciseIds = new Set<string>();
+  /** Exercise currently shown in the preview bottom-sheet (null = closed) */
+  previewExercise: LibraryExercise | null = null;
+
+  // ── Filter chip groups ────────────────────────────────────────────────────
+  muscleGroups: string[];
+  equipmentTypes: string[];
+  difficultyLevels: { value: string; label: string; color: string }[];
+
+  // ── Custom exercise form ──────────────────────────────────────────────────
+  customForm!: FormGroup;
+
+  private destroy$ = new Subject<void>();
 
   constructor(
-    private exerciseService: ExerciseService,
-    private fb: FormBuilder,
-    private alertCtrl: AlertController,
+    private libraryService: ExerciseLibraryService,
+    private navCtrl: NavController,
     private toastCtrl: ToastController,
-    private router: Router
-  ) {}
-
-  async ngOnInit() {
-    this.initializeForm();
-    await this.loadExercises();
+    private fb: FormBuilder,
+    private router: Router,
+  ) {
+    this.muscleGroups = libraryService.muscleGroups;
+    this.equipmentTypes = libraryService.equipmentTypes;
+    this.difficultyLevels = libraryService.difficultyLevels;
   }
 
-  /**
-   * Initialize the exercise form
-   */
-  private initializeForm(): void {
-    this.exerciseForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      category: ['upper', Validators.required],
-      sets: [3, [Validators.required, Validators.min(1), Validators.max(10)]],
-      reps: [12, [Validators.required, Validators.min(1), Validators.max(100)]],
-      restSeconds: [60, [Validators.required, Validators.min(10), Validators.max(300)]]
-    });
+  ngOnInit(): void {
+    this.buildCustomForm();
+
+    this.libraryService.filteredExercises$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((ex) => (this.filteredExercises = ex));
+
+    this.libraryService.recentlyUsed$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((ex) => (this.recentlyUsed = ex));
+
+    this.libraryService.popular$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((ex) => (this.popular = ex));
+
+    this.libraryService.filters$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((f) => (this.activeFilters = f));
   }
 
-  /**
-   * Load all custom exercises
-   */
-  async loadExercises(): Promise<void> {
-    this.isLoading = true;
-    try {
-      this.exercises = await this.exerciseService.loadExercises();
-    } catch (error) {
-      console.error('Error loading exercises:', error);
-      await this.showToast('Error loading exercises', 'danger');
-    } finally {
-      this.isLoading = false;
-    }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    // Reset filters so returning to the page feels fresh
+    this.libraryService.clearFilters();
   }
 
-  /**
-   * Toggle the add form visibility
-   */
-  toggleAddForm(): void {
-    this.showAddForm = !this.showAddForm;
-    if (!this.showAddForm) {
-      this.cancelEdit();
-    }
+  // ── Navigation ────────────────────────────────────────────────────────────
+
+  goBack(): void {
+    this.navCtrl.back();
   }
 
-  /**
-   * Save a new or edited exercise
-   */
-  async saveExercise(): Promise<void> {
-    if (this.exerciseForm.invalid) {
-      await this.showToast('Please fill in all required fields', 'warning');
+  // ── Search ────────────────────────────────────────────────────────────────
+
+  onSearchChange(event: CustomEvent): void {
+    this.libraryService.setSearchQuery((event.detail.value as string) ?? '');
+  }
+
+  // ── Chip filters ──────────────────────────────────────────────────────────
+
+  toggleMuscle(muscle: string): void {
+    this.libraryService.toggleMuscle(muscle);
+  }
+  toggleEquipment(eq: string): void {
+    this.libraryService.toggleEquipment(eq);
+  }
+  toggleDifficulty(diff: string): void {
+    this.libraryService.toggleDifficulty(diff);
+  }
+
+  isMuscleActive(muscle: string): boolean {
+    return this.activeFilters.muscles.includes(muscle as any);
+  }
+  isEquipmentActive(eq: string): boolean {
+    return this.activeFilters.equipment.includes(eq as any);
+  }
+  isDifficultyActive(diff: string): boolean {
+    return this.activeFilters.difficulty.includes(diff as any);
+  }
+
+  get hasActiveFilters(): boolean {
+    return (
+      this.activeFilters.muscles.length > 0 ||
+      this.activeFilters.equipment.length > 0 ||
+      this.activeFilters.difficulty.length > 0
+    );
+  }
+
+  clearFilters(): void {
+    this.libraryService.clearFilters();
+  }
+
+  // ── Add to workout ────────────────────────────────────────────────────────
+
+  async addExercise(exercise: LibraryExercise): Promise<void> {
+    await this.libraryService.markAsUsed(exercise.id);
+    this.addedExerciseIds.add(exercise.id);
+    await this.showToast(
+      `✅ ${exercise.name} added to today's workout`,
+      'success',
+    );
+  }
+
+  isAdded(id: string): boolean {
+    return this.addedExerciseIds.has(id);
+  }
+
+  // ── Exercise preview ─────────────────────────────────────────────────────
+
+  openPreview(ex: LibraryExercise, event: Event): void {
+    event.stopPropagation();
+    this.previewExercise = ex;
+  }
+
+  closePreview(): void {
+    this.previewExercise = null;
+  }
+
+  async confirmAdd(ex: LibraryExercise): Promise<void> {
+    await this.addExercise(ex);
+    this.closePreview();
+  }
+
+  // ── Custom exercise modal ─────────────────────────────────────────────────
+
+  openCustomModal(): void {
+    this.buildCustomForm();
+    this.showCustomModal = true;
+  }
+
+  closeCustomModal(): void {
+    this.showCustomModal = false;
+    this.customForm.reset({ sets: 3, reps: 12, weight: 0 });
+  }
+
+  async saveCustomExercise(): Promise<void> {
+    if (this.customForm.invalid) {
+      this.customForm.markAllAsTouched();
       return;
     }
-
+    this.isSubmittingCustom = true;
     try {
-      const formValue = this.exerciseForm.value;
-
-      if (this.editingExerciseId) {
-        // Update existing exercise
-        await this.exerciseService.updateExercise(this.editingExerciseId, formValue);
-        await this.showToast('Exercise updated successfully', 'success');
-      } else {
-        // Add new exercise
-        await this.exerciseService.addExercise(formValue);
-        await this.showToast('Exercise added successfully', 'success');
-      }
-
-      await this.loadExercises();
-      this.cancelEdit();
-      this.showAddForm = false;
-    } catch (error) {
-      console.error('Error saving exercise:', error);
-      await this.showToast('Error saving exercise', 'danger');
+      const { name, sets, reps, weight } = this.customForm.value;
+      const newEx = await this.libraryService.addCustomExercise({
+        name,
+        primaryMuscle: 'Custom',
+        secondaryMuscles: [],
+        equipment: ['Other'],
+        difficulty: 'beginner',
+        mediaUrl: '',
+        thumbnailUrl: '',
+        tags: ['custom'],
+      });
+      await this.addExercise(newEx);
+      this.closeCustomModal();
+    } finally {
+      this.isSubmittingCustom = false;
     }
   }
 
-  /**
-   * Edit an existing exercise
-   */
-  editExercise(exercise: CustomExercise): void {
-    this.editingExerciseId = exercise.id;
-    this.exerciseForm.patchValue({
-      name: exercise.name,
-      category: exercise.category,
-      sets: exercise.sets,
-      reps: exercise.reps,
-      restSeconds: exercise.restSeconds
-    });
-    this.showAddForm = true;
-  }
+  // ── Helpers ───────────────────────────────────────────────────────────────
 
-  /**
-   * Cancel editing
-   */
-  cancelEdit(): void {
-    this.editingExerciseId = null;
-    this.exerciseForm.reset({
-      name: '',
-      category: 'upper',
-      sets: 3,
-      reps: 12,
-      restSeconds: 60
-    });
-  }
-
-  /**
-   * Delete an exercise with confirmation
-   */
-  async deleteExercise(exercise: CustomExercise): Promise<void> {
-    const alert = await this.alertCtrl.create({
-      header: 'Delete Exercise',
-      message: `Are you sure you want to delete "${exercise.name}"?`,
-      buttons: [
+  difficultyColor(diff: string): string {
+    return (
+      (
         {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Delete',
-          role: 'destructive',
-          handler: async () => {
-            try {
-              await this.exerciseService.deleteExercise(exercise.id);
-              await this.loadExercises();
-              await this.showToast('Exercise deleted', 'success');
-            } catch (error) {
-              console.error('Error deleting exercise:', error);
-              await this.showToast('Error deleting exercise', 'danger');
-            }
-          }
-        }
-      ]
+          beginner: 'success',
+          intermediate: 'warning',
+          advanced: 'danger',
+        } as any
+      )[diff] ?? 'medium'
+    );
+  }
+
+  trackById(_: number, ex: LibraryExercise): string {
+    return ex.id;
+  }
+
+  private buildCustomForm(): void {
+    this.customForm = this.fb.group({
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(60),
+        ],
+      ],
+      sets: [3, [Validators.required, Validators.min(1), Validators.max(20)]],
+      reps: [12, [Validators.required, Validators.min(1), Validators.max(200)]],
+      weight: [
+        0,
+        [Validators.required, Validators.min(0), Validators.max(1000)],
+      ],
     });
-
-    await alert.present();
   }
 
-  /**
-   * Get exercises grouped by category
-   */
-  getExercisesByCategory(category: string): CustomExercise[] {
-    return this.exercises.filter(ex => ex.category === category);
-  }
-
-  /**
-   * Get category label
-   */
-  getCategoryLabel(category: string): string {
-    const cat = this.categories.find(c => c.value === category);
-    return cat ? cat.label : category;
-  }
-
-  /**
-   * Show toast message
-   */
   private async showToast(message: string, color: string): Promise<void> {
     const toast = await this.toastCtrl.create({
       message,
-      duration: 2000,
+      duration: 2200,
+      position: 'bottom',
       color,
-      position: 'bottom'
+      cssClass: 'exercise-added-toast',
     });
     await toast.present();
-  }
-
-  /**
-   * Navigate back
-   */
-  goBack(): void {
-    this.router.navigate(['/tabs/schedule']);
   }
 }

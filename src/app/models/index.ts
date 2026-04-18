@@ -7,3 +7,4 @@ export * from './diet.model';
 export * from './reminder.model';
 export * from './exercise-log.model';
 export * from './progress.model';
+export * from './exercise-library.model';

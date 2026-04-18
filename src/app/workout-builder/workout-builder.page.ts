@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { IonicModule, AlertController, ModalController, ToastController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { WorkoutDay, Exercise, CustomExercise } from '../models';
+import { WorkoutDay, Exercise } from '../models';
 import { PlanService } from '../services/plan.service';
-import { ExerciseService } from '../services/exercise.service';
+import { ExerciseLibraryService } from '../services/exercise-library.service';
 import { ExerciseLogService } from '../services/exercise-log.service';
 import { ScheduleService } from '../services/schedule.service';
 import { ExerciseSelectorModal } from './exercise-selector-modal/exercise-selector-modal.component';
 import { ExerciseLogModal } from '../components/exercise-log-modal/exercise-log-modal.component';
+import { MuscleGroup } from '../models/exercise-library.model';
 
 /**
  * WorkoutBuilderPage allows users to edit their weekly workout plan
@@ -19,7 +20,7 @@ import { ExerciseLogModal } from '../components/exercise-log-modal/exercise-log-
   templateUrl: './workout-builder.page.html',
   styleUrls: ['./workout-builder.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule]
+  imports: [IonicModule, CommonModule],
 })
 export class WorkoutBuilderPage implements OnInit {
   workoutDay: WorkoutDay | null = null;
@@ -29,29 +30,41 @@ export class WorkoutBuilderPage implements OnInit {
   editingIndex: number | null = null;
   useMetric = false;
 
-  readonly dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  readonly focusOptions: Array<{ value: 'full' | 'upper' | 'lower' | 'cardio'; label: string; icon: string }> = [
+  readonly dayNames = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+  readonly focusOptions: Array<{
+    value: 'full' | 'upper' | 'lower' | 'cardio';
+    label: string;
+    icon: string;
+  }> = [
     { value: 'full', label: 'Full Body', icon: 'barbell-outline' },
     { value: 'upper', label: 'Upper Body', icon: 'fitness-outline' },
     { value: 'lower', label: 'Lower Body', icon: 'walk-outline' },
-    { value: 'cardio', label: 'Cardio', icon: 'heart-outline' }
+    { value: 'cardio', label: 'Cardio', icon: 'heart-outline' },
   ];
 
   constructor(
     private planService: PlanService,
-    private exerciseService: ExerciseService,
+    private exerciseLibraryService: ExerciseLibraryService,
     private exerciseLogService: ExerciseLogService,
     private scheduleService: ScheduleService,
     private router: Router,
     private route: ActivatedRoute,
     private alertCtrl: AlertController,
     private modalCtrl: ModalController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
   ) {}
 
   async ngOnInit() {
     // Get day from route params
-    this.route.queryParams.subscribe(async params => {
+    this.route.queryParams.subscribe(async (params) => {
       if (params['day']) {
         this.dayOfWeek = parseInt(params['day'], 10);
       }
@@ -79,13 +92,13 @@ export class WorkoutBuilderPage implements OnInit {
     this.isLoading = true;
     try {
       this.workoutDay = await this.planService.getWorkoutForDay(this.dayOfWeek);
-      
+
       // If no workout exists for this day, create a default one
       if (!this.workoutDay) {
         this.workoutDay = {
           dayOfWeek: this.dayOfWeek,
           focus: 'full',
-          exercises: []
+          exercises: [],
         };
       }
     } catch (error) {
@@ -106,7 +119,9 @@ export class WorkoutBuilderPage implements OnInit {
   /**
    * Change workout focus
    */
-  async changeFocus(focus: 'full' | 'upper' | 'lower' | 'cardio'): Promise<void> {
+  async changeFocus(
+    focus: 'full' | 'upper' | 'lower' | 'cardio',
+  ): Promise<void> {
     if (this.workoutDay) {
       this.workoutDay.focus = focus;
       await this.saveWorkout();
@@ -119,23 +134,23 @@ export class WorkoutBuilderPage implements OnInit {
   async addExercise(): Promise<void> {
     const modal = await this.modalCtrl.create({
       component: ExerciseSelectorModal,
-      componentProps: {
-        category: this.workoutDay?.focus
-      }
     });
 
     await modal.present();
 
     const { data } = await modal.onDidDismiss();
-    if (data && data.exercise) {
-      if (this.workoutDay) {
-        this.workoutDay.exercises.push(data.exercise);
-        await this.saveWorkout();
-        await this.showToast('Exercise added', 'success');
-      }
-    } else if (data && data.createNew) {
-      // Navigate to exercises page to create new exercise
-      await this.showCreateExercisePrompt();
+    if (data?.exercise && this.workoutDay) {
+      // Convert LibraryExercise → Exercise shape used by the workout plan
+      const exercise: Exercise = {
+        name: data.exercise.name,
+        sets: 3,
+        reps: 12,
+        restSeconds: 60,
+        category: this.workoutDay.focus,
+      };
+      this.workoutDay.exercises.push(exercise);
+      await this.saveWorkout();
+      await this.showToast(`${exercise.name} added to workout`, 'success');
     }
   }
 
@@ -151,8 +166,8 @@ export class WorkoutBuilderPage implements OnInit {
           type: 'text',
           placeholder: 'Exercise name',
           attributes: {
-            required: true
-          }
+            required: true,
+          },
         },
         {
           name: 'sets',
@@ -160,7 +175,7 @@ export class WorkoutBuilderPage implements OnInit {
           placeholder: 'Sets',
           value: 3,
           min: 1,
-          max: 10
+          max: 10,
         },
         {
           name: 'reps',
@@ -168,7 +183,7 @@ export class WorkoutBuilderPage implements OnInit {
           placeholder: 'Reps',
           value: 12,
           min: 1,
-          max: 100
+          max: 100,
         },
         {
           name: 'restSeconds',
@@ -176,13 +191,13 @@ export class WorkoutBuilderPage implements OnInit {
           placeholder: 'Rest (seconds)',
           value: 60,
           min: 10,
-          max: 300
-        }
+          max: 300,
+        },
       ],
       buttons: [
         {
           text: 'Cancel',
-          role: 'cancel'
+          role: 'cancel',
         },
         {
           text: 'Create & Add',
@@ -193,23 +208,32 @@ export class WorkoutBuilderPage implements OnInit {
             }
 
             try {
-              // Create new custom exercise
-              const newExercise = await this.exerciseService.addExercise({
-                name: data.name.trim(),
-                sets: parseInt(data.sets) || 3,
-                reps: parseInt(data.reps) || 12,
-                restSeconds: parseInt(data.restSeconds) || 60,
-                category: this.workoutDay?.focus || 'full'
-              });
+              // Map workout focus to muscle group for the library
+              const muscleMap: Record<string, MuscleGroup> = {
+                full: 'Core',
+                upper: 'Chest',
+                lower: 'Legs',
+                cardio: 'Core',
+                custom: 'Custom',
+              };
+              const primaryMuscle = muscleMap[this.workoutDay?.focus || 'full'];
 
-              // Add to current workout
+              // Create new custom exercise in the library
+              const newExercise =
+                await this.exerciseLibraryService.addQuickCustomExercise(
+                  data.name.trim(),
+                  primaryMuscle,
+                  ['Bodyweight'],
+                );
+
+              // Add to current workout with the specified volume
               if (this.workoutDay) {
                 const exercise: Exercise = {
                   name: newExercise.name,
-                  sets: newExercise.sets,
-                  reps: newExercise.reps,
-                  restSeconds: newExercise.restSeconds,
-                  category: newExercise.category
+                  sets: parseInt(data.sets) || 3,
+                  reps: parseInt(data.reps) || 12,
+                  restSeconds: parseInt(data.restSeconds) || 60,
+                  category: this.workoutDay.focus,
                 };
                 this.workoutDay.exercises.push(exercise);
                 await this.saveWorkout();
@@ -221,9 +245,9 @@ export class WorkoutBuilderPage implements OnInit {
               this.showToast('Failed to create exercise', 'danger');
               return false;
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     await alert.present();
@@ -243,7 +267,7 @@ export class WorkoutBuilderPage implements OnInit {
           name: 'name',
           type: 'text',
           placeholder: 'Exercise name',
-          value: exercise.name
+          value: exercise.name,
         },
         {
           name: 'sets',
@@ -251,7 +275,7 @@ export class WorkoutBuilderPage implements OnInit {
           placeholder: 'Sets',
           value: exercise.sets,
           min: 1,
-          max: 10
+          max: 10,
         },
         {
           name: 'reps',
@@ -259,7 +283,7 @@ export class WorkoutBuilderPage implements OnInit {
           placeholder: 'Reps',
           value: exercise.reps,
           min: 1,
-          max: 100
+          max: 100,
         },
         {
           name: 'restSeconds',
@@ -267,13 +291,13 @@ export class WorkoutBuilderPage implements OnInit {
           placeholder: 'Rest (seconds)',
           value: exercise.restSeconds,
           min: 10,
-          max: 300
-        }
+          max: 300,
+        },
       ],
       buttons: [
         {
           text: 'Cancel',
-          role: 'cancel'
+          role: 'cancel',
         },
         {
           text: 'Save',
@@ -284,16 +308,16 @@ export class WorkoutBuilderPage implements OnInit {
                 sets: parseInt(data.sets) || 3,
                 reps: parseInt(data.reps) || 12,
                 restSeconds: parseInt(data.restSeconds) || 60,
-                category: exercise.category
+                category: exercise.category,
               };
-              
+
               this.workoutDay.exercises[index] = updatedExercise;
               await this.saveWorkout();
               await this.showToast('Exercise updated', 'success');
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     await alert.present();
@@ -312,7 +336,7 @@ export class WorkoutBuilderPage implements OnInit {
       buttons: [
         {
           text: 'Cancel',
-          role: 'cancel'
+          role: 'cancel',
         },
         {
           text: 'Remove',
@@ -323,9 +347,9 @@ export class WorkoutBuilderPage implements OnInit {
               await this.saveWorkout();
               await this.showToast('Exercise removed', 'success');
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     await alert.present();
@@ -379,7 +403,7 @@ export class WorkoutBuilderPage implements OnInit {
       buttons: [
         {
           text: 'Cancel',
-          role: 'cancel'
+          role: 'cancel',
         },
         {
           text: 'Delete',
@@ -393,9 +417,9 @@ export class WorkoutBuilderPage implements OnInit {
               console.error('Error deleting workout:', error);
               await this.showToast('Error deleting workout', 'danger');
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     await alert.present();
@@ -405,7 +429,7 @@ export class WorkoutBuilderPage implements OnInit {
    * Get focus icon
    */
   getFocusIcon(focus: string): string {
-    const option = this.focusOptions.find(o => o.value === focus);
+    const option = this.focusOptions.find((o) => o.value === focus);
     return option ? option.icon : 'barbell-outline';
   }
 
@@ -413,7 +437,7 @@ export class WorkoutBuilderPage implements OnInit {
    * Get focus label
    */
   getFocusLabel(focus: string): string {
-    const option = this.focusOptions.find(o => o.value === focus);
+    const option = this.focusOptions.find((o) => o.value === focus);
     return option ? option.label : focus;
   }
 
@@ -430,10 +454,10 @@ export class WorkoutBuilderPage implements OnInit {
    */
   getEstimatedTime(): number {
     if (!this.workoutDay) return 0;
-    
+
     // Calculate time: (sets × reps × 3 seconds per rep) + rest time
     const totalTime = this.workoutDay.exercises.reduce((total, ex) => {
-      const exerciseTime = (ex.sets * ex.reps * 3) + (ex.sets * ex.restSeconds);
+      const exerciseTime = ex.sets * ex.reps * 3 + ex.sets * ex.restSeconds;
       return total + exerciseTime;
     }, 0);
 
@@ -448,7 +472,7 @@ export class WorkoutBuilderPage implements OnInit {
       message,
       duration: 2000,
       color,
-      position: 'bottom'
+      position: 'bottom',
     });
     await toast.present();
   }
@@ -469,8 +493,8 @@ export class WorkoutBuilderPage implements OnInit {
       componentProps: {
         exercise,
         date: new Date().toISOString().split('T')[0],
-        useMetric: this.useMetric
-      }
+        useMetric: this.useMetric,
+      },
     });
 
     await modal.present();
@@ -489,17 +513,17 @@ export class WorkoutBuilderPage implements OnInit {
   getPreviousLog(exerciseName: string): string {
     const today = new Date().toISOString().split('T')[0];
     const lastLog = this.exerciseLogService.getLastLogForExercise(exerciseName);
-    
+
     if (!lastLog) {
       return '';
     }
-    
+
     // Format: "20kg×12, 20kg×10, 20kg×8"
     const unit = this.useMetric ? 'kg' : 'lbs';
     const setsStr = lastLog.sets
-      .map(set => `${set.weight || 0}${unit}×${set.reps}`)
+      .map((set) => `${set.weight || 0}${unit}×${set.reps}`)
       .join(', ');
-    
+
     const prefix = lastLog.date === today ? 'Today' : 'Last';
     return `${prefix}: ${setsStr}`;
   }

@@ -6,6 +6,17 @@ import { StorageService } from './storage.service';
 const CUSTOM_EXERCISES_KEY = 'custom_exercises';
 
 /**
+ * @deprecated Use ExerciseLibraryService instead.
+ * 
+ * This service was used for custom user-created exercises but has been
+ * superseded by ExerciseLibraryService which provides a unified approach
+ * to both bundled and custom exercises.
+ * 
+ * Storage migration: Data in 'custom_exercises' should be migrated to
+ * 'custom_library_exercises' used by ExerciseLibraryService.
+ * 
+ * TODO: Remove this file after verifying no data migration is needed.
+ * 
  * ExerciseService manages custom user-created exercises
  * Provides CRUD operations and observable for reactive UI
  */
