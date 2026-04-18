@@ -6,14 +6,14 @@ import { UserProfile } from '../models';
 import { UserProfileService } from '../services/user-profile.service';
 
 @Component({
-  selector: 'app-tab5',
-  templateUrl: 'tab5.page.html',
-  styleUrls: ['tab5.page.scss'],
+  selector: 'app-profile-tab',
+  templateUrl: 'profile-tab.page.html',
+  styleUrls: ['profile-tab.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [IonicModule, CommonModule],
 })
-export class Tab5Page implements OnInit {
+export class ProfileTabPage implements OnInit {
   isLoading = true;
   userProfile: UserProfile | null = null;
 

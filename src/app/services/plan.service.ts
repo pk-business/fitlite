@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { UserProfile, WorkoutPlan, WorkoutDay, Exercise, DietPlan, DietDay, Meal } from '../models';
 import { StorageService } from './storage.service';
 import { UserProfileService } from './user-profile.service';
@@ -18,12 +19,22 @@ const DIET_PLAN_KEY = 'diet_plan';
   providedIn: 'root',
 })
 export class PlanService {
+  private workoutPlanSubject = new BehaviorSubject<WorkoutPlan | null>(null);
+  /** Reactive stream of the current workout plan. Emits on every save. */
+  readonly workoutPlan$: Observable<WorkoutPlan | null> =
+    this.workoutPlanSubject.asObservable();
+
   constructor(
     private storage: StorageService,
     private userProfileService: UserProfileService,
     private exerciseLibraryService: ExerciseLibraryService,
     private nutritionService: NutritionService,
-  ) {}
+  ) {
+    // Prime the subject from storage on startup
+    this.storage.get<WorkoutPlan>(WORKOUT_PLAN_KEY).then((plan) => {
+      this.workoutPlanSubject.next(plan ?? null);
+    });
+  }
 
   // ========================
   // WORKOUT PLAN GENERATION
@@ -63,7 +74,9 @@ export class PlanService {
    * Get workout plan from storage
    */
   async getWorkoutPlan(): Promise<WorkoutPlan | null> {
-    return await this.storage.get<WorkoutPlan>(WORKOUT_PLAN_KEY);
+    const plan = await this.storage.get<WorkoutPlan>(WORKOUT_PLAN_KEY);
+    this.workoutPlanSubject.next(plan ?? null);
+    return plan;
   }
 
   /**
@@ -492,6 +505,7 @@ export class PlanService {
    */
   async updateWorkoutPlan(plan: WorkoutPlan): Promise<void> {
     await this.storage.set(WORKOUT_PLAN_KEY, plan);
+    this.workoutPlanSubject.next(plan);
   }
 
   /**

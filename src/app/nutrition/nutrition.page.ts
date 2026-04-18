@@ -11,16 +11,16 @@ import { NutritionLoggerComponent } from '../nutrition-logger/nutrition-logger.c
 import { EditNutritionLogsComponent } from '../components/edit-nutrition-logs/edit-nutrition-logs.component';
 
 /**
- * Tab3Page (Diet) – Today's nutrition + weekly diet plan
+ * NutritionPage – Today's nutrition + weekly diet plan
  */
 @Component({
-  selector: 'app-tab3',
-  templateUrl: 'tab3.page.html',
-  styleUrls: ['tab3.page.scss'],
+  selector: 'app-nutrition',
+  templateUrl: 'nutrition.page.html',
+  styleUrls: ['nutrition.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IonicModule, TodayMealsComponent],
 })
-export class Tab3Page implements OnInit {
+export class NutritionPage implements OnInit {
   dietPlan: DietPlan | null = null;
   userProfile: UserProfile | null = null;
   todaysNutrition: DailyNutritionLog | null = null;

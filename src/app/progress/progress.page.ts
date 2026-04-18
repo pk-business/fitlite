@@ -5,14 +5,14 @@ import { ExerciseLogService } from '../services/exercise-log.service';
 import { UserProfileService } from '../services/user-profile.service';
 
 @Component({
-  selector: 'app-tab4',
-  templateUrl: 'tab4.page.html',
-  styleUrls: ['tab4.page.scss'],
+  selector: 'app-progress',
+  templateUrl: 'progress.page.html',
+  styleUrls: ['progress.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [IonicModule, CommonModule],
 })
-export class Tab4Page implements OnInit {
+export class ProgressPage implements OnInit {
   isLoading = true;
   hasProfile = false;
   selectedExercise: string | null = null;

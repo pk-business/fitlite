@@ -21,12 +21,12 @@ import { TodayWorkoutComponent } from '../components/today-workout/today-workout
 import { RestTimerComponent } from '../components/rest-timer/rest-timer.component';
 
 /**
- * Tab2Page (Workout Plan) displays the weekly workout schedule
+ * WorkoutPage displays the weekly workout schedule
  */
 @Component({
-  selector: 'app-tab2',
-  templateUrl: 'tab2.page.html',
-  styleUrls: ['tab2.page.scss'],
+  selector: 'app-workout',
+  templateUrl: 'workout.page.html',
+  styleUrls: ['workout.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     IonicModule,
@@ -35,7 +35,7 @@ import { RestTimerComponent } from '../components/rest-timer/rest-timer.componen
     RestTimerComponent,
   ],
 })
-export class Tab2Page implements OnInit, OnDestroy, ViewWillEnter {
+export class WorkoutPage implements OnInit, OnDestroy, ViewWillEnter {
   workoutPlan: WorkoutPlan | null = null;
   isLoading = true;
   hasProfile = false;

@@ -412,7 +412,7 @@ export class WorkoutBuilderPage implements OnInit {
             try {
               await this.planService.deleteWorkoutDay(this.dayOfWeek);
               await this.showToast('Workout deleted', 'success');
-              this.router.navigate(['/tabs/schedule']);
+              this.router.navigate(['/tabs/exercise']);
             } catch (error) {
               console.error('Error deleting workout:', error);
               await this.showToast('Error deleting workout', 'danger');
@@ -481,7 +481,7 @@ export class WorkoutBuilderPage implements OnInit {
    * Navigate back
    */
   goBack(): void {
-    this.router.navigate(['/tabs/schedule']);
+    this.router.navigate(['/tabs/exercise']);
   }
 
   /**

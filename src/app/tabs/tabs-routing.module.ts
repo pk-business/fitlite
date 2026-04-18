@@ -10,27 +10,33 @@ const routes: Routes = [
       {
         path: 'home',
         loadChildren: () =>
-          import('../tab1/tab1.module').then((m) => m.Tab1PageModule),
+          import('../home/home.module').then((m) => m.HomePageModule),
       },
       {
         path: 'logs',
         loadChildren: () =>
-          import('../tab4/tab4.module').then((m) => m.Tab4PageModule),
+          import('../progress/progress.module').then(
+            (m) => m.ProgressPageModule,
+          ),
       },
       {
         path: 'exercise',
         loadChildren: () =>
-          import('../tab2/tab2.module').then((m) => m.Tab2PageModule),
+          import('../workout/workout.module').then((m) => m.WorkoutPageModule),
       },
       {
         path: 'diet',
         loadChildren: () =>
-          import('../tab3/tab3.module').then((m) => m.Tab3PageModule),
+          import('../nutrition/nutrition.module').then(
+            (m) => m.NutritionPageModule,
+          ),
       },
       {
         path: 'profile',
         loadChildren: () =>
-          import('../tab5/tab5.module').then((m) => m.Tab5PageModule),
+          import('../profile-tab/profile-tab.module').then(
+            (m) => m.ProfileTabPageModule,
+          ),
       },
       {
         path: '',
