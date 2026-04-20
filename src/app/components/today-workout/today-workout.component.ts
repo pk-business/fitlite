@@ -130,4 +130,9 @@ export class TodayWorkoutComponent implements OnInit, OnDestroy {
       queryParams: { day: this.currentDay },
     });
   }
+
+  /** Navigate to the Logs/Progress tab when user taps 'Edit Logs' on a workout card */
+  onEditLogsRequested(exerciseName: string): void {
+    this.router.navigate(['/tabs/logs'], { queryParams: { exercise: exerciseName } });
+  }
 }

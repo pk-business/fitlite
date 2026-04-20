@@ -15,7 +15,7 @@ import { ExerciseLogService } from '../../services/exercise-log.service';
   templateUrl: './exercise-log-modal.component.html',
   styleUrls: ['./exercise-log-modal.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class ExerciseLogModal implements OnInit {
   @Input() exercise!: Exercise;
@@ -27,15 +27,18 @@ export class ExerciseLogModal implements OnInit {
   existingLog: ExerciseLog | null = null;
   previousLog: ExerciseLog | null = null;
   isLoading = false;
+  /** User can manually override auto-detected cardio mode */
+  forceStrength = false;
 
   get isCardio(): boolean {
+    if (this.forceStrength) return false;
     return isCardioExercise(this.exercise?.name || '', this.exercise?.category);
   }
 
   constructor(
     private modalCtrl: ModalController,
     private exerciseLogService: ExerciseLogService,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
   ) {}
 
   ngOnInit() {
@@ -47,7 +50,9 @@ export class ExerciseLogModal implements OnInit {
    * Load previous workout data (not today)
    */
   loadPreviousLog(): void {
-    const lastLog = this.exerciseLogService.getLastLogForExercise(this.exercise.name);
+    const lastLog = this.exerciseLogService.getLastLogForExercise(
+      this.exercise.name,
+    );
     // Only set if it's not today's log
     if (lastLog && lastLog.date !== this.date) {
       this.previousLog = lastLog;
@@ -59,9 +64,11 @@ export class ExerciseLogModal implements OnInit {
    */
   loadExistingLog(): void {
     const logs = this.exerciseLogService.getLogsForDate(this.date);
-    this.existingLog = logs.find(log => 
-      log.exerciseName.toLowerCase() === this.exercise.name.toLowerCase()
-    ) || null;
+    this.existingLog =
+      logs.find(
+        (log) =>
+          log.exerciseName.toLowerCase() === this.exercise.name.toLowerCase(),
+      ) || null;
 
     if (this.existingLog) {
       // Load existing data
@@ -131,7 +138,7 @@ export class ExerciseLogModal implements OnInit {
     if (this.sets.length > 1) {
       this.sets.splice(index, 1);
       // Renumber sets
-      this.sets.forEach((set, i) => set.setNumber = i + 1);
+      this.sets.forEach((set, i) => (set.setNumber = i + 1));
     }
   }
 
@@ -153,9 +160,12 @@ export class ExerciseLogModal implements OnInit {
 
     // For cardio, ensure at least a duration is set
     if (this.isCardio) {
-      const anyFilled = this.sets.some(s => (s.durationMinutes ?? 0) > 0);
+      const anyFilled = this.sets.some((s) => (s.durationMinutes ?? 0) > 0);
       if (!anyFilled) {
-        await this.showToast('Enter duration for at least one interval', 'warning');
+        await this.showToast(
+          'Enter duration for at least one interval',
+          'warning',
+        );
         return;
       }
     }
@@ -167,7 +177,7 @@ export class ExerciseLogModal implements OnInit {
         exerciseName: this.exercise.name,
         date: this.date,
         sets: this.sets,
-        notes: this.notes.trim() || undefined
+        notes: this.notes.trim() || undefined,
       };
 
       if (this.existingLog) {
@@ -193,14 +203,16 @@ export class ExerciseLogModal implements OnInit {
    * Copy previous workout
    */
   async copyPreviousWorkout(): Promise<void> {
-    const lastLog = this.exerciseLogService.getLastLogForExercise(this.exercise.name);
-    
+    const lastLog = this.exerciseLogService.getLastLogForExercise(
+      this.exercise.name,
+    );
+
     if (!lastLog) {
       await this.showToast('No previous workout found', 'warning');
       return;
     }
 
-    this.sets = lastLog.sets.map(set => ({ ...set }));
+    this.sets = lastLog.sets.map((set) => ({ ...set }));
     await this.showToast(`Copied from ${lastLog.date}`, 'success');
   }
 
@@ -209,7 +221,7 @@ export class ExerciseLogModal implements OnInit {
    */
   get completionPercentage(): number {
     if (this.sets.length === 0) return 0;
-    const completed = this.sets.filter(s => s.completed).length;
+    const completed = this.sets.filter((s) => s.completed).length;
     return Math.round((completed / this.sets.length) * 100);
   }
 
@@ -217,7 +229,7 @@ export class ExerciseLogModal implements OnInit {
    * Get number of completed sets
    */
   get completedSetsCount(): number {
-    return this.sets.filter(s => s.completed).length;
+    return this.sets.filter((s) => s.completed).length;
   }
 
   /**
@@ -227,7 +239,10 @@ export class ExerciseLogModal implements OnInit {
     if (this.isCardio) {
       return this.sets.reduce((sum, s) => sum + (s.durationMinutes || 0), 0);
     }
-    return this.sets.reduce((sum, set) => sum + ((set.weight || 0) * set.reps), 0);
+    return this.sets.reduce(
+      (sum, set) => sum + (set.weight || 0) * set.reps,
+      0,
+    );
   }
 
   get totalVolumeLabel(): string {
@@ -235,7 +250,7 @@ export class ExerciseLogModal implements OnInit {
   }
 
   get totalVolumeUnit(): string {
-    return this.isCardio ? 'min' : (this.useMetric ? 'kg' : 'lbs');
+    return this.isCardio ? 'min' : this.useMetric ? 'kg' : 'lbs';
   }
 
   /**
@@ -246,7 +261,7 @@ export class ExerciseLogModal implements OnInit {
       message,
       duration: 2000,
       color,
-      position: 'bottom'
+      position: 'bottom',
     });
     await toast.present();
   }

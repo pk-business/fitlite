@@ -274,6 +274,15 @@ ion-footer {
   ion-icon {
     font-size: 15px;
   }
+
+  .switch-mode-btn {
+    margin-left: auto;
+    --color: var(--ion-color-medium);
+    font-size: 11px;
+    height: 22px;
+    --padding-start: 4px;
+    --padding-end: 4px;
+  }
 }
 
 /* Cardio inputs layout — stacked to give more room for distance */

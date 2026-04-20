@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { Subject, takeUntil } from 'rxjs';
@@ -53,7 +53,10 @@ export class EnhancedWorkoutCardComponent implements OnInit, OnDestroy {
   sessionData: ExerciseSessionData;
   progress?: ExerciseProgress;
   isExpanded: boolean = false;
-  
+
+  /** Emitted when user taps 'Edit Logs' — parent should navigate to progress/logs tab */
+  @Output() editLogsRequested = new EventEmitter<string>();
+
   get isCardio(): boolean {
     return isCardioExercise(this.exercise?.name || '', this.exercise?.category);
   }
@@ -279,14 +282,10 @@ export class EnhancedWorkoutCardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Open full progress view (modal)
+   * Open full progress view — emits event for parent to navigate to Logs tab
    */
   async openProgressModal(): Promise<void> {
-    // For now, just expand the card to show larger graph
-    // In a full implementation, this would open a dedicated modal
-    if (!this.isExpanded) {
-      this.toggleExpanded();
-    }
+    this.editLogsRequested.emit(this.exercise.name);
   }
 
   /**

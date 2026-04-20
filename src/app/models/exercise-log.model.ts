@@ -27,25 +27,57 @@ export interface SetLog {
   intensity?: 'low' | 'moderate' | 'high';
 }
 
-/** Keywords that identify a cardio-type exercise by name */
+/**
+ * Keywords that identify a cardio-type exercise by name.
+ * Matched as whole words (word-boundary regex) to avoid false positives
+ * e.g. 'row' must not match 'seated row machine' — use 'rowing' instead.
+ */
 export const CARDIO_KEYWORDS = [
-  'walk', 'walking', 'jog', 'jogging', 'run', 'running',
-  'sprint', 'sprinting', 'hike', 'hiking',
-  'cycle', 'cycling', 'bike', 'biking',
-  'swim', 'swimming', 'row', 'rowing',
-  'jump', 'jumping', 'jump rope', 'skipping',
-  'elliptical', 'treadmill', 'stair', 'stairs',
-  'dance', 'dancing', 'zumba', 'yoga', 'pilates',
-  'stretch', 'stretching', 'cardio',
+  // Running / walking
+  'walk',
+  'walking',
+  'jog',
+  'jogging',
+  'run',
+  'running',
+  'sprint',
+  'sprinting',
+  'hike',
+  'hiking',
+  // Cycling
+  'cycling',
+  'biking',
+  // Water
+  'swimming',
+  'rowing',
+  // Equipment
+  'elliptical',
+  'treadmill',
+  'stair climber',
+  'step mill',
+  // Jump / skip
+  'jump rope',
+  'skipping',
+  // Classes / other
+  'zumba',
+  'yoga',
+  'pilates',
+  'cardio',
+  'aerobics',
 ];
 
 /**
- * Returns true if the exercise name or category indicates a cardio exercise
+ * Returns true if the exercise name or category indicates a cardio exercise.
+ * Uses whole-word matching to avoid false positives (e.g. "rowing" ≠ "seated row machine").
  */
 export function isCardioExercise(name: string, category?: string): boolean {
   if (category === 'cardio') return true;
   const lower = name.toLowerCase();
-  return CARDIO_KEYWORDS.some(kw => lower.includes(kw));
+  return CARDIO_KEYWORDS.some((kw) => {
+    // Escape special regex chars in keyword, then wrap in word boundaries
+    const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`\\b${escaped}\\b`).test(lower);
+  });
 }
 
 /**

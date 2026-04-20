@@ -20,6 +20,9 @@
             @if (isCardio) {
               <p class="cardio-badge">
                 <ion-icon name="heart-outline"></ion-icon> Cardio Exercise
+                <ion-button fill="clear" size="small" class="switch-mode-btn" (click)="forceStrength = true">
+                  Use sets/weight
+                </ion-button>
               </p>
             } @else {
               <p>Planned: {{ exercise.sets }} × {{ exercise.reps }}</p>

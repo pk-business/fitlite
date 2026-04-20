@@ -73,46 +73,56 @@
 
         <ion-card class="chart-card">
           <ion-card-content>
-            <p class="chart-subtitle">Max weight lifted (last 30 days) for: <strong>{{ selectedExercise }}</strong></p>
-            @if (exerciseProgressData.length >= 2) {
-              <div class="progress-chart">
-                <svg viewBox="0 0 280 90" class="progress-svg">
-                  <defs>
-                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stop-color="var(--ion-color-primary)" stop-opacity="0.3"/>
-                      <stop offset="100%" stop-color="var(--ion-color-primary)" stop-opacity="0.02"/>
-                    </linearGradient>
-                  </defs>
-                  <path
-                    [attr.d]="getProgressSvgPath() + ' L 280,88 L 0,88 Z'"
-                    fill="url(#progressGradient)"
-                  />
-                  <path
-                    [attr.d]="getProgressSvgPath()"
-                    fill="none"
-                    stroke="var(--ion-color-primary)"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  @for (pt of getProgressPoints(); track $index) {
-                    <circle [attr.cx]="pt.x" [attr.cy]="pt.y" r="3" fill="var(--ion-color-primary)"/>
-                  }
-                </svg>
-                <div class="progress-x-labels">
-                  <span>{{ formatDate(exerciseProgressData[0].date) }}</span>
-                  <span>{{ formatDate(exerciseProgressData[exerciseProgressData.length - 1].date) }}</span>
-                </div>
-                <div class="progress-y-label">
-                  <span>{{ exerciseProgressData[0].maxWeight }} lbs</span>
-                </div>
+            <!-- Slide tab pills -->
+            <div class="chart-tab-pills">
+              <button class="chart-pill" [class.active]="activeExerciseSlide === 0" (click)="scrollToExerciseSlide(0)">
+                <ion-icon name="trending-up-outline"></ion-icon> Trend
+              </button>
+              <button class="chart-pill" [class.active]="activeExerciseSlide === 1" (click)="scrollToExerciseSlide(1)">
+                <ion-icon name="bar-chart-outline"></ion-icon> History
+              </button>
+            </div>
+
+            <!-- Swipeable slides container -->
+            <div class="chart-slides" #exerciseSlides (scroll)="onExerciseChartScroll($event)">
+
+              <!-- Slide 1: Trend chart (same as exercise tab card) -->
+              <div class="chart-slide">
+                <app-progress-graph
+                  [progress]="selectedExerciseProgress"
+                  [mode]="'full'"
+                ></app-progress-graph>
               </div>
-            } @else {
-              <div class="no-data-chart">
-                <ion-icon name="bar-chart-outline" color="medium"></ion-icon>
-                <p>Log more sets to see your progress trend!</p>
+
+              <!-- Slide 2: Editable bar chart -->
+              <div class="chart-slide">
+                <p class="chart-subtitle">
+                  Sessions — tap a bar to edit &nbsp;<ion-icon name="pencil-outline" style="vertical-align:middle;font-size:13px;"></ion-icon>
+                </p>
+                @if (exerciseBarData.length > 0) {
+                  <div class="session-bar-chart">
+                    @for (item of exerciseBarData; track item.logId) {
+                      <div class="session-bar-group" (click)="onBarTap(item)" role="button">
+                        <div class="session-bar-wrap">
+                          <div class="session-bar" [style.height.%]="getSessionBarHeight(item.volume)">
+                            @if (item.volume > 0) {
+                              <span class="session-bar-val">{{ item.volume }}</span>
+                            }
+                          </div>
+                        </div>
+                        <span class="session-bar-label">{{ item.label }}</span>
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <div class="no-data-chart">
+                    <ion-icon name="calendar-outline" color="medium"></ion-icon>
+                    <p>No sessions logged yet.</p>
+                  </div>
+                }
               </div>
-            }
+
+            </div><!-- end .chart-slides -->
           </ion-card-content>
         </ion-card>
       } @else {

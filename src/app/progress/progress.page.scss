@@ -248,3 +248,119 @@
   }
 }
 
+/* ── Swipeable chart slides ───────────────────────────────────────────── */
+.chart-tab-pills {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+
+  .chart-pill {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    border: 1.5px solid var(--ion-color-light-shade);
+    background: transparent;
+    color: var(--ion-color-medium);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    ion-icon { font-size: 14px; }
+
+    &.active {
+      background: var(--ion-color-primary);
+      border-color: var(--ion-color-primary);
+      color: #fff;
+    }
+  }
+}
+
+.chart-slides {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 0;
+  width: 100%;
+
+  &::-webkit-scrollbar { display: none; }
+
+  .chart-slide {
+    flex: 0 0 100%;
+    min-width: 100%;
+    scroll-snap-align: start;
+  }
+}
+
+/* ── Session bar chart (editable, slide 2) ───────────────────────────── */
+.session-bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 100px;
+  padding-bottom: 20px; // room for labels
+  position: relative;
+
+  .session-bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    cursor: pointer;
+    position: relative;
+
+    &:active .session-bar { opacity: 0.7; }
+  }
+
+  .session-bar-wrap {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .session-bar {
+    width: 100%;
+    min-height: 4px;
+    background: var(--ion-color-primary);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transition: height 0.3s ease;
+
+    &:after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: rgba(255,255,255,0.15);
+    }
+  }
+
+  .session-bar-val {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: var(--ion-color-primary);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .session-bar-label {
+    position: absolute;
+    bottom: 0;
+    font-size: 9px;
+    color: var(--ion-color-medium);
+    text-align: center;
+    white-space: nowrap;
+  }
+}
+

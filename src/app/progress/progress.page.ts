@@ -1,10 +1,14 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef, ViewChild } from '@angular/core';
+import { IonicModule, ActionSheetController, AlertController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ExerciseLogService } from '../services/exercise-log.service';
 import { UserProfileService } from '../services/user-profile.service';
 import { ExerciseLibraryService } from '../services/exercise-library.service';
+import { ProgressService } from '../services/progress.service';
+import { ExerciseProgress } from '../models';
+import { ProgressGraphComponent } from '../components/progress-graph/progress-graph.component';
+import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 
 type MusclePeriod = 'day' | 'week' | 'year';
@@ -15,7 +19,7 @@ type MusclePeriod = 'day' | 'week' | 'year';
   styleUrls: ['progress.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule],
+  imports: [IonicModule, CommonModule, FormsModule, ProgressGraphComponent],
 })
 export class ProgressPage implements OnInit, OnDestroy {
   isLoading = true;
@@ -27,8 +31,14 @@ export class ProgressPage implements OnInit, OnDestroy {
   weeklyVolume: { day: string; value: number }[] = [];
   bodyPartData: { part: string; percentage: number; value: number; color: string }[] = [];
   exerciseProgressData: { date: string; maxWeight: number }[] = [];
+  selectedExerciseProgress?: ExerciseProgress;
+  exerciseBarData: { date: string; logId: string; volume: number; label: string; setCount: number }[] = [];
 
+  activeExerciseSlide = 0;
+  maxExerciseBarVolume = 1;
   maxVolume = 1;
+
+  @ViewChild('exerciseSlides') exerciseSlidesRef?: ElementRef<HTMLElement>;
 
   private allLogs: any[] = [];
   private destroy$ = new Subject<void>();
@@ -53,7 +63,11 @@ export class ProgressPage implements OnInit, OnDestroy {
     private userProfileService: UserProfileService,
     private exerciseLogService: ExerciseLogService,
     private exerciseLibraryService: ExerciseLibraryService,
+    private progressService: ProgressService,
+    private actionSheetCtrl: ActionSheetController,
+    private alertCtrl: AlertController,
     private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute,
   ) {}
 
   async ngOnInit() {
@@ -66,6 +80,10 @@ export class ProgressPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    const ex = this.route.snapshot.queryParamMap.get('exercise');
+    if (ex) {
+      this.selectedExercise = ex;
+    }
     this.loadData();
   }
 
@@ -82,10 +100,14 @@ export class ProgressPage implements OnInit, OnDestroy {
         this.exerciseNames = Array.from(nameSet).slice(0, 10);
         if (this.exerciseNames.length > 0 && !this.selectedExercise) {
           this.selectedExercise = this.exerciseNames[0];
+        } else if (this.selectedExercise && !this.exerciseNames.includes(this.selectedExercise)) {
+          // Requested exercise has no logs yet — still show it selected
+          this.exerciseNames = [this.selectedExercise, ...this.exerciseNames];
         }
         this.computeWeeklyVolume();
         this.computeBodyPartData();
         this.computeExerciseProgress();
+        this.computeExerciseBarData();
       }
     } catch (e) {
       console.error(e);
@@ -103,6 +125,8 @@ export class ProgressPage implements OnInit, OnDestroy {
   onExerciseChange(name: string) {
     this.selectedExercise = name;
     this.computeExerciseProgress();
+    this.computeExerciseBarData();
+    this.activeExerciseSlide = 0;
     this.cdr.detectChanges();
   }
 
@@ -165,13 +189,137 @@ export class ProgressPage implements OnInit, OnDestroy {
   }
 
   private computeExerciseProgress() {
-    if (!this.selectedExercise) { this.exerciseProgressData = []; return; }
+    if (!this.selectedExercise) {
+      this.exerciseProgressData = [];
+      this.selectedExerciseProgress = undefined;
+      return;
+    }
     const data = this.exerciseLogService.getProgressData(this.selectedExercise, 30);
     this.exerciseProgressData = data.map(d => ({ date: d.date, maxWeight: d.maxWeight }));
+    this.selectedExerciseProgress = this.progressService.getExerciseProgress(this.selectedExercise);
   }
 
   getBarHeight(value: number): number {
     return Math.round((value / this.maxVolume) * 100);
+  }
+
+  getSessionBarHeight(value: number): number {
+    return Math.round((value / this.maxExerciseBarVolume) * 100);
+  }
+
+  private computeExerciseBarData() {
+    if (!this.selectedExercise) { this.exerciseBarData = []; return; }
+    const logs = this.allLogs
+      .filter((l: any) => l.exerciseName === this.selectedExercise)
+      .sort((a: any, b: any) => a.date.localeCompare(b.date))
+      .slice(-12);
+    this.exerciseBarData = logs.map((log: any) => {
+      const volume = log.sets.reduce((s: number, set: any) =>
+        s + (set.completed ? (set.weight || 0) * (set.reps || 1) : 0), 0);
+      return {
+        date: log.date,
+        logId: log.id,
+        volume: Math.round(volume),
+        label: this.formatDate(log.date),
+        setCount: log.sets.filter((s: any) => s.completed).length,
+      };
+    });
+    this.maxExerciseBarVolume = Math.max(...this.exerciseBarData.map(d => d.volume), 1);
+  }
+
+  onExerciseChartScroll(event: Event) {
+    const el = event.target as HTMLElement;
+    const slide = el.scrollLeft > el.clientWidth * 0.4 ? 1 : 0;
+    if (slide !== this.activeExerciseSlide) {
+      this.activeExerciseSlide = slide;
+      this.cdr.markForCheck();
+    }
+  }
+
+  scrollToExerciseSlide(index: number) {
+    const el = this.exerciseSlidesRef?.nativeElement;
+    if (el) {
+      el.scrollTo({ left: index * el.clientWidth, behavior: 'smooth' });
+      this.activeExerciseSlide = index;
+      this.cdr.markForCheck();
+    }
+  }
+
+  async onBarTap(item: { date: string; logId: string; volume: number; setCount: number }) {
+    const log = this.allLogs.find((l: any) => l.id === item.logId);
+    if (!log) return;
+    const sets: any[] = log.sets;
+    const setLines = sets.map((s: any) => {
+      if (s.durationMinutes != null) {
+        return `Set ${s.setNumber}: ${s.durationMinutes}min${s.distanceKm ? ' · ' + s.distanceKm + 'km' : ''}`;
+      }
+      return `Set ${s.setNumber}: ${s.weight ?? 0}kg × ${s.reps}`;
+    }).join('  |  ');
+    const sheet = await this.actionSheetCtrl.create({
+      header: log.exerciseName,
+      subHeader: `${log.date}  —  ${setLines}`,
+      buttons: [
+        { text: 'Edit sets', icon: 'create-outline', handler: () => { this.editSession(log); } },
+        { text: 'Delete this session', icon: 'trash-outline', role: 'destructive', handler: () => { this.deleteSession(log.id); } },
+        { text: 'Cancel', role: 'cancel' },
+      ],
+    });
+    await sheet.present();
+  }
+
+  async editSession(log: any) {
+    const sets: any[] = log.sets;
+    const inputs: any[] = [];
+    sets.forEach((s: any, i: number) => {
+      if (s.durationMinutes != null) {
+        inputs.push({ name: `dur_${i}`, type: 'number', label: `Set ${s.setNumber} — Duration (min)`, value: s.durationMinutes, min: 0 });
+        inputs.push({ name: `dist_${i}`, type: 'number', label: `Set ${s.setNumber} — Distance (km)`, value: s.distanceKm ?? 0, min: 0 });
+      } else {
+        inputs.push({ name: `wt_${i}`, type: 'number', label: `Set ${s.setNumber} — Weight (kg)`, value: s.weight ?? 0, min: 0 });
+        inputs.push({ name: `reps_${i}`, type: 'number', label: `Set ${s.setNumber} — Reps`, value: s.reps, min: 0 });
+      }
+    });
+    const alert = await this.alertCtrl.create({
+      header: 'Edit Session',
+      subHeader: `${log.exerciseName} — ${log.date}`,
+      inputs,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Save',
+          handler: async (data) => {
+            const updatedSets = sets.map((s: any, i: number) => {
+              if (s.durationMinutes != null) {
+                return { ...s, durationMinutes: parseFloat(data[`dur_${i}`]) || s.durationMinutes, distanceKm: parseFloat(data[`dist_${i}`]) || s.distanceKm };
+              }
+              return { ...s, weight: parseFloat(data[`wt_${i}`]) || 0, reps: parseInt(data[`reps_${i}`], 10) || s.reps };
+            });
+            await this.exerciseLogService.updateLog(log.id, { sets: updatedSets });
+            await this.loadData();
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  async deleteSession(logId: string) {
+    const confirm = await this.alertCtrl.create({
+      header: 'Delete Session',
+      message: 'Are you sure? This logged session will be permanently removed.',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: async () => {
+            await this.exerciseLogService.deleteLog(logId);
+            await this.loadData();
+          },
+        },
+      ],
+    });
+    await confirm.present();
   }
 
   // ── Radar Chart ─────────────────────────────────────────────────────────

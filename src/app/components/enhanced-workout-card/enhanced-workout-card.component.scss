@@ -161,7 +161,16 @@
     }
 
     .graph-container {
-      margin-bottom: 20px;
+      margin-bottom: 12px;
+      position: relative;
+
+      .edit-logs-btn {
+        --color: var(--ion-color-medium);
+        font-size: 12px;
+        height: 28px;
+        margin: 0;
+        float: right;
+      }
     }
 
     .sets-container {
