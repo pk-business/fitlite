@@ -146,6 +146,42 @@
         </ion-card-content>
       </ion-card>
 
+      <!-- Data Export / Import -->
+      <ion-card class="info-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="swap-horizontal-outline"></ion-icon> Data
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p class="data-hint">Back up your workout and nutrition logs or restore from a previous backup.</p>
+          <div class="data-actions">
+            <ion-button expand="block" fill="outline" [disabled]="isExporting" (click)="exportData()">
+              <ion-icon slot="start" name="download-outline"></ion-icon>
+              {{ isExporting ? 'Exporting…' : 'Export Data' }}
+            </ion-button>
+
+            <!-- Hidden file input triggered by the Import button -->
+            <input
+              #fileInput
+              type="file"
+              accept=".json,application/json"
+              style="display:none"
+              (change)="importData($event)"
+            />
+            <ion-button expand="block" fill="outline" color="secondary" [disabled]="isImporting" (click)="fileInput.click()">
+              <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
+              {{ isImporting ? 'Importing…' : 'Import Data' }}
+            </ion-button>
+          </div>
+
+          <p class="data-note">
+            <ion-icon name="information-circle-outline"></ion-icon>
+            Import merges new logs — existing entries are never overwritten.
+          </p>
+        </ion-card-content>
+      </ion-card>
+
     </div>
   }
 </ion-content>

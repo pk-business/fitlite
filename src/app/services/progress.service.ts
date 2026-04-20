@@ -28,8 +28,11 @@ export class ProgressService {
     
     const relevantLogs = logs.filter(log => log.timestamp >= cutoffTimestamp);
     
-    // Convert logs to data points
-    const dataPoints = relevantLogs.map(log => this.logToDataPoint(log));
+    // Convert logs to data points — sort chronologically (oldest first) so the
+    // graph draws left→right in time and percent-change is calculated correctly.
+    const dataPoints = relevantLogs
+      .map(log => this.logToDataPoint(log))
+      .sort((a, b) => a.timestamp - b.timestamp);
     
     // Calculate trend
     const trend = this.calculateTrend(dataPoints);

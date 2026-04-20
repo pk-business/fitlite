@@ -1,9 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, AlertController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { UserProfile } from '../models';
 import { UserProfileService } from '../services/user-profile.service';
+import { DataTransferService } from '../services/data-transfer.service';
 
 @Component({
   selector: 'app-profile-tab',
@@ -16,10 +17,14 @@ import { UserProfileService } from '../services/user-profile.service';
 export class ProfileTabPage implements OnInit {
   isLoading = true;
   userProfile: UserProfile | null = null;
+  isExporting = false;
+  isImporting = false;
 
   constructor(
     private userProfileService: UserProfileService,
     private router: Router,
+    private alertCtrl: AlertController,
+    private dataTransfer: DataTransferService,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -89,5 +94,58 @@ export class ProfileTabPage implements OnInit {
       gain_muscle: 'Gain Muscle',
     };
     return map[goal] || goal;
+  }
+
+  async exportData(): Promise<void> {
+    this.isExporting = true;
+    this.cdr.markForCheck();
+    try {
+      await this.dataTransfer.exportData();
+    } catch (e: any) {
+      const alert = await this.alertCtrl.create({
+        header: 'Export Failed',
+        message: e?.message || 'Could not export data.',
+        buttons: ['OK'],
+      });
+      await alert.present();
+    } finally {
+      this.isExporting = false;
+      this.cdr.markForCheck();
+    }
+  }
+
+  async importData(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    // Reset the input so the same file can be picked again
+    input.value = '';
+
+    this.isImporting = true;
+    this.cdr.markForCheck();
+
+    try {
+      const result = await this.dataTransfer.importData(file);
+      const alert = await this.alertCtrl.create({
+        header: '✅ Import Complete',
+        message:
+          `Added ${result.exerciseLogs} new workout log(s).\n` +
+          (result.hasProfile ? 'Profile data restored.\n' : '') +
+          (result.hasWorkoutPlan ? 'Workout plan restored.' : ''),
+        buttons: ['OK'],
+      });
+      await alert.present();
+    } catch (e: any) {
+      const alert = await this.alertCtrl.create({
+        header: 'Import Failed',
+        message: e?.message || 'Could not read the file.',
+        buttons: ['OK'],
+      });
+      await alert.present();
+    } finally {
+      this.isImporting = false;
+      this.cdr.markForCheck();
+    }
   }
 }
