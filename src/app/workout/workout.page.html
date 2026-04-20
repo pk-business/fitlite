@@ -31,20 +31,26 @@
   <!-- Main Content -->
   @if (!isLoading && hasProfile) {
   <div class="exercise-page-container">
-  
-    <!-- Today's Workout Section -->
-    <div class="section-header">
-      <ion-icon name="today-outline"></ion-icon>
-      <h2>Today's Workout</h2>
+
+    <!-- Tab Pills -->
+    <div class="page-tabs">
+      <button class="page-tab" [class.active]="activeTab === 'today'" (click)="activeTab = 'today'">
+        <ion-icon name="today-outline"></ion-icon>
+        Today
+      </button>
+      <button class="page-tab" [class.active]="activeTab === 'weekly'" (click)="activeTab = 'weekly'">
+        <ion-icon name="calendar-outline"></ion-icon>
+        Weekly Plan
+      </button>
     </div>
-    <app-today-workout></app-today-workout>
-  
-    <!-- Weekly Plan Section -->
-    @if (workoutPlan) {
-    <div class="section-header section-header--spaced">
-      <ion-icon name="calendar-outline"></ion-icon>
-      <h2>Weekly Plan</h2>
-    </div>
+
+    <!-- Today's Workout Tab -->
+    @if (activeTab === 'today') {
+      <app-today-workout></app-today-workout>
+    }
+
+    <!-- Weekly Plan Tab -->
+    @if (activeTab === 'weekly' && workoutPlan) {
     <div class="workout-plan-container">
           <!-- Workout Days -->
           @for (day of workoutPlan.weeklyPlan; track day) {
@@ -113,8 +119,8 @@
             </ion-card-content>
           </ion-card>
         </div>
-        }
-    </div>
+    }
+  </div>
   }
 </ion-content>
 

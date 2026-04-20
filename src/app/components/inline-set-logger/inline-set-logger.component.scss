@@ -35,6 +35,11 @@
     }
   }
 
+  &.disabled {
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
   &.swiping {
     transition: none; // Disable transition during swipe for immediate feedback
   }

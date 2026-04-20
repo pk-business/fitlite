@@ -1,6 +1,7 @@
 <div 
   class="set-row"
   [class.complete]="set.isComplete"
+  [class.disabled]="disabled"
   [class.swiping]="isSwiping"
   [style.transform]="'translateX(' + swipeTranslateX + 'px)'"
   [style.background]="getSwipeBackgroundColor()"

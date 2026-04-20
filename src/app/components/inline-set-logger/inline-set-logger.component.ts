@@ -39,6 +39,7 @@ export class InlineSetLoggerComponent {
   @Input() isFirst: boolean = false;
   @Input() useMetric: boolean = false;
   @Input() isCardio: boolean = false;
+  @Input() disabled: boolean = false;
   
   @Output() setCompleted = new EventEmitter<ActiveSet>();
   @Output() setDeleted = new EventEmitter<number>();

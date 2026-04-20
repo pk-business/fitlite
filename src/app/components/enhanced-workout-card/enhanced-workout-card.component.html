@@ -74,6 +74,20 @@
     </div>
   </div>
 
+  <!-- Completed summary row (collapsed state) -->
+  @if (isComplete() && !isExpanded) {
+    <div class="complete-summary">
+      <span class="complete-label">
+        <ion-icon name="checkmark-circle" color="success"></ion-icon>
+        {{ sessionData.completedSets.length }} sets done
+      </span>
+      <ion-button fill="clear" size="small" color="medium" (click)="restartExercise(); $event.stopPropagation()">
+        <ion-icon slot="start" name="refresh-outline"></ion-icon>
+        Restart
+      </ion-button>
+    </div>
+  }
+
   <!-- Mini Progress Graph (Collapsed State) -->
   @if (!isExpanded && progress) {
     <div class="mini-graph-container">
@@ -123,6 +137,7 @@
             [previousReps]="getPreviousSet(set.setNumber)?.reps"
             [useMetric]="useMetric"
             [isCardio]="isCardio"
+            [disabled]="isComplete()"
             (setDeleted)="onSetDeleted($event)"
           ></app-inline-set-logger>
         }
@@ -158,7 +173,14 @@
       </div>
 
       <!-- Quick Actions -->
-      @if (!isComplete()) {
+      @if (isComplete()) {
+        <div class="quick-actions">
+          <ion-button fill="outline" color="medium" size="small" (click)="restartExercise()">
+            <ion-icon slot="start" name="refresh-outline"></ion-icon>
+            Restart
+          </ion-button>
+        </div>
+      } @else {
         <div class="quick-actions">
           <ion-button 
             fill="solid"

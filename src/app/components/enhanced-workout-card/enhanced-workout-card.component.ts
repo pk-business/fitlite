@@ -173,9 +173,14 @@ export class EnhancedWorkoutCardComponent implements OnInit, OnDestroy {
         this.startNewSet(set.weight, set.reps);
       }, 100);
     } else {
-      // All sets completed
+      // All sets completed — save and collapse
       this.sessionData.currentSet = null;
       this.saveWorkout();
+      setTimeout(() => {
+        this.isExpanded = false;
+        this.sessionData.isExpanded = false;
+        this.cdr.markForCheck();
+      }, 600); // small delay so user sees the final set tick
     }
 
     this.cdr.markForCheck();
@@ -266,14 +271,15 @@ export class EnhancedWorkoutCardComponent implements OnInit, OnDestroy {
     // Stop any active rest timer
     this.restTimerService.stopTimer();
     
-    // Reset session data
+    // Reset session data and re-expand
+    this.isExpanded = true;
     this.sessionData = {
       exerciseName: this.exercise.name,
       plannedSets: this.exercise.sets,
       plannedReps: this.exercise.reps,
       completedSets: [],
       currentSet: null,
-      isExpanded: this.sessionData.isExpanded
+      isExpanded: true
     };
 
     // Start fresh with first set

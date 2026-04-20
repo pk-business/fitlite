@@ -40,6 +40,7 @@ export class WorkoutPage implements OnInit, OnDestroy, ViewWillEnter {
   isLoading = true;
   hasProfile = false;
   useMetric = false;
+  activeTab: 'today' | 'weekly' = 'today';
 
   private destroy$ = new Subject<void>();
 
