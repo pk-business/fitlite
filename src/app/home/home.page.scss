@@ -11,40 +11,6 @@ ion-header {
   }
 }
 
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 60vh;
-}
-
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 24px;
-  text-align: center;
-  min-height: 60vh;
-
-  .empty-icon {
-    font-size: 80px;
-    color: var(--ion-color-medium);
-    margin-bottom: 24px;
-  }
-
-  h2 {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  p {
-    color: var(--ion-color-medium);
-    margin-bottom: 24px;
-  }
-}
-
 /* Feed Container */
 .feed-container {
   padding-bottom: 24px;

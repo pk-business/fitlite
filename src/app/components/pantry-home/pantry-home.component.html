@@ -1,0 +1,133 @@
+<div class="pantry-container">
+
+  <!-- Traffic-light summary header -->
+  <div class="pantry-summary">
+    <div class="summary-stat" (click)="setFilter('all')" [class.active]="activeFilter==='all'">
+      <span class="stat-num">{{ summary.total }}</span>
+      <span class="stat-lbl">Total</span>
+    </div>
+    <div class="summary-stat ok" (click)="setFilter('ok')" [class.active]="activeFilter==='ok'">
+      <span class="stat-num">{{ summary.ok }}</span>
+      <span class="stat-lbl">OK</span>
+    </div>
+    <div class="summary-stat low" (click)="setFilter('low')" [class.active]="activeFilter==='low'">
+      <span class="stat-num">{{ summary.low }}</span>
+      <span class="stat-lbl">Low</span>
+    </div>
+    <div class="summary-stat out" (click)="setFilter('out')" [class.active]="activeFilter==='out'">
+      <span class="stat-num">{{ summary.out }}</span>
+      <span class="stat-lbl">Out</span>
+    </div>
+    @if (summary.expiringSoon > 0 || summary.expired > 0) {
+      <div class="summary-stat expired" (click)="setFilter('expiring')" [class.active]="activeFilter==='expiring'">
+        <span class="stat-num">{{ summary.expiringSoon + summary.expired }}</span>
+        <span class="stat-lbl">Expiring</span>
+      </div>
+    }
+  </div>
+
+  <!-- Quick actions -->
+  <div class="quick-actions">
+    <ion-button fill="solid" size="small" (click)="openAddItem()">
+      <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+      Add Item
+    </ion-button>
+    <ion-button fill="outline" size="small" color="primary" (click)="openGroceryList()">
+      <ion-icon slot="start" name="cart-outline"></ion-icon>
+      Grocery List
+    </ion-button>
+  </div>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <ion-searchbar
+      [(ngModel)]="searchQuery"
+      (ionInput)="applyFilters()"
+      placeholder="Search pantry…"
+      debounce="200"
+    ></ion-searchbar>
+  </div>
+
+  <!-- Category chips -->
+  <div class="category-chips">
+    @for (cat of categories; track cat.value) {
+      <ion-chip
+        [outline]="activeCategory !== cat.value"
+        [color]="activeCategory === cat.value ? 'primary' : 'medium'"
+        (click)="setCategory(cat.value)"
+      >
+        {{ cat.label }}
+      </ion-chip>
+    }
+  </div>
+
+  <!-- Empty state -->
+  @if (!isLoading && filteredItems.length === 0) {
+    <div class="empty-pantry">
+      <ion-icon name="basket-outline"></ion-icon>
+      <p>{{ summary.total === 0 ? 'Your pantry is empty.' : 'No items match.' }}</p>
+      @if (summary.total === 0) {
+        <ion-button fill="outline" size="small" (click)="openAddItem()">
+          Add your first item
+        </ion-button>
+      }
+    </div>
+  }
+
+  <!-- Item list -->
+  @for (item of filteredItems; track trackById($index, item)) {
+    <div class="pantry-item-card" (click)="openItemActions(item)">
+
+      <!-- Status stripe -->
+      <div class="status-stripe" [attr.data-status]="item.status"></div>
+
+      <div class="item-body">
+        <div class="item-main">
+          <div class="item-name-row">
+            <span class="item-name">{{ item.name }}</span>
+            <ion-icon [name]="statusIcon(item.status)" [color]="statusColor(item.status)" class="status-icon"></ion-icon>
+          </div>
+          <span class="item-category">{{ item.category }}</span>
+
+          <!-- Expiry badge -->
+          @if (item.isExpiringSoon || item.status === 'expired') {
+            <ion-badge [color]="item.status === 'expired' ? 'medium' : 'warning'" class="expiry-badge">
+              {{ expiryLabel(item) }}
+            </ion-badge>
+          }
+        </div>
+
+        <div class="item-qty-section">
+          <span class="qty-label">{{ item.quantity }} / {{ item.fullQuantity }} {{ item.unit }}</span>
+          <!-- Quantity bar -->
+          <div class="qty-bar-track">
+            <div
+              class="qty-bar-fill"
+              [style.width.%]="item.quantityPct"
+              [attr.data-status]="item.status"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stepper -->
+      <div class="item-stepper" (click)="$event.stopPropagation()">
+        <button class="stepper-btn increment" (click)="quickAdjust(item, 1, $event)" [disabled]="item.quantity >= item.fullQuantity">
+          <ion-icon name="add-outline"></ion-icon>
+        </button>
+        <button class="stepper-btn decrement" (click)="quickAdjust(item, -1, $event)" [disabled]="item.quantity <= 0">
+          <ion-icon name="remove-outline"></ion-icon>
+        </button>
+      </div>
+
+      <!-- Edit -->
+      <ion-button fill="clear" size="small" class="item-edit-btn" (click)="openEditItem(item, $event)">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
+
+    </div>
+  }
+
+  <!-- Bottom padding -->
+  <div style="height: 32px"></div>
+</div>

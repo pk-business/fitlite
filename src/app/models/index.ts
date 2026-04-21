@@ -8,3 +8,4 @@ export * from './reminder.model';
 export * from './exercise-log.model';
 export * from './progress.model';
 export * from './exercise-library.model';
+export * from './pantry.model';

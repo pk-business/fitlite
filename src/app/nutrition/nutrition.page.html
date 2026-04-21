@@ -31,7 +31,19 @@
   <!-- Main Content -->
   @if (!isLoading && hasProfile) {
   <div class="diet-page-container">
-  
+
+    <!-- Tab switcher -->
+    <div class="page-tabs">
+      <button class="page-tab" [class.active]="activeTab === 'diet'" (click)="activeTab = 'diet'">Today</button>
+      <button class="page-tab" [class.active]="activeTab === 'pantry'" (click)="activeTab = 'pantry'">Pantry</button>
+    </div>
+    
+    @if (activeTab === 'pantry') {
+    <app-pantry-home></app-pantry-home>
+    }
+    
+    @if (activeTab === 'diet') {
+
     <!-- Today's Nutrition Section -->
     <div class="section-header">
       <ion-icon name="restaurant-outline"></ion-icon>
@@ -192,7 +204,8 @@
           </ion-card>
         </div>
         }
-    </div>
+    } <!-- end @if activeTab === 'diet' -->
+  </div>
   }
 </ion-content>
 

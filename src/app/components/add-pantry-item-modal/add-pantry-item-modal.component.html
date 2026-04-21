@@ -1,0 +1,114 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ isEditMode ? 'Edit Item' : 'Add to Pantry' }}</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="!isValid || isSaving" (click)="save()" color="primary" fill="solid">
+        {{ isSaving ? 'Saving…' : (isEditMode ? 'Update' : 'Add') }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="modal-content">
+  <ion-list lines="full" class="form-list">
+
+    <!-- Name -->
+    <ion-item>
+      <ion-label position="stacked">Item Name <span class="required">*</span></ion-label>
+      <ion-input [(ngModel)]="name" placeholder="e.g. Rolled Oats" clearInput></ion-input>
+    </ion-item>
+
+    <!-- Category -->
+    <ion-item>
+      <ion-label position="stacked">Category</ion-label>
+      <ion-select [(ngModel)]="category" interface="action-sheet">
+        @for (cat of categories; track cat.value) {
+          <ion-select-option [value]="cat.value">{{ cat.label }}</ion-select-option>
+        }
+      </ion-select>
+    </ion-item>
+
+    <!-- Quantity & Unit (same row) -->
+    <ion-item>
+      <ion-label position="stacked">Current Quantity</ion-label>
+      <ion-input type="number" [(ngModel)]="quantity" min="0" placeholder="0"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Full / Target Quantity</ion-label>
+      <ion-input type="number" [(ngModel)]="fullQuantity" min="1" placeholder="10"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Unit</ion-label>
+      <ion-select [(ngModel)]="unit" interface="action-sheet">
+        @for (u of units; track u) {
+          <ion-select-option [value]="u">{{ u }}</ion-select-option>
+        }
+      </ion-select>
+    </ion-item>
+
+    <!-- Divider -->
+    <div class="section-label">Expiration</div>
+
+    <ion-item>
+      <ion-label position="stacked">Expiration Date</ion-label>
+      <ion-input type="date" [(ngModel)]="expirationDate"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Alert me (days before)</ion-label>
+      <ion-input type="number" [(ngModel)]="expirationAlertDays" min="0" max="30"></ion-input>
+    </ion-item>
+
+    <!-- Divider -->
+    <div class="section-label">Status Thresholds</div>
+
+    <ion-item>
+      <ion-label>Low below (%)</ion-label>
+      <ion-input slot="end" type="number" [(ngModel)]="lowThresholdPct" min="1" max="99" style="text-align:right;max-width:80px"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Out below (%)</ion-label>
+      <ion-input slot="end" type="number" [(ngModel)]="outThresholdPct" min="0" max="99" style="text-align:right;max-width:80px"></ion-input>
+    </ion-item>
+
+    <!-- Divider -->
+    <div class="section-label">Auto-Decrement</div>
+
+    <ion-item>
+      <ion-label>Auto-decrement when food is logged</ion-label>
+      <ion-toggle [(ngModel)]="autoDecrementEnabled" slot="end"></ion-toggle>
+    </ion-item>
+
+    @if (autoDecrementEnabled) {
+      <ion-item>
+        <ion-label position="stacked">Amount to deduct per log entry ({{ unit }})</ion-label>
+        <ion-input type="number" [(ngModel)]="decrementAmount" min="0.1" step="0.1"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Match aliases (comma-separated)</ion-label>
+        <ion-input
+          [(ngModel)]="matchAliases"
+          placeholder="e.g. oats, oatmeal, rolled oats"
+        ></ion-input>
+      </ion-item>
+    }
+
+    <!-- Notes -->
+    <div class="section-label">Notes</div>
+
+    <ion-item>
+      <ion-label position="stacked">Notes (optional)</ion-label>
+      <ion-textarea [(ngModel)]="notes" rows="3" placeholder="Any extra info…"></ion-textarea>
+    </ion-item>
+
+  </ion-list>
+</ion-content>

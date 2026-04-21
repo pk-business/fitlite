@@ -9,6 +9,7 @@ import { IonicModule, ModalController } from '@ionic/angular';
 import { TodayMealsComponent } from '../components/today-meals/today-meals.component';
 import { NutritionLoggerComponent } from '../nutrition-logger/nutrition-logger.component';
 import { EditNutritionLogsComponent } from '../components/edit-nutrition-logs/edit-nutrition-logs.component';
+import { PantryHomeComponent } from '../components/pantry-home/pantry-home.component';
 
 /**
  * NutritionPage – Today's nutrition + weekly diet plan
@@ -18,9 +19,10 @@ import { EditNutritionLogsComponent } from '../components/edit-nutrition-logs/ed
   templateUrl: 'nutrition.page.html',
   styleUrls: ['nutrition.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, TodayMealsComponent],
+  imports: [IonicModule, TodayMealsComponent, PantryHomeComponent],
 })
 export class NutritionPage implements OnInit {
+  activeTab: 'diet' | 'pantry' = 'diet';
   dietPlan: DietPlan | null = null;
   userProfile: UserProfile | null = null;
   todaysNutrition: DailyNutritionLog | null = null;

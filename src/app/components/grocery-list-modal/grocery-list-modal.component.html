@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ list.title }}</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="share()" [disabled]="isSharing" color="primary">
+        <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="modal-content">
+  <!-- Progress bar -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" [style.width.%]="progressPct"></div>
+  </div>
+  <div class="progress-label">{{ checkedItems }} / {{ totalItems }} items collected</div>
+
+  @if (groupedItems.length === 0) {
+    <div class="empty-state">
+      <ion-icon name="checkmark-circle" color="success" style="font-size:48px"></ion-icon>
+      <p>Nothing on your grocery list!</p>
+    </div>
+  }
+
+  @for (group of groupedItems; track group.category) {
+    <div class="category-header">{{ group.category }}</div>
+    <ion-list lines="full">
+      @for (item of group.items; track item.name) {
+        <ion-item (click)="toggleItem(item)" button detail="false" [class.checked]="item.checked">
+          <ion-checkbox
+            slot="start"
+            [checked]="item.checked"
+            (ionChange)="toggleItem(item)"
+            (click)="$event.stopPropagation()"
+          ></ion-checkbox>
+          <ion-label>
+            <h3 [class.strikethrough]="item.checked">{{ item.name }}</h3>
+            <p>{{ item.neededQuantity }} {{ item.unit }}</p>
+          </ion-label>
+          @if (item.reason === 'out') {
+            <ion-badge slot="end" color="danger">Out</ion-badge>
+          } @else if (item.reason === 'low') {
+            <ion-badge slot="end" color="warning">Low</ion-badge>
+          }
+        </ion-item>
+      }
+    </ion-list>
+  }
+</ion-content>

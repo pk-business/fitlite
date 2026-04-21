@@ -72,15 +72,113 @@ ion-app, ion-router-outlet, ion-content, ion-page {
  * Ensure proper contrast for primary colored elements in both light and dark themes
  */
 
-// Ensure all solid buttons have proper contrast
+// ── Uniform Button System ────────────────────────────────────────────────────
+// Consistent border-radius, weight, and capitalisation across all ion-button
 ion-button {
-  // Solid buttons (default fill)
+  --border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: none;
+
+  // Solid buttons — always white text
   &:not([fill="outline"]):not([fill="clear"]) {
     --color: #ffffff !important;
-    
+
     &[color="primary"] {
       --color: #ffffff !important;
     }
+  }
+}
+
+// ── Page-level tab switcher ──────────────────────────────────────────────────
+// Used on Exercise page (Today / Weekly) and Diet page (Today / Pantry).
+// Add .page-tabs wrapper + .page-tab buttons to any page; active state via .active class.
+.page-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px 4px;
+}
+
+.page-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--ion-color-light-shade);
+  background: transparent;
+  color: var(--ion-color-medium);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  ion-icon { font-size: 16px; }
+
+  &.active {
+    background: var(--ion-color-primary);
+    border-color: var(--ion-color-primary);
+    color: #ffffff;
+  }
+}
+
+// ── Reusable loading & empty states ─────────────────────────────────────────
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  min-height: 40vh;
+
+  .empty-icon {
+    font-size: 72px;
+    color: var(--ion-color-medium);
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 12px;
+  }
+
+  p {
+    font-size: 15px;
+    color: var(--ion-color-medium);
+    margin: 0 0 24px;
+    max-width: 300px;
+  }
+}
+
+// ── Shared section header ────────────────────────────────────────────────────
+// Use inside page content: <div class="section-header"><ion-icon/><h2/></div>
+// Override per-page if you need extra spacing (use modifier classes).
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 16px 4px;
+
+  ion-icon {
+    font-size: 22px;
+    color: var(--ion-color-primary);
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
   }
 }
 
@@ -112,6 +210,15 @@ ion-card, ion-card-content {
 
 // Dark mode specific fixes
 body.dark {
+  // Pantry summary stat labels — light background makes #888f9b unreadable in dark
+  .pantry-summary .summary-stat .stat-lbl {
+    color: #c8cdd6;
+  }
+  // Active stat keeps white regardless
+  .pantry-summary .summary-stat.active .stat-lbl {
+    color: #ffffff !important;
+  }
+
   ion-button {
     // In dark mode, solid buttons should still have white text on colored backgrounds
     &:not([fill="outline"]):not([fill="clear"]) {

@@ -1,102 +1,10 @@
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 60vh;
-}
-
 .exercise-page-container {
   padding-bottom: 24px;
 }
 
-// Two-tab switcher at top of exercise page
-.page-tabs {
-  display: flex;
-  gap: 8px;
-  padding: 12px 16px 4px;
-
-  .page-tab {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border-radius: 10px;
-    border: 1.5px solid var(--ion-color-light-shade);
-    background: transparent;
-    color: var(--ion-color-medium);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    ion-icon {
-      font-size: 16px;
-    }
-
-    &.active {
-      background: var(--ion-color-primary);
-      border-color: var(--ion-color-primary);
-      color: white;
-    }
-  }
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 16px 16px 4px;
-
-  ion-icon {
-    font-size: 22px;
-    color: var(--ion-color-primary);
-  }
-
-  h2 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-  }
-
-  &--spaced {
-    margin-top: 8px;
-  }
-}
-
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 24px;
-  text-align: center;
-  min-height: 60vh;
-
-  .empty-icon {
-    font-size: 80px;
-    color: var(--ion-color-medium);
-    margin-bottom: 24px;
-  }
-
-  h2 {
-    margin: 0 0 12px 0;
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--ion-color-dark);
-  }
-
-  p {
-    margin: 0 0 32px 0;
-    font-size: 16px;
-    color: var(--ion-color-medium);
-    max-width: 320px;
-  }
-
-  ion-button {
-    width: 200px;
-  }
+// section-header modifier specific to workout page
+.section-header--spaced {
+  margin-top: 8px;
 }
 
 .workout-plan-container {
